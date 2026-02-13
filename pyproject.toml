@@ -53,10 +53,10 @@ Repository = "https://github.com/yourusername/elastic-janitor"
 Issues = "https://github.com/yourusername/elastic-janitor/issues"
 
 [project.scripts]
-elastic-janitor = "menus.main_menu:main"
+elastic-janitor = "janitor.menus.main_menu:main"
 
 [tool.setuptools]
-packages = ["core", "menus", "operations", "utils"]
+packages = ["janitor", "janitor.core", "janitor.menus", "janitor.operations", "janitor.utils"]
 
 [tool.setuptools.package-data]
 "*" = ["*.md", "*.txt"]
@@ -84,7 +84,7 @@ testpaths = ["tests"]
 python_files = ["test_*.py"]
 python_classes = ["Test*"]
 python_functions = ["test_*"]
-addopts = "-v --cov=. --cov-report=html --cov-report=term-missing"
+addopts = "-v --cov=janitor --cov-report=html --cov-report=term-missing"
 
 [tool.mypy]
 python_version = "3.8"
