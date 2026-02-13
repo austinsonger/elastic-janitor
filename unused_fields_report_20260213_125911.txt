@@ -1,0 +1,6564 @@
+Unused Fields Report
+================================================================================
+
+Index: partial-.ds-logs-aws.route53_resolver_logs-corporate-2025.12.01-000133
+Total Fields: 12
+Unused Fields (2):
+  - awscloudwatch
+  - input
+
+Index: partial-.ds-logs-aws.cloudtrail-corporate-2025.12.09-000552
+Total Fields: 12
+Unused Fields (5):
+  - actor
+  - host
+  - input
+  - related
+  - target
+
+Index: partial-.ds-logs-aws.cloudtrail-federal-2025.12.27-000242
+Total Fields: 12
+Unused Fields (5):
+  - actor
+  - host
+  - input
+  - related
+  - target
+
+Index: partial-.ds-logs-aws.cloudtrail-federal-2026.01.15-000280
+Total Fields: 12
+Unused Fields (5):
+  - actor
+  - host
+  - input
+  - related
+  - target
+
+Index: partial-.ds-logs-aws.route53_resolver_logs-corporate-2025.12.12-000155
+Total Fields: 12
+Unused Fields (2):
+  - awscloudwatch
+  - input
+
+Index: partial-.ds-logs-aws.waf-corporate-2026.01.09-000381
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-aws.waf-corporate-2026.01.01-000365
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-aws.waf-corporate-2025.12.02-000307
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-aws.waf-corporate-2025.12.13-000327
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-kubernetes.audit_logs-corporate-2025.11.19-000274
+Total Fields: 17
+Unused Fields (11):
+  - agent
+  - client
+  - ecs
+  - error
+  - host
+  - input
+  - message
+  - related
+  - source
+  - user
+  - user_agent
+
+Index: partial-.ds-logs-aws.waf-federal-2025.11.17-000974
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-kubernetes.audit_logs-federal-2025.12.21-000356
+Total Fields: 17
+Unused Fields (11):
+  - agent
+  - client
+  - ecs
+  - error
+  - host
+  - input
+  - message
+  - related
+  - source
+  - user
+  - user_agent
+
+Index: partial-.ds-logs-aws.route53_resolver_logs-federal-2025.12.25-000192
+Total Fields: 12
+Unused Fields (2):
+  - awscloudwatch
+  - input
+
+Index: partial-.ds-logs-aws.waf-federal-2025.11.17-000977
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-aws.waf-federal-2025.11.17-000979
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-kubernetes.audit_logs-corporate-2025.11.19-000278
+Total Fields: 17
+Unused Fields (11):
+  - agent
+  - client
+  - ecs
+  - error
+  - host
+  - input
+  - message
+  - related
+  - source
+  - user
+  - user_agent
+
+Index: partial-.ds-logs-aws.waf-federal-2025.11.17-000970
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-aws.cloudtrail-federal-2025.11.24-000176
+Total Fields: 12
+Unused Fields (5):
+  - actor
+  - host
+  - input
+  - related
+  - target
+
+Index: partial-.ds-logs-kubernetes.audit_logs-corporate-2025.11.19-000276
+Total Fields: 17
+Unused Fields (11):
+  - agent
+  - client
+  - ecs
+  - error
+  - host
+  - input
+  - message
+  - related
+  - source
+  - user
+  - user_agent
+
+Index: partial-.ds-logs-aws.waf-federal-2025.11.17-000972
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-aws.cloudtrail-federal-2026.01.04-000258
+Total Fields: 12
+Unused Fields (5):
+  - actor
+  - host
+  - input
+  - related
+  - target
+
+Index: partial-.ds-logs-aws.cloudtrail-corporate-2025.12.01-000536
+Total Fields: 12
+Unused Fields (5):
+  - actor
+  - host
+  - input
+  - related
+  - target
+
+Index: partial-.ds-logs-kubernetes.audit_logs-federal-2026.01.18-000412
+Total Fields: 17
+Unused Fields (11):
+  - agent
+  - client
+  - ecs
+  - error
+  - host
+  - input
+  - message
+  - related
+  - source
+  - user
+  - user_agent
+
+Index: partial-.ds-logs-kubernetes.audit_logs-corporate-2026.01.14-000424
+Total Fields: 17
+Unused Fields (11):
+  - agent
+  - client
+  - ecs
+  - error
+  - host
+  - input
+  - message
+  - related
+  - source
+  - user
+  - user_agent
+
+Index: partial-.ds-logs-aws.cloudtrail-corporate-2025.12.23-000578
+Total Fields: 12
+Unused Fields (5):
+  - actor
+  - host
+  - input
+  - related
+  - target
+
+Index: partial-.ds-logs-aws.waf-federal-2026.01.14-001328
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-aws.waf-federal-2025.11.17-000963
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-aws.waf-federal-2025.11.17-000965
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-aws.waf-federal-2025.11.17-000967
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-kubernetes.audit_logs-federal-2025.12.07-000328
+Total Fields: 17
+Unused Fields (11):
+  - agent
+  - client
+  - ecs
+  - error
+  - host
+  - input
+  - message
+  - related
+  - source
+  - user
+  - user_agent
+
+Index: partial-.ds-logs-aws.waf-federal-2025.11.17-000969
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-aws.cloudtrail-corporate-2026.01.20-000634
+Total Fields: 12
+Unused Fields (5):
+  - actor
+  - host
+  - input
+  - related
+  - target
+
+Index: partial-.ds-logs-aws.waf-federal-2025.12.17-001267
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-aws.waf-federal-2025.11.17-000960
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-kubernetes.audit_logs-corporate-2025.12.17-000370
+Total Fields: 17
+Unused Fields (11):
+  - agent
+  - client
+  - ecs
+  - error
+  - host
+  - input
+  - message
+  - related
+  - source
+  - user
+  - user_agent
+
+Index: partial-.ds-logs-kubernetes.audit_logs-corporate-2025.11.23-000308
+Total Fields: 17
+Unused Fields (11):
+  - agent
+  - client
+  - ecs
+  - error
+  - host
+  - input
+  - message
+  - related
+  - source
+  - user
+  - user_agent
+
+Index: partial-.ds-logs-aws.waf-corporate-2026.01.12-000387
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-aws.waf-federal-2025.11.17-000953
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-aws.waf-federal-2025.11.17-000952
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-aws.waf-federal-2025.11.17-000955
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-aws.waf-federal-2025.12.20-001273
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-aws.waf-federal-2025.11.17-000957
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-kubernetes.audit_logs-federal-2025.12.10-000334
+Total Fields: 17
+Unused Fields (11):
+  - agent
+  - client
+  - ecs
+  - error
+  - host
+  - input
+  - message
+  - related
+  - source
+  - user
+  - user_agent
+
+Index: partial-.ds-logs-aws.waf-corporate-2025.11.21-000271
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-aws.cloudtrail-corporate-2026.01.17-000628
+Total Fields: 12
+Unused Fields (5):
+  - actor
+  - host
+  - input
+  - related
+  - target
+
+Index: partial-.ds-logs-aws.waf-federal-2025.11.17-000958
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-aws.cloudtrail-federal-2025.12.05-000200
+Total Fields: 12
+Unused Fields (5):
+  - actor
+  - host
+  - input
+  - related
+  - target
+
+Index: partial-.ds-logs-aws.route53_resolver_logs-corporate-2025.12.09-000149
+Total Fields: 12
+Unused Fields (2):
+  - awscloudwatch
+  - input
+
+Index: partial-.ds-logs-aws.waf-federal-2025.11.17-000950
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-aws.route53_resolver_logs-federal-2025.12.03-000148
+Total Fields: 12
+Unused Fields (2):
+  - awscloudwatch
+  - input
+
+Index: partial-.ds-logs-aws.cloudtrail-corporate-2025.12.12-000558
+Total Fields: 12
+Unused Fields (5):
+  - actor
+  - host
+  - input
+  - related
+  - target
+
+Index: partial-.ds-logs-aws.waf-corporate-2025.11.18-000245
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-aws.waf-corporate-2025.11.18-000247
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-aws.cloudtrail-federal-2025.12.04-000198
+Total Fields: 12
+Unused Fields (5):
+  - actor
+  - host
+  - input
+  - related
+  - target
+
+Index: partial-.ds-logs-aws.route53_resolver_logs-corporate-2026.01.06-000205
+Total Fields: 12
+Unused Fields (2):
+  - awscloudwatch
+  - input
+
+Index: partial-.ds-logs-aws.waf-federal-2025.12.31-001295
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-kubernetes.audit_logs-federal-2025.11.30-000316
+Total Fields: 17
+Unused Fields (11):
+  - agent
+  - client
+  - ecs
+  - error
+  - host
+  - input
+  - message
+  - related
+  - source
+  - user
+  - user_agent
+
+Index: partial-.ds-logs-aws.cloudtrail-corporate-2026.01.06-000606
+Total Fields: 12
+Unused Fields (5):
+  - actor
+  - host
+  - input
+  - related
+  - target
+
+Index: partial-.ds-logs-kubernetes.audit_logs-federal-2026.01.21-000418
+Total Fields: 17
+Unused Fields (11):
+  - agent
+  - client
+  - ecs
+  - error
+  - host
+  - input
+  - message
+  - related
+  - source
+  - user
+  - user_agent
+
+Index: partial-.ds-logs-aws.waf-corporate-2025.11.18-000253
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-kubernetes.audit_logs-corporate-2025.12.14-000364
+Total Fields: 17
+Unused Fields (11):
+  - agent
+  - client
+  - ecs
+  - error
+  - host
+  - input
+  - message
+  - related
+  - source
+  - user
+  - user_agent
+
+Index: partial-.ds-logs-aws.waf-corporate-2025.11.18-000251
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-aws.waf-corporate-2026.01.21-000405
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-kubernetes.audit_logs-federal-2025.11.15-000221
+Total Fields: 17
+Unused Fields (11):
+  - agent
+  - client
+  - ecs
+  - error
+  - host
+  - input
+  - message
+  - related
+  - source
+  - user
+  - user_agent
+
+Index: partial-.ds-logs-kubernetes.audit_logs-federal-2025.12.18-000350
+Total Fields: 17
+Unused Fields (11):
+  - agent
+  - client
+  - ecs
+  - error
+  - host
+  - input
+  - message
+  - related
+  - source
+  - user
+  - user_agent
+
+Index: partial-.ds-logs-aws.waf-federal-2025.12.28-001289
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-kubernetes.audit_logs-corporate-2025.12.06-000348
+Total Fields: 17
+Unused Fields (11):
+  - agent
+  - client
+  - ecs
+  - error
+  - host
+  - input
+  - message
+  - related
+  - source
+  - user
+  - user_agent
+
+Index: partial-.ds-logs-aws.waf-corporate-2025.11.15-000228
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-aws.waf-corporate-2025.11.18-000249
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-kubernetes.audit_logs-corporate-2025.11.16-000244
+Total Fields: 17
+Unused Fields (11):
+  - agent
+  - client
+  - ecs
+  - error
+  - host
+  - input
+  - message
+  - related
+  - source
+  - user
+  - user_agent
+
+Index: partial-.ds-logs-kubernetes.audit_logs-federal-2025.12.13-000340
+Total Fields: 17
+Unused Fields (11):
+  - agent
+  - client
+  - ecs
+  - error
+  - host
+  - input
+  - message
+  - related
+  - source
+  - user
+  - user_agent
+
+Index: partial-.ds-logs-kubernetes.audit_logs-corporate-2025.11.16-000246
+Total Fields: 17
+Unused Fields (11):
+  - agent
+  - client
+  - ecs
+  - error
+  - host
+  - input
+  - message
+  - related
+  - source
+  - user
+  - user_agent
+
+Index: partial-.ds-logs-kubernetes.audit_logs-corporate-2025.11.16-000242
+Total Fields: 17
+Unused Fields (11):
+  - agent
+  - client
+  - ecs
+  - error
+  - host
+  - input
+  - message
+  - related
+  - source
+  - user
+  - user_agent
+
+Index: partial-.ds-logs-kubernetes.audit_logs-federal-2026.01.06-000388
+Total Fields: 17
+Unused Fields (11):
+  - agent
+  - client
+  - ecs
+  - error
+  - host
+  - input
+  - message
+  - related
+  - source
+  - user
+  - user_agent
+
+Index: partial-.ds-logs-kubernetes.audit_logs-federal-2025.12.24-000362
+Total Fields: 17
+Unused Fields (11):
+  - agent
+  - client
+  - ecs
+  - error
+  - host
+  - input
+  - message
+  - related
+  - source
+  - user
+  - user_agent
+
+Index: partial-.ds-logs-kubernetes.audit_logs-corporate-2025.11.16-000248
+Total Fields: 17
+Unused Fields (11):
+  - agent
+  - client
+  - ecs
+  - error
+  - host
+  - input
+  - message
+  - related
+  - source
+  - user
+  - user_agent
+
+Index: partial-.ds-logs-kubernetes.audit_logs-federal-2025.11.27-000310
+Total Fields: 17
+Unused Fields (11):
+  - agent
+  - client
+  - ecs
+  - error
+  - host
+  - input
+  - message
+  - related
+  - source
+  - user
+  - user_agent
+
+Index: partial-.ds-logs-aws.cloudtrail-federal-2025.12.30-000248
+Total Fields: 12
+Unused Fields (5):
+  - actor
+  - host
+  - input
+  - related
+  - target
+
+Index: partial-.ds-logs-aws.waf-corporate-2025.12.24-000349
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-aws.cloudtrail-corporate-2025.12.06-000546
+Total Fields: 12
+Unused Fields (5):
+  - actor
+  - host
+  - input
+  - related
+  - target
+
+Index: partial-.ds-logs-kubernetes.audit_logs-corporate-2025.12.03-000342
+Total Fields: 17
+Unused Fields (11):
+  - agent
+  - client
+  - ecs
+  - error
+  - host
+  - input
+  - message
+  - related
+  - source
+  - user
+  - user_agent
+
+Index: partial-.ds-logs-aws.waf-corporate-2025.11.30-000303
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-kubernetes.audit_logs-federal-2025.12.29-000372
+Total Fields: 17
+Unused Fields (11):
+  - agent
+  - client
+  - ecs
+  - error
+  - host
+  - input
+  - message
+  - related
+  - source
+  - user
+  - user_agent
+
+Index: partial-.ds-logs-aws.waf-corporate-2026.01.06-000375
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-kubernetes.audit_logs-corporate-2026.01.03-000402
+Total Fields: 17
+Unused Fields (11):
+  - agent
+  - client
+  - ecs
+  - error
+  - host
+  - input
+  - message
+  - related
+  - source
+  - user
+  - user_agent
+
+Index: partial-.ds-logs-aws.waf-corporate-2025.12.16-000333
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-aws.cloudtrail-federal-2025.12.13-000216
+Total Fields: 12
+Unused Fields (5):
+  - actor
+  - host
+  - input
+  - related
+  - target
+
+Index: partial-.ds-logs-aws.cloudtrail-federal-2026.01.18-000286
+Total Fields: 12
+Unused Fields (5):
+  - actor
+  - host
+  - input
+  - related
+  - target
+
+Index: partial-.ds-logs-aws.waf-corporate-2026.01.04-000371
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-aws.route53_resolver_logs-corporate-2025.12.28-000187
+Total Fields: 12
+Unused Fields (2):
+  - awscloudwatch
+  - input
+
+Index: partial-.ds-logs-aws.cloudtrail-federal-2025.12.22-000232
+Total Fields: 12
+Unused Fields (5):
+  - actor
+  - host
+  - input
+  - related
+  - target
+
+Index: partial-.ds-logs-aws.route53_resolver_logs-corporate-2026.01.03-000199
+Total Fields: 12
+Unused Fields (2):
+  - awscloudwatch
+  - input
+
+Index: partial-.ds-logs-aws.cloudtrail-federal-2026.01.07-000264
+Total Fields: 12
+Unused Fields (5):
+  - actor
+  - host
+  - input
+  - related
+  - target
+
+Index: partial-.ds-logs-aws.route53_resolver_logs-corporate-2025.12.17-000165
+Total Fields: 12
+Unused Fields (2):
+  - awscloudwatch
+  - input
+
+Index: partial-.ds-logs-kubernetes.audit_logs-corporate-2026.01.11-000418
+Total Fields: 17
+Unused Fields (11):
+  - agent
+  - client
+  - ecs
+  - error
+  - host
+  - input
+  - message
+  - related
+  - source
+  - user
+  - user_agent
+
+Index: partial-.ds-logs-aws.waf-corporate-2025.12.10-000321
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-kubernetes.audit_logs-corporate-2026.01.20-000436
+Total Fields: 17
+Unused Fields (11):
+  - agent
+  - client
+  - ecs
+  - error
+  - host
+  - input
+  - message
+  - related
+  - source
+  - user
+  - user_agent
+
+Index: partial-.ds-logs-aws.waf-corporate-2025.12.21-000343
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-aws.cloudtrail-corporate-2025.11.16-000399
+Total Fields: 12
+Unused Fields (5):
+  - actor
+  - host
+  - input
+  - related
+  - target
+
+Index: partial-.ds-logs-aws.cloudtrail-corporate-2025.12.17-000566
+Total Fields: 12
+Unused Fields (5):
+  - actor
+  - host
+  - input
+  - related
+  - target
+
+Index: partial-.ds-logs-aws.waf-federal-2025.11.26-001227
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-kubernetes.audit_logs-federal-2025.11.23-000289
+Total Fields: 17
+Unused Fields (11):
+  - agent
+  - client
+  - ecs
+  - error
+  - host
+  - input
+  - message
+  - related
+  - source
+  - user
+  - user_agent
+
+Index: partial-.ds-logs-aws.cloudtrail-federal-2025.12.08-000206
+Total Fields: 12
+Unused Fields (5):
+  - actor
+  - host
+  - input
+  - related
+  - target
+
+Index: partial-.ds-logs-aws.cloudtrail-federal-2025.11.27-000184
+Total Fields: 12
+Unused Fields (5):
+  - actor
+  - host
+  - input
+  - related
+  - target
+
+Index: partial-.ds-logs-kubernetes.audit_logs-corporate-2025.11.16-000250
+Total Fields: 17
+Unused Fields (11):
+  - agent
+  - client
+  - ecs
+  - error
+  - host
+  - input
+  - message
+  - related
+  - source
+  - user
+  - user_agent
+
+Index: partial-.ds-logs-aws.cloudtrail-federal-2025.11.16-000151
+Total Fields: 12
+Unused Fields (5):
+  - actor
+  - host
+  - input
+  - related
+  - target
+
+Index: partial-.ds-logs-aws.cloudtrail-federal-2026.01.12-000274
+Total Fields: 12
+Unused Fields (5):
+  - actor
+  - host
+  - input
+  - related
+  - target
+
+Index: partial-.ds-logs-aws.route53_resolver_logs-federal-2025.12.20-000182
+Total Fields: 12
+Unused Fields (2):
+  - awscloudwatch
+  - input
+
+Index: partial-.ds-logs-aws.route53_resolver_logs-corporate-2025.12.06-000143
+Total Fields: 12
+Unused Fields (2):
+  - awscloudwatch
+  - input
+
+Index: partial-.ds-logs-aws.cloudtrail-federal-2025.12.24-000236
+Total Fields: 12
+Unused Fields (5):
+  - actor
+  - host
+  - input
+  - related
+  - target
+
+Index: partial-.ds-logs-aws.route53_resolver_logs-federal-2025.12.19-000180
+Total Fields: 12
+Unused Fields (2):
+  - awscloudwatch
+  - input
+
+Index: partial-.ds-logs-aws.waf-corporate-2025.12.05-000313
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-aws.waf-federal-2026.01.06-001307
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-aws.waf-corporate-2026.01.15-000393
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-aws.waf-federal-2026.01.22-001345
+Total Fields: 19
+Unused Fields (2):
+  - host
+  - input
+
+Index: partial-.ds-logs-aws.cloudtrail-corporate-2025.11.17-000423
+Total Fields: 12
+Unused Fields (5):
+  - actor
+  - host
+  - input
+  - related
+  - target
+
+Index: partial-.ds-logs-aws.cloudtrail-corporate-2025.11.17-000421
+Total Fields: 12
+Unused Fields (5):
+  - actor
+  - host
+  - input
+  - related
+  - target
+
+Index: partial-.ds-logs-aws.cloudtrail-corporate-2025.11.17-000428
+Total Fields: 12
+Unused Fields (5):
+  - actor
+  - host
+  - input
+  - related
+  - target
+
+Index: partial-.ds-logs-aws.cloudtrail-corporate-2025.11.22-000488
+Total Fields: 12
+Unused Fields (5):
+  - actor
+  - host
+  - input
+  - related
+  - target
+
+Index: partial-.ds-logs-kubernetes.audit_logs-federal-2025.12.15-000344
+Total Fields: 17
+Unused Fields (11):
+  - agent
+  - client
+  - ecs
+  - error
+  - host
+  - input
+  - message
+  - related
+  - source
+  - user
+  - user_agent
+
+Index: partial-.ds-logs-aws.cloudtrail-corporate-2025.11.17-000425
+Total Fields: 12
+Unused Fields (5):
+  - actor
+  - host
+  - input
+  - related
+  - target
+
+Index: partial-.ds-logs-aws.waf-federal-2025.11.18-001013
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-aws.waf-federal-2025.11.18-001014
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-aws.waf-federal-2025.11.18-001011
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-kubernetes.audit_logs-federal-2026.01.09-000394
+Total Fields: 17
+Unused Fields (11):
+  - agent
+  - client
+  - ecs
+  - error
+  - host
+  - input
+  - message
+  - related
+  - source
+  - user
+  - user_agent
+
+Index: partial-.ds-logs-aws.waf-federal-2025.11.18-001017
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-kubernetes.audit_logs-federal-2025.11.18-000254
+Total Fields: 17
+Unused Fields (11):
+  - agent
+  - client
+  - ecs
+  - error
+  - host
+  - input
+  - message
+  - related
+  - source
+  - user
+  - user_agent
+
+Index: partial-.ds-logs-aws.waf-federal-2025.11.18-001018
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-aws.waf-federal-2025.11.18-001015
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-aws.cloudtrail-federal-2025.11.21-000168
+Total Fields: 12
+Unused Fields (5):
+  - actor
+  - host
+  - input
+  - related
+  - target
+
+Index: partial-.ds-logs-kubernetes.audit_logs-federal-2025.11.18-000252
+Total Fields: 17
+Unused Fields (11):
+  - agent
+  - client
+  - ecs
+  - error
+  - host
+  - input
+  - message
+  - related
+  - source
+  - user
+  - user_agent
+
+Index: partial-.ds-logs-aws.waf-federal-2026.01.17-001335
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-aws.waf-federal-2025.11.18-001010
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-aws.cloudtrail-corporate-2025.11.17-000419
+Total Fields: 12
+Unused Fields (5):
+  - actor
+  - host
+  - input
+  - related
+  - target
+
+Index: partial-.ds-logs-kubernetes.audit_logs-federal-2025.12.26-000366
+Total Fields: 17
+Unused Fields (11):
+  - agent
+  - client
+  - ecs
+  - error
+  - host
+  - input
+  - message
+  - related
+  - source
+  - user
+  - user_agent
+
+Index: partial-.ds-logs-aws.cloudtrail-corporate-2025.12.28-000588
+Total Fields: 12
+Unused Fields (5):
+  - actor
+  - host
+  - input
+  - related
+  - target
+
+Index: partial-.ds-logs-aws.route53_resolver_logs-corporate-2025.11.23-000117
+Total Fields: 12
+Unused Fields (2):
+  - awscloudwatch
+  - input
+
+Index: partial-.ds-logs-aws.waf-corporate-2025.12.30-000361
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-kubernetes.audit_logs-corporate-2025.11.28-000332
+Total Fields: 17
+Unused Fields (11):
+  - agent
+  - client
+  - ecs
+  - error
+  - host
+  - input
+  - message
+  - related
+  - source
+  - user
+  - user_agent
+
+Index: partial-.ds-logs-aws.route53_resolver_logs-federal-2025.12.08-000158
+Total Fields: 12
+Unused Fields (2):
+  - awscloudwatch
+  - input
+
+Index: partial-.ds-logs-aws.cloudtrail-corporate-2025.11.17-000430
+Total Fields: 12
+Unused Fields (5):
+  - actor
+  - host
+  - input
+  - related
+  - target
+
+Index: partial-.ds-logs-aws.waf-federal-2025.12.09-001251
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-aws.waf-federal-2025.12.25-001283
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-aws.waf-federal-2025.11.18-001020
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-aws.cloudtrail-corporate-2026.01.09-000612
+Total Fields: 12
+Unused Fields (5):
+  - actor
+  - host
+  - input
+  - related
+  - target
+
+Index: partial-.ds-logs-aws.waf-federal-2025.11.17-000942
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-aws.waf-federal-2025.11.17-000944
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-aws.waf-federal-2025.11.17-000946
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-aws.waf-federal-2025.11.17-000948
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-aws.route53_resolver_logs-federal-2025.11.25-000132
+Total Fields: 12
+Unused Fields (2):
+  - awscloudwatch
+  - input
+
+Index: partial-.ds-logs-aws.route53_resolver_logs-corporate-2025.11.18-000107
+Total Fields: 12
+Unused Fields (2):
+  - awscloudwatch
+  - input
+
+Index: partial-.ds-logs-aws.waf-federal-2025.11.17-000940
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-aws.route53_resolver_logs-corporate-2026.01.04-000201
+Total Fields: 12
+Unused Fields (2):
+  - awscloudwatch
+  - input
+
+Index: partial-.ds-logs-aws.route53_resolver_logs-federal-2025.11.20-000122
+Total Fields: 12
+Unused Fields (2):
+  - awscloudwatch
+  - input
+
+Index: partial-.ds-logs-aws.route53_resolver_logs-federal-2026.01.11-000226
+Total Fields: 12
+Unused Fields (2):
+  - awscloudwatch
+  - input
+
+Index: partial-.ds-logs-aws.route53_resolver_logs-corporate-2026.01.15-000223
+Total Fields: 12
+Unused Fields (2):
+  - awscloudwatch
+  - input
+
+Index: partial-.ds-logs-aws.waf-federal-2025.11.17-000939
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-aws.route53_resolver_logs-federal-2026.01.22-000248
+Total Fields: 15
+Unused Fields (2):
+  - awscloudwatch
+  - input
+
+Index: partial-.ds-logs-aws.waf-federal-2025.11.17-000930
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-aws.waf-federal-2025.11.17-000932
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-aws.waf-federal-2025.11.17-000935
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-aws.waf-federal-2025.11.17-000934
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-aws.waf-federal-2025.11.17-000937
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-aws.route53_resolver_logs-federal-2026.01.17-000238
+Total Fields: 12
+Unused Fields (2):
+  - awscloudwatch
+  - input
+
+Index: partial-.ds-logs-aws.route53_resolver_logs-corporate-2025.11.24-000119
+Total Fields: 12
+Unused Fields (2):
+  - awscloudwatch
+  - input
+
+Index: partial-.ds-logs-aws.waf-federal-2025.12.03-001239
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-aws.route53_resolver_logs-corporate-2026.01.09-000211
+Total Fields: 12
+Unused Fields (2):
+  - awscloudwatch
+  - input
+
+Index: partial-.ds-logs-kubernetes.audit_logs-corporate-2025.12.12-000360
+Total Fields: 17
+Unused Fields (11):
+  - agent
+  - client
+  - ecs
+  - error
+  - host
+  - input
+  - message
+  - related
+  - source
+  - user
+  - user_agent
+
+Index: partial-.ds-logs-aws.route53_resolver_logs-corporate-2025.11.29-000129
+Total Fields: 12
+Unused Fields (2):
+  - awscloudwatch
+  - input
+
+Index: partial-.ds-logs-aws.route53_resolver_logs-corporate-2026.01.20-000233
+Total Fields: 12
+Unused Fields (2):
+  - awscloudwatch
+  - input
+
+Index: partial-.ds-logs-aws.waf-corporate-2025.11.24-000283
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-kubernetes.audit_logs-federal-2025.12.04-000322
+Total Fields: 17
+Unused Fields (11):
+  - agent
+  - client
+  - ecs
+  - error
+  - host
+  - input
+  - message
+  - related
+  - source
+  - user
+  - user_agent
+
+Index: partial-.ds-logs-aws.waf-federal-2026.01.11-001322
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-aws.waf-federal-2025.12.14-001261
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-kubernetes.audit_logs-corporate-2025.12.28-000390
+Total Fields: 17
+Unused Fields (11):
+  - agent
+  - client
+  - ecs
+  - error
+  - host
+  - input
+  - message
+  - related
+  - source
+  - user
+  - user_agent
+
+Index: partial-.ds-logs-aws.waf-federal-2025.12.19-001271
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-kubernetes.audit_logs-federal-2026.01.12-000400
+Total Fields: 17
+Unused Fields (11):
+  - agent
+  - client
+  - ecs
+  - error
+  - host
+  - input
+  - message
+  - related
+  - source
+  - user
+  - user_agent
+
+Index: partial-.ds-logs-aws.cloudtrail-corporate-2025.11.29-000532
+Total Fields: 12
+Unused Fields (5):
+  - actor
+  - host
+  - input
+  - related
+  - target
+
+Index: partial-.ds-logs-aws.cloudtrail-corporate-2026.01.15-000624
+Total Fields: 12
+Unused Fields (5):
+  - actor
+  - host
+  - input
+  - related
+  - target
+
+Index: partial-.ds-logs-kubernetes.audit_logs-corporate-2025.12.23-000380
+Total Fields: 17
+Unused Fields (11):
+  - agent
+  - client
+  - ecs
+  - error
+  - host
+  - input
+  - message
+  - related
+  - source
+  - user
+  - user_agent
+
+Index: partial-.ds-logs-aws.route53_resolver_logs-federal-2025.12.14-000170
+Total Fields: 12
+Unused Fields (2):
+  - awscloudwatch
+  - input
+
+Index: partial-.ds-logs-aws.route53_resolver_logs-federal-2026.01.06-000216
+Total Fields: 12
+Unused Fields (2):
+  - awscloudwatch
+  - input
+
+Index: partial-.ds-logs-aws.route53_resolver_logs-corporate-2025.12.07-000145
+Total Fields: 12
+Unused Fields (2):
+  - awscloudwatch
+  - input
+
+Index: partial-.ds-logs-aws.route53_resolver_logs-corporate-2025.12.23-000177
+Total Fields: 12
+Unused Fields (2):
+  - awscloudwatch
+  - input
+
+Index: partial-.ds-logs-aws.cloudtrail-corporate-2025.11.24-000506
+Total Fields: 12
+Unused Fields (5):
+  - actor
+  - host
+  - input
+  - related
+  - target
+
+Index: partial-.ds-logs-aws.waf-corporate-2025.12.19-000339
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-aws.route53_resolver_logs-corporate-2025.12.03-000137
+Total Fields: 12
+Unused Fields (2):
+  - awscloudwatch
+  - input
+
+Index: partial-.ds-logs-aws.waf-corporate-2025.12.15-000331
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-kubernetes.audit_logs-corporate-2025.11.17-000260
+Total Fields: 17
+Unused Fields (11):
+  - agent
+  - client
+  - ecs
+  - error
+  - host
+  - input
+  - message
+  - related
+  - source
+  - user
+  - user_agent
+
+Index: partial-.ds-logs-aws.cloudtrail-federal-2025.12.14-000218
+Total Fields: 12
+Unused Fields (5):
+  - actor
+  - host
+  - input
+  - related
+  - target
+
+Index: partial-.ds-logs-aws.waf-federal-2025.11.24-001173
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-kubernetes.audit_logs-federal-2025.11.24-000295
+Total Fields: 17
+Unused Fields (11):
+  - agent
+  - client
+  - ecs
+  - error
+  - host
+  - input
+  - message
+  - related
+  - source
+  - user
+  - user_agent
+
+Index: partial-.ds-logs-aws.route53_resolver_logs-corporate-2025.12.14-000159
+Total Fields: 12
+Unused Fields (2):
+  - awscloudwatch
+  - input
+
+Index: partial-.ds-logs-aws.route53_resolver_logs-corporate-2026.01.02-000197
+Total Fields: 12
+Unused Fields (2):
+  - awscloudwatch
+  - input
+
+Index: partial-.ds-logs-kubernetes.audit_logs-corporate-2025.11.17-000262
+Total Fields: 17
+Unused Fields (11):
+  - agent
+  - client
+  - ecs
+  - error
+  - host
+  - input
+  - message
+  - related
+  - source
+  - user
+  - user_agent
+
+Index: partial-.ds-logs-aws.route53_resolver_logs-federal-2025.12.23-000188
+Total Fields: 12
+Unused Fields (2):
+  - awscloudwatch
+  - input
+
+Index: partial-.ds-logs-aws.route53_resolver_logs-corporate-2025.12.25-000181
+Total Fields: 12
+Unused Fields (2):
+  - awscloudwatch
+  - input
+
+Index: partial-.ds-logs-aws.cloudtrail-federal-2026.01.02-000254
+Total Fields: 12
+Unused Fields (5):
+  - actor
+  - host
+  - input
+  - related
+  - target
+
+Index: partial-.ds-logs-aws.cloudtrail-federal-2025.11.26-000182
+Total Fields: 12
+Unused Fields (5):
+  - actor
+  - host
+  - input
+  - related
+  - target
+
+Index: partial-.ds-logs-kubernetes.audit_logs-corporate-2025.11.20-000288
+Total Fields: 17
+Unused Fields (11):
+  - agent
+  - client
+  - ecs
+  - error
+  - host
+  - input
+  - message
+  - related
+  - source
+  - user
+  - user_agent
+
+Index: partial-.ds-logs-aws.waf-corporate-2026.01.03-000369
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-kubernetes.audit_logs-corporate-2025.11.29-000334
+Total Fields: 17
+Unused Fields (11):
+  - agent
+  - client
+  - ecs
+  - error
+  - host
+  - input
+  - message
+  - related
+  - source
+  - user
+  - user_agent
+
+Index: partial-.ds-logs-aws.waf-corporate-2025.11.27-000297
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-kubernetes.audit_logs-corporate-2026.01.16-000428
+Total Fields: 17
+Unused Fields (11):
+  - agent
+  - client
+  - ecs
+  - error
+  - host
+  - input
+  - message
+  - related
+  - source
+  - user
+  - user_agent
+
+Index: partial-.ds-logs-aws.cloudtrail-corporate-2025.12.07-000548
+Total Fields: 12
+Unused Fields (5):
+  - actor
+  - host
+  - input
+  - related
+  - target
+
+Index: partial-.ds-logs-aws.cloudtrail-federal-2026.01.20-000290
+Total Fields: 12
+Unused Fields (5):
+  - actor
+  - host
+  - input
+  - related
+  - target
+
+Index: partial-.ds-logs-aws.cloudtrail-corporate-2025.12.03-000540
+Total Fields: 12
+Unused Fields (5):
+  - actor
+  - host
+  - input
+  - related
+  - target
+
+Index: partial-.ds-logs-aws.route53_resolver_logs-federal-2025.12.12-000166
+Total Fields: 12
+Unused Fields (2):
+  - awscloudwatch
+  - input
+
+Index: partial-.ds-logs-aws.waf-federal-2025.11.29-001233
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-aws.cloudtrail-federal-2025.11.22-000170
+Total Fields: 12
+Unused Fields (5):
+  - actor
+  - host
+  - input
+  - related
+  - target
+
+Index: partial-.ds-logs-kubernetes.audit_logs-federal-2026.01.11-000398
+Total Fields: 17
+Unused Fields (11):
+  - agent
+  - client
+  - ecs
+  - error
+  - host
+  - input
+  - message
+  - related
+  - source
+  - user
+  - user_agent
+
+Index: partial-.ds-logs-aws.route53_resolver_logs-federal-2025.12.09-000160
+Total Fields: 12
+Unused Fields (2):
+  - awscloudwatch
+  - input
+
+Index: partial-.ds-logs-aws.cloudtrail-corporate-2026.01.02-000598
+Total Fields: 12
+Unused Fields (5):
+  - actor
+  - host
+  - input
+  - related
+  - target
+
+Index: partial-.ds-logs-kubernetes.audit_logs-corporate-2026.01.09-000414
+Total Fields: 17
+Unused Fields (11):
+  - agent
+  - client
+  - ecs
+  - error
+  - host
+  - input
+  - message
+  - related
+  - source
+  - user
+  - user_agent
+
+Index: partial-.ds-logs-aws.waf-federal-2026.01.05-001305
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-aws.waf-federal-2026.01.12-001324
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-aws.route53_resolver_logs-federal-2026.01.09-000222
+Total Fields: 12
+Unused Fields (2):
+  - awscloudwatch
+  - input
+
+Index: partial-.ds-logs-kubernetes.audit_logs-federal-2026.01.04-000384
+Total Fields: 17
+Unused Fields (11):
+  - agent
+  - client
+  - ecs
+  - error
+  - host
+  - input
+  - message
+  - related
+  - source
+  - user
+  - user_agent
+
+Index: partial-.ds-logs-kubernetes.audit_logs-federal-2025.11.29-000314
+Total Fields: 17
+Unused Fields (11):
+  - agent
+  - client
+  - ecs
+  - error
+  - host
+  - input
+  - message
+  - related
+  - source
+  - user
+  - user_agent
+
+Index: partial-.ds-logs-aws.cloudtrail-corporate-2025.12.25-000582
+Total Fields: 12
+Unused Fields (5):
+  - actor
+  - host
+  - input
+  - related
+  - target
+
+Index: partial-.ds-logs-kubernetes.audit_logs-federal-2025.12.27-000368
+Total Fields: 17
+Unused Fields (11):
+  - agent
+  - client
+  - ecs
+  - error
+  - host
+  - input
+  - message
+  - related
+  - source
+  - user
+  - user_agent
+
+Index: partial-.ds-logs-kubernetes.audit_logs-federal-2025.11.17-000244
+Total Fields: 17
+Unused Fields (11):
+  - agent
+  - client
+  - ecs
+  - error
+  - host
+  - input
+  - message
+  - related
+  - source
+  - user
+  - user_agent
+
+Index: partial-.ds-logs-kubernetes.audit_logs-federal-2025.11.17-000241
+Total Fields: 17
+Unused Fields (11):
+  - agent
+  - client
+  - ecs
+  - error
+  - host
+  - input
+  - message
+  - related
+  - source
+  - user
+  - user_agent
+
+Index: partial-.ds-logs-aws.cloudtrail-federal-2025.12.25-000238
+Total Fields: 12
+Unused Fields (5):
+  - actor
+  - host
+  - input
+  - related
+  - target
+
+Index: partial-.ds-logs-aws.waf-corporate-2025.12.26-000353
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-kubernetes.audit_logs-federal-2025.12.30-000374
+Total Fields: 17
+Unused Fields (11):
+  - agent
+  - client
+  - ecs
+  - error
+  - host
+  - input
+  - message
+  - related
+  - source
+  - user
+  - user_agent
+
+Index: partial-.ds-logs-kubernetes.audit_logs-corporate-2026.01.05-000406
+Total Fields: 17
+Unused Fields (11):
+  - agent
+  - client
+  - ecs
+  - error
+  - host
+  - input
+  - message
+  - related
+  - source
+  - user
+  - user_agent
+
+Index: logs-cloud_security_posture.findings_latest-default
+Total Fields: 20
+Unused Fields (20):
+  - @timestamp
+  - agent
+  - cloud
+  - cloud_security_posture
+  - cloudbeat
+  - cluster_id
+  - data_stream
+  - ecs
+  - event
+  - file
+  - host
+  - message
+  - observer
+  - orchestrator
+  - process
+  - related
+  - resource
+  - result
+  - rule
+  - user
+
+Index: partial-.ds-logs-aws.route53_resolver_logs-federal-2025.11.26-000134
+Total Fields: 12
+Unused Fields (2):
+  - awscloudwatch
+  - input
+
+Index: partial-.ds-logs-aws.route53_resolver_logs-federal-2025.11.21-000124
+Total Fields: 12
+Unused Fields (2):
+  - awscloudwatch
+  - input
+
+Index: partial-.ds-logs-aws.route53_resolver_logs-corporate-2026.01.08-000209
+Total Fields: 12
+Unused Fields (2):
+  - awscloudwatch
+  - input
+
+Index: partial-.ds-logs-aws.route53_resolver_logs-federal-2026.01.02-000208
+Total Fields: 12
+Unused Fields (2):
+  - awscloudwatch
+  - input
+
+Index: partial-.ds-logs-aws.route53_resolver_logs-corporate-2026.01.14-000221
+Total Fields: 12
+Unused Fields (2):
+  - awscloudwatch
+  - input
+
+Index: partial-.ds-logs-kubernetes.audit_logs-corporate-2025.12.30-000394
+Total Fields: 17
+Unused Fields (11):
+  - agent
+  - client
+  - ecs
+  - error
+  - host
+  - input
+  - message
+  - related
+  - source
+  - user
+  - user_agent
+
+Index: partial-.ds-logs-aws.cloudtrail-corporate-2026.01.03-000600
+Total Fields: 12
+Unused Fields (5):
+  - actor
+  - host
+  - input
+  - related
+  - target
+
+Index: partial-.ds-logs-aws.waf-federal-2025.11.18-001009
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-aws.cloudtrail-corporate-2025.11.17-000417
+Total Fields: 12
+Unused Fields (5):
+  - actor
+  - host
+  - input
+  - related
+  - target
+
+Index: partial-.ds-logs-kubernetes.audit_logs-corporate-2025.12.01-000338
+Total Fields: 17
+Unused Fields (11):
+  - agent
+  - client
+  - ecs
+  - error
+  - host
+  - input
+  - message
+  - related
+  - source
+  - user
+  - user_agent
+
+Index: partial-.ds-logs-aws.cloudtrail-corporate-2025.11.17-000415
+Total Fields: 12
+Unused Fields (5):
+  - actor
+  - host
+  - input
+  - related
+  - target
+
+Index: partial-.ds-logs-aws.route53_resolver_logs-corporate-2026.01.19-000231
+Total Fields: 12
+Unused Fields (2):
+  - awscloudwatch
+  - input
+
+Index: partial-.ds-logs-aws.waf-federal-2025.11.18-001002
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-aws.waf-federal-2025.11.18-001003
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-aws.waf-federal-2025.11.18-001000
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-aws.waf-federal-2025.11.21-001126
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-aws.waf-federal-2025.11.18-001006
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-aws.waf-federal-2025.11.18-001007
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-aws.waf-federal-2025.11.18-001004
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-aws.route53_resolver_logs-federal-2026.01.13-000230
+Total Fields: 12
+Unused Fields (2):
+  - awscloudwatch
+  - input
+
+Index: partial-.ds-logs-aws.route53_resolver_logs-corporate-2025.11.20-000111
+Total Fields: 12
+Unused Fields (2):
+  - awscloudwatch
+  - input
+
+Index: partial-.ds-logs-aws.waf-corporate-2025.11.20-000266
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-aws.route53_resolver_logs-corporate-2025.11.27-000125
+Total Fields: 12
+Unused Fields (2):
+  - awscloudwatch
+  - input
+
+Index: partial-.ds-logs-aws.cloudtrail-corporate-2026.01.08-000610
+Total Fields: 12
+Unused Fields (5):
+  - actor
+  - host
+  - input
+  - related
+  - target
+
+Index: partial-.ds-logs-kubernetes.audit_logs-federal-2025.12.05-000324
+Total Fields: 17
+Unused Fields (11):
+  - agent
+  - client
+  - ecs
+  - error
+  - host
+  - input
+  - message
+  - related
+  - source
+  - user
+  - user_agent
+
+Index: partial-.ds-logs-aws.cloudtrail-federal-2025.11.15-000149
+Total Fields: 12
+Unused Fields (5):
+  - actor
+  - host
+  - input
+  - related
+  - target
+
+Index: partial-.ds-logs-kubernetes.audit_logs-federal-2026.01.16-000408
+Total Fields: 17
+Unused Fields (11):
+  - agent
+  - client
+  - ecs
+  - error
+  - host
+  - input
+  - message
+  - related
+  - source
+  - user
+  - user_agent
+
+Index: partial-.ds-logs-kubernetes.audit_logs-federal-2025.12.16-000346
+Total Fields: 17
+Unused Fields (11):
+  - agent
+  - client
+  - ecs
+  - error
+  - host
+  - input
+  - message
+  - related
+  - source
+  - user
+  - user_agent
+
+Index: partial-.ds-logs-aws.cloudtrail-corporate-2026.01.14-000622
+Total Fields: 12
+Unused Fields (5):
+  - actor
+  - host
+  - input
+  - related
+  - target
+
+Index: partial-.ds-logs-aws.route53_resolver_logs-federal-2025.12.26-000194
+Total Fields: 12
+Unused Fields (2):
+  - awscloudwatch
+  - input
+
+Index: partial-.ds-logs-aws.cloudtrail-corporate-2025.12.14-000560
+Total Fields: 12
+Unused Fields (5):
+  - actor
+  - host
+  - input
+  - related
+  - target
+
+Index: partial-.ds-logs-aws.cloudtrail-corporate-2025.12.19-000570
+Total Fields: 12
+Unused Fields (5):
+  - actor
+  - host
+  - input
+  - related
+  - target
+
+Index: partial-.ds-logs-aws.cloudtrail-corporate-2026.01.19-000632
+Total Fields: 12
+Unused Fields (5):
+  - actor
+  - host
+  - input
+  - related
+  - target
+
+Index: partial-.ds-logs-aws.waf-corporate-2026.01.14-000391
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-aws.cloudtrail-corporate-2025.12.22-000576
+Total Fields: 12
+Unused Fields (5):
+  - actor
+  - host
+  - input
+  - related
+  - target
+
+Index: partial-.ds-logs-aws.waf-federal-2025.11.18-000988
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-aws.waf-federal-2025.11.18-000989
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-aws.waf-federal-2025.11.18-000981
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-aws.cloudtrail-federal-2026.01.05-000260
+Total Fields: 12
+Unused Fields (5):
+  - actor
+  - host
+  - input
+  - related
+  - target
+
+Index: partial-.ds-logs-aws.cloudtrail-federal-2026.01.16-000282
+Total Fields: 12
+Unused Fields (5):
+  - actor
+  - host
+  - input
+  - related
+  - target
+
+Index: partial-.ds-logs-aws.waf-federal-2025.11.18-000985
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-aws.route53_resolver_logs-corporate-2025.12.11-000153
+Total Fields: 12
+Unused Fields (2):
+  - awscloudwatch
+  - input
+
+Index: partial-.ds-logs-aws.cloudtrail-federal-2025.12.11-000212
+Total Fields: 12
+Unused Fields (5):
+  - actor
+  - host
+  - input
+  - related
+  - target
+
+Index: partial-.ds-logs-aws.route53_resolver_logs-corporate-2025.12.20-000171
+Total Fields: 12
+Unused Fields (2):
+  - awscloudwatch
+  - input
+
+Index: partial-.ds-logs-aws.waf-federal-2025.11.18-000983
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-aws.cloudtrail-federal-2025.12.19-000226
+Total Fields: 12
+Unused Fields (5):
+  - actor
+  - host
+  - input
+  - related
+  - target
+
+Index: partial-.ds-logs-aws.route53_resolver_logs-corporate-2025.12.19-000169
+Total Fields: 12
+Unused Fields (2):
+  - awscloudwatch
+  - input
+
+Index: partial-.ds-logs-aws.waf-corporate-2025.12.23-000347
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-aws.waf-corporate-2025.12.01-000305
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-kubernetes.audit_logs-corporate-2025.11.26-000328
+Total Fields: 17
+Unused Fields (11):
+  - agent
+  - client
+  - ecs
+  - error
+  - host
+  - input
+  - message
+  - related
+  - source
+  - user
+  - user_agent
+
+Index: partial-.ds-logs-aws.waf-corporate-2025.12.12-000325
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-aws.waf-federal-2025.11.18-000999
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-kubernetes.audit_logs-corporate-2026.01.22-000440
+Total Fields: 17
+Unused Fields (5):
+  - agent
+  - ecs
+  - host
+  - input
+  - message
+
+Index: partial-.ds-logs-aws.waf-federal-2025.11.18-000998
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-kubernetes.audit_logs-federal-2025.12.11-000336
+Total Fields: 17
+Unused Fields (11):
+  - agent
+  - client
+  - ecs
+  - error
+  - host
+  - input
+  - message
+  - related
+  - source
+  - user
+  - user_agent
+
+Index: partial-.ds-logs-aws.route53_resolver_logs-federal-2025.12.17-000176
+Total Fields: 12
+Unused Fields (2):
+  - awscloudwatch
+  - input
+
+Index: partial-.ds-logs-aws.waf-federal-2025.11.18-000991
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-aws.waf-federal-2025.11.18-000992
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-aws.waf-federal-2025.11.18-000995
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-aws.cloudtrail-federal-2025.11.18-000159
+Total Fields: 12
+Unused Fields (5):
+  - actor
+  - host
+  - input
+  - related
+  - target
+
+Index: partial-.ds-logs-aws.waf-federal-2025.11.18-000996
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-aws.waf-federal-2025.11.18-000993
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-aws.cloudtrail-federal-2025.11.29-000188
+Total Fields: 12
+Unused Fields (5):
+  - actor
+  - host
+  - input
+  - related
+  - target
+
+Index: partial-.ds-logs-aws.cloudtrail-federal-2025.11.18-000157
+Total Fields: 12
+Unused Fields (5):
+  - actor
+  - host
+  - input
+  - related
+  - target
+
+Index: partial-.ds-logs-aws.cloudtrail-federal-2025.11.30-000190
+Total Fields: 12
+Unused Fields (5):
+  - actor
+  - host
+  - input
+  - related
+  - target
+
+Index: partial-.ds-logs-kubernetes.audit_logs-corporate-2026.01.02-000400
+Total Fields: 17
+Unused Fields (11):
+  - agent
+  - client
+  - ecs
+  - error
+  - host
+  - input
+  - message
+  - related
+  - source
+  - user
+  - user_agent
+
+Index: partial-.ds-logs-aws.waf-federal-2026.01.20-001341
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-aws.cloudtrail-corporate-2025.12.11-000556
+Total Fields: 12
+Unused Fields (5):
+  - actor
+  - host
+  - input
+  - related
+  - target
+
+Index: partial-.ds-logs-aws.waf-corporate-2026.01.17-000397
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-kubernetes.audit_logs-federal-2025.11.21-000277
+Total Fields: 17
+Unused Fields (11):
+  - agent
+  - client
+  - ecs
+  - error
+  - host
+  - input
+  - message
+  - related
+  - source
+  - user
+  - user_agent
+
+Index: partial-.ds-logs-kubernetes.audit_logs-federal-2025.12.02-000320
+Total Fields: 17
+Unused Fields (11):
+  - agent
+  - client
+  - ecs
+  - error
+  - host
+  - input
+  - message
+  - related
+  - source
+  - user
+  - user_agent
+
+Index: partial-.ds-logs-aws.cloudtrail-corporate-2025.12.20-000572
+Total Fields: 12
+Unused Fields (5):
+  - actor
+  - host
+  - input
+  - related
+  - target
+
+Index: partial-.ds-logs-aws.waf-federal-2025.12.05-001243
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-aws.cloudtrail-corporate-2026.01.12-000618
+Total Fields: 12
+Unused Fields (5):
+  - actor
+  - host
+  - input
+  - related
+  - target
+
+Index: partial-.ds-logs-aws.waf-federal-2025.12.16-001265
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-kubernetes.audit_logs-corporate-2025.12.09-000354
+Total Fields: 17
+Unused Fields (11):
+  - agent
+  - client
+  - ecs
+  - error
+  - host
+  - input
+  - message
+  - related
+  - source
+  - user
+  - user_agent
+
+Index: partial-.ds-logs-aws.waf-corporate-2025.11.22-000275
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-aws.cloudtrail-federal-2025.12.20-000228
+Total Fields: 12
+Unused Fields (5):
+  - actor
+  - host
+  - input
+  - related
+  - target
+
+Index: partial-.ds-logs-aws.waf-corporate-2025.11.16-000230
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-aws.waf-corporate-2025.11.16-000233
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-aws.waf-corporate-2025.11.16-000235
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-aws.route53_resolver_logs-federal-2026.01.04-000212
+Total Fields: 12
+Unused Fields (2):
+  - awscloudwatch
+  - input
+
+Index: partial-.ds-logs-aws.waf-federal-2025.11.15-000911
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-aws.waf-federal-2026.01.02-001299
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-aws.route53_resolver_logs-federal-2025.12.28-000198
+Total Fields: 12
+Unused Fields (2):
+  - awscloudwatch
+  - input
+
+Index: partial-.ds-logs-aws.waf-federal-2025.11.15-000909
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-aws.waf-federal-2025.11.15-000907
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-kubernetes.audit_logs-federal-2026.01.19-000414
+Total Fields: 17
+Unused Fields (11):
+  - agent
+  - client
+  - ecs
+  - error
+  - host
+  - input
+  - message
+  - related
+  - source
+  - user
+  - user_agent
+
+Index: partial-.ds-logs-aws.waf-corporate-2026.01.08-000379
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-kubernetes.audit_logs-corporate-2026.01.13-000422
+Total Fields: 17
+Unused Fields (11):
+  - agent
+  - client
+  - ecs
+  - error
+  - host
+  - input
+  - message
+  - related
+  - source
+  - user
+  - user_agent
+
+Index: partial-.ds-logs-aws.cloudtrail-corporate-2025.11.27-000528
+Total Fields: 12
+Unused Fields (5):
+  - actor
+  - host
+  - input
+  - related
+  - target
+
+Index: partial-.ds-logs-kubernetes.audit_logs-federal-2025.12.22-000358
+Total Fields: 17
+Unused Fields (11):
+  - agent
+  - client
+  - ecs
+  - error
+  - host
+  - input
+  - message
+  - related
+  - source
+  - user
+  - user_agent
+
+Index: partial-.ds-logs-kubernetes.audit_logs-federal-2025.11.17-000237
+Total Fields: 17
+Unused Fields (11):
+  - agent
+  - client
+  - ecs
+  - error
+  - host
+  - input
+  - message
+  - related
+  - source
+  - user
+  - user_agent
+
+Index: partial-.ds-logs-kubernetes.audit_logs-federal-2025.11.17-000239
+Total Fields: 17
+Unused Fields (11):
+  - agent
+  - client
+  - ecs
+  - error
+  - host
+  - input
+  - message
+  - related
+  - source
+  - user
+  - user_agent
+
+Index: partial-.ds-logs-aws.route53_resolver_logs-federal-2025.11.28-000138
+Total Fields: 12
+Unused Fields (2):
+  - awscloudwatch
+  - input
+
+Index: partial-.ds-logs-aws.route53_resolver_logs-corporate-2025.11.16-000103
+Total Fields: 12
+Unused Fields (2):
+  - awscloudwatch
+  - input
+
+Index: partial-.ds-logs-kubernetes.audit_logs-federal-2025.11.17-000235
+Total Fields: 17
+Unused Fields (11):
+  - agent
+  - client
+  - ecs
+  - error
+  - host
+  - input
+  - message
+  - related
+  - source
+  - user
+  - user_agent
+
+Index: partial-.ds-logs-aws.route53_resolver_logs-federal-2025.11.23-000128
+Total Fields: 12
+Unused Fields (2):
+  - awscloudwatch
+  - input
+
+Index: partial-.ds-logs-aws.waf-federal-2025.11.20-001098
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-aws.route53_resolver_logs-federal-2025.12.30-000202
+Total Fields: 12
+Unused Fields (2):
+  - awscloudwatch
+  - input
+
+Index: partial-.ds-logs-kubernetes.audit_logs-corporate-2025.12.21-000376
+Total Fields: 17
+Unused Fields (11):
+  - agent
+  - client
+  - ecs
+  - error
+  - host
+  - input
+  - message
+  - related
+  - source
+  - user
+  - user_agent
+
+Index: partial-.ds-logs-kubernetes.audit_logs-corporate-2025.12.10-000356
+Total Fields: 17
+Unused Fields (11):
+  - agent
+  - client
+  - ecs
+  - error
+  - host
+  - input
+  - message
+  - related
+  - source
+  - user
+  - user_agent
+
+Index: partial-.ds-logs-aws.cloudtrail-federal-2025.12.02-000194
+Total Fields: 12
+Unused Fields (5):
+  - actor
+  - host
+  - input
+  - related
+  - target
+
+Index: partial-.ds-logs-aws.route53_resolver_logs-corporate-2026.01.17-000227
+Total Fields: 12
+Unused Fields (2):
+  - awscloudwatch
+  - input
+
+Index: partial-.ds-logs-kubernetes.audit_logs-corporate-2025.12.26-000386
+Total Fields: 17
+Unused Fields (11):
+  - agent
+  - client
+  - ecs
+  - error
+  - host
+  - input
+  - message
+  - related
+  - source
+  - user
+  - user_agent
+
+Index: partial-.ds-logs-aws.waf-federal-2025.12.11-001255
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-kubernetes.audit_logs-corporate-2025.12.04-000344
+Total Fields: 17
+Unused Fields (11):
+  - agent
+  - client
+  - ecs
+  - error
+  - host
+  - input
+  - message
+  - related
+  - source
+  - user
+  - user_agent
+
+Index: partial-.ds-logs-aws.route53_resolver_logs-federal-2025.11.17-000116
+Total Fields: 12
+Unused Fields (2):
+  - awscloudwatch
+  - input
+
+Index: partial-.ds-logs-aws.route53_resolver_logs-corporate-2026.01.12-000217
+Total Fields: 12
+Unused Fields (2):
+  - awscloudwatch
+  - input
+
+Index: partial-.ds-logs-aws.cloudtrail-corporate-2025.12.31-000594
+Total Fields: 12
+Unused Fields (5):
+  - actor
+  - host
+  - input
+  - related
+  - target
+
+Index: partial-.ds-logs-kubernetes.audit_logs-corporate-2026.01.07-000410
+Total Fields: 17
+Unused Fields (11):
+  - agent
+  - client
+  - ecs
+  - error
+  - host
+  - input
+  - message
+  - related
+  - source
+  - user
+  - user_agent
+
+Index: partial-.ds-logs-aws.route53_resolver_logs-federal-2025.12.29-000200
+Total Fields: 12
+Unused Fields (2):
+  - awscloudwatch
+  - input
+
+Index: partial-.ds-logs-kubernetes.audit_logs-corporate-2025.11.19-000282
+Total Fields: 17
+Unused Fields (11):
+  - agent
+  - client
+  - ecs
+  - error
+  - host
+  - input
+  - message
+  - related
+  - source
+  - user
+  - user_agent
+
+Index: partial-.ds-logs-aws.waf-federal-2026.01.03-001301
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-kubernetes.audit_logs-corporate-2025.11.19-000280
+Total Fields: 17
+Unused Fields (11):
+  - agent
+  - client
+  - ecs
+  - error
+  - host
+  - input
+  - message
+  - related
+  - source
+  - user
+  - user_agent
+
+Index: partial-.ds-logs-kubernetes.audit_logs-federal-2026.01.02-000380
+Total Fields: 17
+Unused Fields (11):
+  - agent
+  - client
+  - ecs
+  - error
+  - host
+  - input
+  - message
+  - related
+  - source
+  - user
+  - user_agent
+
+Index: partial-.ds-logs-kubernetes.audit_logs-federal-2026.01.07-000390
+Total Fields: 17
+Unused Fields (11):
+  - agent
+  - client
+  - ecs
+  - error
+  - host
+  - input
+  - message
+  - related
+  - source
+  - user
+  - user_agent
+
+Index: partial-.ds-logs-aws.waf-federal-2026.01.08-001311
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-aws.waf-federal-2026.01.19-001339
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-aws.route53_resolver_logs-federal-2025.12.06-000154
+Total Fields: 12
+Unused Fields (2):
+  - awscloudwatch
+  - input
+
+Index: partial-.ds-logs-aws.waf-federal-2025.12.22-001277
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-kubernetes.audit_logs-federal-2026.01.20-000416
+Total Fields: 17
+Unused Fields (11):
+  - agent
+  - client
+  - ecs
+  - error
+  - host
+  - input
+  - message
+  - related
+  - source
+  - user
+  - user_agent
+
+Index: partial-.ds-logs-aws.route53_resolver_logs-corporate-2025.12.31-000193
+Total Fields: 12
+Unused Fields (2):
+  - awscloudwatch
+  - input
+
+Index: partial-.ds-logs-aws.cloudtrail-federal-2025.12.31-000250
+Total Fields: 12
+Unused Fields (5):
+  - actor
+  - host
+  - input
+  - related
+  - target
+
+Index: partial-.ds-logs-aws.route53_resolver_logs-federal-2025.12.01-000144
+Total Fields: 12
+Unused Fields (2):
+  - awscloudwatch
+  - input
+
+Index: partial-.ds-logs-aws.waf-federal-2025.12.27-001287
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-kubernetes.audit_logs-corporate-2025.12.15-000366
+Total Fields: 17
+Unused Fields (11):
+  - agent
+  - client
+  - ecs
+  - error
+  - host
+  - input
+  - message
+  - related
+  - source
+  - user
+  - user_agent
+
+Index: partial-.ds-logs-aws.cloudtrail-federal-2025.12.12-000214
+Total Fields: 12
+Unused Fields (5):
+  - actor
+  - host
+  - input
+  - related
+  - target
+
+Index: partial-.ds-logs-aws.waf-federal-2025.11.30-001235
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-aws.waf-corporate-2025.12.28-000357
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-aws.cloudtrail-corporate-2025.11.18-000445
+Total Fields: 12
+Unused Fields (5):
+  - actor
+  - host
+  - input
+  - related
+  - target
+
+Index: partial-.ds-logs-aws.cloudtrail-federal-2026.01.19-000288
+Total Fields: 12
+Unused Fields (5):
+  - actor
+  - host
+  - input
+  - related
+  - target
+
+Index: partial-.ds-logs-aws.cloudtrail-corporate-2025.11.18-000447
+Total Fields: 12
+Unused Fields (5):
+  - actor
+  - host
+  - input
+  - related
+  - target
+
+Index: partial-.ds-logs-aws.waf-federal-2025.11.19-001037
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-aws.cloudtrail-federal-2026.01.08-000266
+Total Fields: 12
+Unused Fields (5):
+  - actor
+  - host
+  - input
+  - related
+  - target
+
+Index: partial-.ds-logs-aws.cloudtrail-corporate-2025.11.18-000441
+Total Fields: 12
+Unused Fields (5):
+  - actor
+  - host
+  - input
+  - related
+  - target
+
+Index: partial-.ds-logs-aws.waf-federal-2025.11.19-001035
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-aws.route53_resolver_logs-federal-2025.12.21-000184
+Total Fields: 12
+Unused Fields (2):
+  - awscloudwatch
+  - input
+
+Index: partial-.ds-logs-aws.cloudtrail-corporate-2025.11.18-000443
+Total Fields: 12
+Unused Fields (5):
+  - actor
+  - host
+  - input
+  - related
+  - target
+
+Index: partial-.ds-logs-aws.route53_resolver_logs-corporate-2025.12.27-000185
+Total Fields: 12
+Unused Fields (2):
+  - awscloudwatch
+  - input
+
+Index: partial-.ds-logs-aws.waf-federal-2025.11.19-001039
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-kubernetes.audit_logs-corporate-2026.01.10-000416
+Total Fields: 17
+Unused Fields (11):
+  - agent
+  - client
+  - ecs
+  - error
+  - host
+  - input
+  - message
+  - related
+  - source
+  - user
+  - user_agent
+
+Index: partial-.ds-logs-aws.waf-federal-2025.11.19-001033
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-kubernetes.audit_logs-corporate-2026.01.21-000438
+Total Fields: 17
+Unused Fields (11):
+  - agent
+  - client
+  - ecs
+  - error
+  - host
+  - input
+  - message
+  - related
+  - source
+  - user
+  - user_agent
+
+Index: partial-.ds-logs-aws.waf-federal-2025.11.19-001031
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-aws.waf-federal-2025.11.19-001030
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-aws.waf-corporate-2025.12.20-000341
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-aws.cloudtrail-corporate-2025.11.18-000437
+Total Fields: 12
+Unused Fields (5):
+  - actor
+  - host
+  - input
+  - related
+  - target
+
+Index: partial-.ds-logs-aws.waf-corporate-2025.12.31-000363
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-kubernetes.audit_logs-corporate-2025.11.27-000330
+Total Fields: 17
+Unused Fields (11):
+  - agent
+  - client
+  - ecs
+  - error
+  - host
+  - input
+  - message
+  - related
+  - source
+  - user
+  - user_agent
+
+Index: partial-.ds-logs-aws.cloudtrail-corporate-2025.11.18-000439
+Total Fields: 12
+Unused Fields (5):
+  - actor
+  - host
+  - input
+  - related
+  - target
+
+Index: partial-.ds-logs-aws.cloudtrail-corporate-2025.11.18-000433
+Total Fields: 12
+Unused Fields (5):
+  - actor
+  - host
+  - input
+  - related
+  - target
+
+Index: partial-.ds-logs-aws.cloudtrail-corporate-2025.12.05-000544
+Total Fields: 12
+Unused Fields (5):
+  - actor
+  - host
+  - input
+  - related
+  - target
+
+Index: partial-.ds-logs-aws.cloudtrail-corporate-2025.11.18-000435
+Total Fields: 12
+Unused Fields (5):
+  - actor
+  - host
+  - input
+  - related
+  - target
+
+Index: partial-.ds-logs-aws.waf-federal-2025.11.19-001025
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-aws.cloudtrail-corporate-2025.11.18-000431
+Total Fields: 12
+Unused Fields (5):
+  - actor
+  - host
+  - input
+  - related
+  - target
+
+Index: partial-.ds-logs-aws.waf-federal-2025.11.19-001023
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-aws.waf-federal-2025.11.19-001028
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-kubernetes.audit_logs-federal-2025.11.19-000264
+Total Fields: 17
+Unused Fields (11):
+  - agent
+  - client
+  - ecs
+  - error
+  - host
+  - input
+  - message
+  - related
+  - source
+  - user
+  - user_agent
+
+Index: partial-.ds-logs-aws.route53_resolver_logs-federal-2025.12.10-000162
+Total Fields: 12
+Unused Fields (2):
+  - awscloudwatch
+  - input
+
+Index: partial-.ds-logs-aws.route53_resolver_logs-corporate-2025.12.30-000191
+Total Fields: 12
+Unused Fields (2):
+  - awscloudwatch
+  - input
+
+Index: partial-.ds-logs-aws.route53_resolver_logs-corporate-2025.12.16-000163
+Total Fields: 12
+Unused Fields (2):
+  - awscloudwatch
+  - input
+
+Index: partial-.ds-logs-aws.waf-federal-2025.11.19-001022
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-aws.cloudtrail-federal-2026.01.22-000294
+Total Fields: 17
+Unused Fields (4):
+  - actor
+  - host
+  - input
+  - target
+
+Index: partial-.ds-logs-aws.waf-corporate-2026.01.05-000373
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-kubernetes.audit_logs-corporate-2025.11.30-000336
+Total Fields: 17
+Unused Fields (11):
+  - agent
+  - client
+  - ecs
+  - error
+  - host
+  - input
+  - message
+  - related
+  - source
+  - user
+  - user_agent
+
+Index: partial-.ds-logs-aws.waf-corporate-2025.11.25-000289
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-aws.waf-corporate-2025.12.17-000335
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-aws.waf-federal-2025.11.19-001059
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-kubernetes.audit_logs-corporate-2025.11.15-000240
+Total Fields: 17
+Unused Fields (11):
+  - agent
+  - client
+  - ecs
+  - error
+  - host
+  - input
+  - message
+  - related
+  - source
+  - user
+  - user_agent
+
+Index: partial-.ds-logs-kubernetes.audit_logs-federal-2025.12.14-000342
+Total Fields: 17
+Unused Fields (11):
+  - agent
+  - client
+  - ecs
+  - error
+  - host
+  - input
+  - message
+  - related
+  - source
+  - user
+  - user_agent
+
+Index: partial-.ds-logs-aws.waf-federal-2025.11.19-001057
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-aws.cloudtrail-federal-2025.11.20-000165
+Total Fields: 12
+Unused Fields (5):
+  - actor
+  - host
+  - input
+  - related
+  - target
+
+Index: partial-.ds-logs-aws.waf-federal-2025.12.24-001281
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-aws.waf-federal-2025.11.19-001050
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-aws.waf-federal-2026.01.18-001337
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-aws.waf-federal-2025.11.19-001055
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-aws.waf-federal-2025.11.19-001052
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-aws.route53_resolver_logs-federal-2025.12.07-000156
+Total Fields: 12
+Unused Fields (2):
+  - awscloudwatch
+  - input
+
+Index: partial-.ds-logs-kubernetes.audit_logs-federal-2026.01.14-000404
+Total Fields: 17
+Unused Fields (11):
+  - agent
+  - client
+  - ecs
+  - error
+  - host
+  - input
+  - message
+  - related
+  - source
+  - user
+  - user_agent
+
+Index: partial-.ds-logs-kubernetes.audit_logs-corporate-2026.01.18-000432
+Total Fields: 17
+Unused Fields (11):
+  - agent
+  - client
+  - ecs
+  - error
+  - host
+  - input
+  - message
+  - related
+  - source
+  - user
+  - user_agent
+
+Index: partial-.ds-logs-aws.cloudtrail-corporate-2026.01.13-000620
+Total Fields: 12
+Unused Fields (5):
+  - actor
+  - host
+  - input
+  - related
+  - target
+
+Index: partial-.ds-logs-kubernetes.audit_logs-federal-2025.11.16-000229
+Total Fields: 17
+Unused Fields (11):
+  - agent
+  - client
+  - ecs
+  - error
+  - host
+  - input
+  - message
+  - related
+  - source
+  - user
+  - user_agent
+
+Index: partial-.ds-logs-kubernetes.audit_logs-federal-2025.11.16-000225
+Total Fields: 17
+Unused Fields (11):
+  - agent
+  - client
+  - ecs
+  - error
+  - host
+  - input
+  - message
+  - related
+  - source
+  - user
+  - user_agent
+
+Index: partial-.ds-logs-aws.cloudtrail-corporate-2025.12.16-000564
+Total Fields: 12
+Unused Fields (5):
+  - actor
+  - host
+  - input
+  - related
+  - target
+
+Index: partial-.ds-logs-aws.waf-federal-2025.11.27-001229
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-kubernetes.audit_logs-federal-2025.11.16-000227
+Total Fields: 17
+Unused Fields (11):
+  - agent
+  - client
+  - ecs
+  - error
+  - host
+  - input
+  - message
+  - related
+  - source
+  - user
+  - user_agent
+
+Index: partial-.ds-logs-aws.waf-federal-2025.11.19-001048
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-kubernetes.audit_logs-federal-2025.11.22-000283
+Total Fields: 17
+Unused Fields (11):
+  - agent
+  - client
+  - ecs
+  - error
+  - host
+  - input
+  - message
+  - related
+  - source
+  - user
+  - user_agent
+
+Index: partial-.ds-logs-aws.waf-federal-2025.11.19-001046
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-kubernetes.audit_logs-federal-2025.11.16-000223
+Total Fields: 17
+Unused Fields (11):
+  - agent
+  - client
+  - ecs
+  - error
+  - host
+  - input
+  - message
+  - related
+  - source
+  - user
+  - user_agent
+
+Index: partial-.ds-logs-aws.cloudtrail-federal-2025.12.09-000208
+Total Fields: 12
+Unused Fields (5):
+  - actor
+  - host
+  - input
+  - related
+  - target
+
+Index: partial-.ds-logs-kubernetes.audit_logs-corporate-2025.12.13-000362
+Total Fields: 17
+Unused Fields (11):
+  - agent
+  - client
+  - ecs
+  - error
+  - host
+  - input
+  - message
+  - related
+  - source
+  - user
+  - user_agent
+
+Index: partial-.ds-logs-aws.cloudtrail-federal-2026.01.11-000272
+Total Fields: 12
+Unused Fields (5):
+  - actor
+  - host
+  - input
+  - related
+  - target
+
+Index: partial-.ds-logs-aws.waf-federal-2025.11.19-001044
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-aws.cloudtrail-federal-2025.11.17-000155
+Total Fields: 12
+Unused Fields (5):
+  - actor
+  - host
+  - input
+  - related
+  - target
+
+Index: partial-.ds-logs-aws.waf-federal-2025.11.19-001042
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-aws.cloudtrail-federal-2025.11.17-000153
+Total Fields: 12
+Unused Fields (5):
+  - actor
+  - host
+  - input
+  - related
+  - target
+
+Index: partial-.ds-logs-aws.route53_resolver_logs-corporate-2025.12.05-000141
+Total Fields: 12
+Unused Fields (2):
+  - awscloudwatch
+  - input
+
+Index: partial-.ds-logs-aws.waf-corporate-2025.12.06-000315
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-aws.waf-federal-2026.01.21-001343
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-aws.waf-corporate-2026.01.16-000395
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-aws.route53_resolver_logs-corporate-2026.01.13-000219
+Total Fields: 12
+Unused Fields (2):
+  - awscloudwatch
+  - input
+
+Index: partial-.ds-logs-aws.route53_resolver_logs-federal-2025.11.27-000136
+Total Fields: 12
+Unused Fields (2):
+  - awscloudwatch
+  - input
+
+Index: partial-.ds-logs-aws.route53_resolver_logs-corporate-2025.11.19-000109
+Total Fields: 12
+Unused Fields (2):
+  - awscloudwatch
+  - input
+
+Index: partial-.ds-logs-aws.route53_resolver_logs-corporate-2025.11.25-000121
+Total Fields: 12
+Unused Fields (2):
+  - awscloudwatch
+  - input
+
+Index: partial-.ds-logs-aws.route53_resolver_logs-federal-2025.11.30-000142
+Total Fields: 12
+Unused Fields (2):
+  - awscloudwatch
+  - input
+
+Index: partial-.ds-logs-aws.route53_resolver_logs-corporate-2026.01.16-000225
+Total Fields: 12
+Unused Fields (2):
+  - awscloudwatch
+  - input
+
+Index: partial-.ds-logs-aws.route53_resolver_logs-federal-2026.01.10-000224
+Total Fields: 12
+Unused Fields (2):
+  - awscloudwatch
+  - input
+
+Index: partial-.ds-logs-kubernetes.audit_logs-corporate-2026.01.01-000398
+Total Fields: 17
+Unused Fields (11):
+  - agent
+  - client
+  - ecs
+  - error
+  - host
+  - input
+  - message
+  - related
+  - source
+  - user
+  - user_agent
+
+Index: partial-.ds-logs-aws.route53_resolver_logs-corporate-2026.01.05-000203
+Total Fields: 12
+Unused Fields (2):
+  - awscloudwatch
+  - input
+
+Index: partial-.ds-logs-aws.route53_resolver_logs-federal-2026.01.21-000246
+Total Fields: 12
+Unused Fields (2):
+  - awscloudwatch
+  - input
+
+Index: partial-.ds-logs-aws.waf-federal-2025.12.21-001275
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-aws.route53_resolver_logs-federal-2026.01.15-000234
+Total Fields: 12
+Unused Fields (2):
+  - awscloudwatch
+  - input
+
+Index: partial-.ds-logs-aws.route53_resolver_logs-corporate-2025.11.22-000115
+Total Fields: 12
+Unused Fields (2):
+  - awscloudwatch
+  - input
+
+Index: partial-.ds-logs-aws.waf-federal-2025.12.13-001259
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-kubernetes.audit_logs-corporate-2025.12.24-000382
+Total Fields: 17
+Unused Fields (11):
+  - agent
+  - client
+  - ecs
+  - error
+  - host
+  - input
+  - message
+  - related
+  - source
+  - user
+  - user_agent
+
+Index: partial-.ds-logs-aws.cloudtrail-corporate-2026.01.16-000626
+Total Fields: 12
+Unused Fields (5):
+  - actor
+  - host
+  - input
+  - related
+  - target
+
+Index: partial-.ds-logs-aws.route53_resolver_logs-federal-2026.01.07-000218
+Total Fields: 12
+Unused Fields (2):
+  - awscloudwatch
+  - input
+
+Index: partial-.ds-logs-aws.waf-federal-2025.11.19-001068
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-aws.waf-federal-2025.11.19-001061
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-aws.waf-federal-2025.11.19-001065
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-aws.waf-federal-2025.11.19-001063
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-aws.waf-federal-2026.01.10-001320
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-aws.waf-federal-2025.12.18-001269
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-aws.waf-federal-2025.12.07-001247
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-aws.route53_resolver_logs-federal-2026.01.18-000240
+Total Fields: 12
+Unused Fields (2):
+  - awscloudwatch
+  - input
+
+Index: partial-.ds-logs-aws.cloudtrail-corporate-2025.11.21-000479
+Total Fields: 12
+Unused Fields (5):
+  - actor
+  - host
+  - input
+  - related
+  - target
+
+Index: partial-.ds-logs-aws.cloudtrail-corporate-2025.11.25-000515
+Total Fields: 12
+Unused Fields (5):
+  - actor
+  - host
+  - input
+  - related
+  - target
+
+Index: partial-.ds-logs-aws.cloudtrail-corporate-2025.12.27-000586
+Total Fields: 12
+Unused Fields (5):
+  - actor
+  - host
+  - input
+  - related
+  - target
+
+Index: partial-.ds-logs-aws.waf-federal-2025.11.23-001146
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-kubernetes.audit_logs-corporate-2025.11.18-000272
+Total Fields: 17
+Unused Fields (11):
+  - agent
+  - client
+  - ecs
+  - error
+  - host
+  - input
+  - message
+  - related
+  - source
+  - user
+  - user_agent
+
+Index: partial-.ds-logs-kubernetes.audit_logs-corporate-2025.11.18-000270
+Total Fields: 17
+Unused Fields (11):
+  - agent
+  - client
+  - ecs
+  - error
+  - host
+  - input
+  - message
+  - related
+  - source
+  - user
+  - user_agent
+
+Index: partial-.ds-logs-aws.waf-federal-2025.12.10-001253
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-aws.route53_resolver_logs-federal-2025.12.18-000178
+Total Fields: 12
+Unused Fields (2):
+  - awscloudwatch
+  - input
+
+Index: partial-.ds-logs-aws.cloudtrail-federal-2025.11.28-000186
+Total Fields: 12
+Unused Fields (5):
+  - actor
+  - host
+  - input
+  - related
+  - target
+
+Index: partial-.ds-logs-aws.waf-federal-2025.12.02-001237
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-aws.route53_resolver_logs-federal-2025.12.13-000168
+Total Fields: 12
+Unused Fields (2):
+  - awscloudwatch
+  - input
+
+Index: partial-.ds-logs-aws.route53_resolver_logs-federal-2025.11.16-000114
+Total Fields: 12
+Unused Fields (2):
+  - awscloudwatch
+  - input
+
+Index: partial-.ds-logs-aws.route53_resolver_logs-federal-2025.11.24-000130
+Total Fields: 12
+Unused Fields (2):
+  - awscloudwatch
+  - input
+
+Index: partial-.ds-logs-aws.waf-federal-2026.01.07-001309
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-aws.cloudtrail-corporate-2025.12.30-000592
+Total Fields: 12
+Unused Fields (5):
+  - actor
+  - host
+  - input
+  - related
+  - target
+
+Index: partial-.ds-logs-aws.route53_resolver_logs-corporate-2025.12.02-000135
+Total Fields: 12
+Unused Fields (2):
+  - awscloudwatch
+  - input
+
+Index: partial-.ds-logs-aws.cloudtrail-corporate-2025.12.08-000550
+Total Fields: 12
+Unused Fields (5):
+  - actor
+  - host
+  - input
+  - related
+  - target
+
+Index: partial-.ds-logs-kubernetes.audit_logs-corporate-2025.11.18-000268
+Total Fields: 17
+Unused Fields (11):
+  - agent
+  - client
+  - ecs
+  - error
+  - host
+  - input
+  - message
+  - related
+  - source
+  - user
+  - user_agent
+
+Index: partial-.ds-logs-aws.route53_resolver_logs-corporate-2025.12.22-000175
+Total Fields: 12
+Unused Fields (2):
+  - awscloudwatch
+  - input
+
+Index: partial-.ds-logs-aws.cloudtrail-federal-2026.01.03-000256
+Total Fields: 12
+Unused Fields (5):
+  - actor
+  - host
+  - input
+  - related
+  - target
+
+Index: partial-.ds-logs-kubernetes.audit_logs-corporate-2025.11.18-000266
+Total Fields: 17
+Unused Fields (11):
+  - agent
+  - client
+  - ecs
+  - error
+  - host
+  - input
+  - message
+  - related
+  - source
+  - user
+  - user_agent
+
+Index: partial-.ds-logs-aws.route53_resolver_logs-corporate-2025.12.13-000157
+Total Fields: 12
+Unused Fields (2):
+  - awscloudwatch
+  - input
+
+Index: partial-.ds-logs-kubernetes.audit_logs-corporate-2025.11.18-000264
+Total Fields: 17
+Unused Fields (11):
+  - agent
+  - client
+  - ecs
+  - error
+  - host
+  - input
+  - message
+  - related
+  - source
+  - user
+  - user_agent
+
+Index: partial-.ds-logs-aws.cloudtrail-federal-2025.12.17-000222
+Total Fields: 12
+Unused Fields (5):
+  - actor
+  - host
+  - input
+  - related
+  - target
+
+Index: partial-.ds-logs-aws.waf-corporate-2025.12.14-000329
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-aws.cloudtrail-federal-2025.12.28-000244
+Total Fields: 12
+Unused Fields (5):
+  - actor
+  - host
+  - input
+  - related
+  - target
+
+Index: partial-.ds-logs-aws.waf-corporate-2025.12.03-000309
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-aws.waf-corporate-2026.01.11-000385
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-aws.route53_resolver_logs-federal-2025.12.15-000172
+Total Fields: 12
+Unused Fields (2):
+  - awscloudwatch
+  - input
+
+Index: partial-.ds-logs-aws.cloudtrail-federal-2025.12.06-000202
+Total Fields: 12
+Unused Fields (5):
+  - actor
+  - host
+  - input
+  - related
+  - target
+
+Index: partial-.ds-logs-aws.route53_resolver_logs-corporate-2025.12.08-000147
+Total Fields: 12
+Unused Fields (2):
+  - awscloudwatch
+  - input
+
+Index: partial-.ds-logs-kubernetes.audit_logs-corporate-2025.11.21-000295
+Total Fields: 17
+Unused Fields (11):
+  - agent
+  - client
+  - ecs
+  - error
+  - host
+  - input
+  - message
+  - related
+  - source
+  - user
+  - user_agent
+
+Index: partial-.ds-logs-kubernetes.audit_logs-corporate-2025.11.24-000315
+Total Fields: 17
+Unused Fields (11):
+  - agent
+  - client
+  - ecs
+  - error
+  - host
+  - input
+  - message
+  - related
+  - source
+  - user
+  - user_agent
+
+Index: partial-.ds-logs-aws.cloudtrail-federal-2026.01.14-000278
+Total Fields: 12
+Unused Fields (5):
+  - actor
+  - host
+  - input
+  - related
+  - target
+
+Index: partial-.ds-logs-aws.route53_resolver_logs-corporate-2025.12.24-000179
+Total Fields: 12
+Unused Fields (2):
+  - awscloudwatch
+  - input
+
+Index: partial-.ds-logs-kubernetes.audit_logs-federal-2025.12.31-000376
+Total Fields: 17
+Unused Fields (11):
+  - agent
+  - client
+  - ecs
+  - error
+  - host
+  - input
+  - message
+  - related
+  - source
+  - user
+  - user_agent
+
+Index: partial-.ds-logs-aws.waf-corporate-2025.12.25-000351
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-kubernetes.audit_logs-corporate-2026.01.04-000404
+Total Fields: 17
+Unused Fields (11):
+  - agent
+  - client
+  - ecs
+  - error
+  - host
+  - input
+  - message
+  - related
+  - source
+  - user
+  - user_agent
+
+Index: partial-.ds-logs-aws.waf-corporate-2025.12.09-000319
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-aws.cloudtrail-corporate-2026.01.21-000636
+Total Fields: 12
+Unused Fields (5):
+  - actor
+  - host
+  - input
+  - related
+  - target
+
+Index: partial-.ds-logs-kubernetes.audit_logs-corporate-2025.12.18-000372
+Total Fields: 17
+Unused Fields (11):
+  - agent
+  - client
+  - ecs
+  - error
+  - host
+  - input
+  - message
+  - related
+  - source
+  - user
+  - user_agent
+
+Index: partial-.ds-logs-aws.waf-federal-2025.12.29-001291
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-kubernetes.audit_logs-federal-2026.01.22-000420
+Total Fields: 17
+Unused Fields (5):
+  - agent
+  - ecs
+  - host
+  - input
+  - message
+
+Index: partial-.ds-logs-kubernetes.audit_logs-federal-2026.01.05-000386
+Total Fields: 17
+Unused Fields (11):
+  - agent
+  - client
+  - ecs
+  - error
+  - host
+  - input
+  - message
+  - related
+  - source
+  - user
+  - user_agent
+
+Index: partial-.ds-logs-kubernetes.audit_logs-corporate-2025.12.29-000392
+Total Fields: 17
+Unused Fields (11):
+  - agent
+  - client
+  - ecs
+  - error
+  - host
+  - input
+  - message
+  - related
+  - source
+  - user
+  - user_agent
+
+Index: partial-.ds-logs-aws.cloudtrail-corporate-2025.12.24-000580
+Total Fields: 12
+Unused Fields (5):
+  - actor
+  - host
+  - input
+  - related
+  - target
+
+Index: partial-.ds-logs-aws.route53_resolver_logs-federal-2025.12.04-000150
+Total Fields: 12
+Unused Fields (2):
+  - awscloudwatch
+  - input
+
+Index: partial-.ds-logs-aws.cloudtrail-corporate-2025.11.30-000534
+Total Fields: 12
+Unused Fields (5):
+  - actor
+  - host
+  - input
+  - related
+  - target
+
+Index: partial-.ds-logs-aws.cloudtrail-corporate-2026.01.05-000604
+Total Fields: 12
+Unused Fields (5):
+  - actor
+  - host
+  - input
+  - related
+  - target
+
+Index: partial-.ds-logs-aws.route53_resolver_logs-federal-2025.11.19-000120
+Total Fields: 12
+Unused Fields (2):
+  - awscloudwatch
+  - input
+
+Index: partial-.ds-logs-aws.route53_resolver_logs-federal-2025.12.24-000190
+Total Fields: 12
+Unused Fields (2):
+  - awscloudwatch
+  - input
+
+Index: partial-.ds-logs-aws.waf-corporate-2026.01.22-000407
+Total Fields: 19
+Unused Fields (2):
+  - host
+  - input
+
+Index: partial-.ds-logs-kubernetes.audit_logs-federal-2025.12.19-000352
+Total Fields: 17
+Unused Fields (11):
+  - agent
+  - client
+  - ecs
+  - error
+  - host
+  - input
+  - message
+  - related
+  - source
+  - user
+  - user_agent
+
+Index: partial-.ds-logs-aws.route53_resolver_logs-corporate-2026.01.21-000235
+Total Fields: 12
+Unused Fields (2):
+  - awscloudwatch
+  - input
+
+Index: partial-.ds-logs-aws.route53_resolver_logs-corporate-2026.01.10-000213
+Total Fields: 12
+Unused Fields (2):
+  - awscloudwatch
+  - input
+
+Index: partial-.ds-logs-aws.route53_resolver_logs-federal-2026.01.12-000228
+Total Fields: 12
+Unused Fields (2):
+  - awscloudwatch
+  - input
+
+Index: partial-.ds-logs-kubernetes.audit_logs-federal-2025.11.26-000308
+Total Fields: 17
+Unused Fields (11):
+  - agent
+  - client
+  - ecs
+  - error
+  - host
+  - input
+  - message
+  - related
+  - source
+  - user
+  - user_agent
+
+Index: partial-.ds-logs-aws.waf-corporate-2025.11.19-000260
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-kubernetes.audit_logs-federal-2025.11.19-000258
+Total Fields: 17
+Unused Fields (11):
+  - agent
+  - client
+  - ecs
+  - error
+  - host
+  - input
+  - message
+  - related
+  - source
+  - user
+  - user_agent
+
+Index: partial-.ds-logs-kubernetes.audit_logs-federal-2025.11.19-000256
+Total Fields: 17
+Unused Fields (11):
+  - agent
+  - client
+  - ecs
+  - error
+  - host
+  - input
+  - message
+  - related
+  - source
+  - user
+  - user_agent
+
+Index: partial-.ds-logs-kubernetes.audit_logs-corporate-2025.12.07-000350
+Total Fields: 17
+Unused Fields (11):
+  - agent
+  - client
+  - ecs
+  - error
+  - host
+  - input
+  - message
+  - related
+  - source
+  - user
+  - user_agent
+
+Index: partial-.ds-logs-aws.waf-federal-2026.01.16-001333
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-kubernetes.audit_logs-federal-2025.11.19-000262
+Total Fields: 17
+Unused Fields (11):
+  - agent
+  - client
+  - ecs
+  - error
+  - host
+  - input
+  - message
+  - related
+  - source
+  - user
+  - user_agent
+
+Index: partial-.ds-logs-kubernetes.audit_logs-corporate-2025.12.02-000340
+Total Fields: 17
+Unused Fields (11):
+  - agent
+  - client
+  - ecs
+  - error
+  - host
+  - input
+  - message
+  - related
+  - source
+  - user
+  - user_agent
+
+Index: partial-.ds-logs-kubernetes.audit_logs-federal-2025.11.19-000260
+Total Fields: 17
+Unused Fields (11):
+  - agent
+  - client
+  - ecs
+  - error
+  - host
+  - input
+  - message
+  - related
+  - source
+  - user
+  - user_agent
+
+Index: partial-.ds-logs-kubernetes.audit_logs-federal-2025.12.25-000364
+Total Fields: 17
+Unused Fields (11):
+  - agent
+  - client
+  - ecs
+  - error
+  - host
+  - input
+  - message
+  - related
+  - source
+  - user
+  - user_agent
+
+Index: partial-.ds-logs-aws.cloudtrail-corporate-2025.12.18-000568
+Total Fields: 12
+Unused Fields (5):
+  - actor
+  - host
+  - input
+  - related
+  - target
+
+Index: partial-.ds-logs-aws.waf-corporate-2025.11.19-000258
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-aws.waf-corporate-2025.11.19-000257
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-kubernetes.audit_logs-federal-2025.12.20-000354
+Total Fields: 17
+Unused Fields (11):
+  - agent
+  - client
+  - ecs
+  - error
+  - host
+  - input
+  - message
+  - related
+  - source
+  - user
+  - user_agent
+
+Index: partial-.ds-logs-aws.waf-corporate-2025.11.19-000255
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-kubernetes.audit_logs-corporate-2025.11.17-000256
+Total Fields: 17
+Unused Fields (11):
+  - agent
+  - client
+  - ecs
+  - error
+  - host
+  - input
+  - message
+  - related
+  - source
+  - user
+  - user_agent
+
+Index: logs-cloud_security_posture.scores-default
+Total Fields: 16
+Unused Fields (10):
+  - cloud
+  - cluster_id
+  - failed
+  - is_enabled_rules_score
+  - namespace
+  - passed
+  - rule
+  - score
+  - total_findings
+  - vulnerabilities_stats_by_cloud_account
+
+Index: partial-.ds-logs-aws.waf-federal-2025.12.30-001293
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-kubernetes.audit_logs-corporate-2025.11.17-000258
+Total Fields: 17
+Unused Fields (11):
+  - agent
+  - client
+  - ecs
+  - error
+  - host
+  - input
+  - message
+  - related
+  - source
+  - user
+  - user_agent
+
+Index: partial-.ds-logs-kubernetes.audit_logs-corporate-2025.11.17-000252
+Total Fields: 17
+Unused Fields (11):
+  - agent
+  - client
+  - ecs
+  - error
+  - host
+  - input
+  - message
+  - related
+  - source
+  - user
+  - user_agent
+
+Index: partial-.ds-logs-aws.route53_resolver_logs-federal-2026.01.01-000206
+Total Fields: 12
+Unused Fields (2):
+  - awscloudwatch
+  - input
+
+Index: partial-.ds-logs-kubernetes.audit_logs-corporate-2025.11.17-000254
+Total Fields: 17
+Unused Fields (11):
+  - agent
+  - client
+  - ecs
+  - error
+  - host
+  - input
+  - message
+  - related
+  - source
+  - user
+  - user_agent
+
+Index: partial-.ds-logs-aws.cloudtrail-federal-2025.12.07-000204
+Total Fields: 12
+Unused Fields (5):
+  - actor
+  - host
+  - input
+  - related
+  - target
+
+Index: partial-.ds-logs-aws.cloudtrail-federal-2026.01.13-000276
+Total Fields: 12
+Unused Fields (5):
+  - actor
+  - host
+  - input
+  - related
+  - target
+
+Index: partial-.ds-logs-aws.cloudtrail-corporate-2025.12.02-000538
+Total Fields: 12
+Unused Fields (5):
+  - actor
+  - host
+  - input
+  - related
+  - target
+
+Index: partial-.ds-logs-kubernetes.audit_logs-federal-2025.12.09-000332
+Total Fields: 17
+Unused Fields (11):
+  - agent
+  - client
+  - ecs
+  - error
+  - host
+  - input
+  - message
+  - related
+  - source
+  - user
+  - user_agent
+
+Index: partial-.ds-logs-aws.cloudtrail-federal-2025.12.23-000234
+Total Fields: 12
+Unused Fields (5):
+  - actor
+  - host
+  - input
+  - related
+  - target
+
+Index: partial-.ds-logs-aws.waf-corporate-2025.12.04-000311
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-kubernetes.audit_logs-federal-2026.01.10-000396
+Total Fields: 17
+Unused Fields (11):
+  - agent
+  - client
+  - ecs
+  - error
+  - host
+  - input
+  - message
+  - related
+  - source
+  - user
+  - user_agent
+
+Index: partial-.ds-logs-aws.cloudtrail-corporate-2026.01.10-000614
+Total Fields: 12
+Unused Fields (5):
+  - actor
+  - host
+  - input
+  - related
+  - target
+
+Index: partial-.ds-logs-kubernetes.audit_logs-corporate-2026.01.15-000426
+Total Fields: 17
+Unused Fields (11):
+  - agent
+  - client
+  - ecs
+  - error
+  - host
+  - input
+  - message
+  - related
+  - source
+  - user
+  - user_agent
+
+Index: partial-.ds-logs-kubernetes.audit_logs-federal-2026.01.17-000410
+Total Fields: 17
+Unused Fields (11):
+  - agent
+  - client
+  - ecs
+  - error
+  - host
+  - input
+  - message
+  - related
+  - source
+  - user
+  - user_agent
+
+Index: partial-.ds-logs-aws.cloudtrail-federal-2026.01.17-000284
+Total Fields: 12
+Unused Fields (5):
+  - actor
+  - host
+  - input
+  - related
+  - target
+
+Index: partial-.ds-logs-kubernetes.audit_logs-corporate-2025.11.25-000321
+Total Fields: 17
+Unused Fields (11):
+  - agent
+  - client
+  - ecs
+  - error
+  - host
+  - input
+  - message
+  - related
+  - source
+  - user
+  - user_agent
+
+Index: partial-.ds-logs-aws.cloudtrail-federal-2025.12.21-000230
+Total Fields: 12
+Unused Fields (5):
+  - actor
+  - host
+  - input
+  - related
+  - target
+
+Index: partial-.ds-logs-aws.cloudtrail-federal-2026.01.06-000262
+Total Fields: 12
+Unused Fields (5):
+  - actor
+  - host
+  - input
+  - related
+  - target
+
+Index: partial-.ds-logs-aws.route53_resolver_logs-corporate-2025.12.10-000151
+Total Fields: 12
+Unused Fields (2):
+  - awscloudwatch
+  - input
+
+Index: partial-.ds-logs-aws.cloudtrail-federal-2025.12.10-000210
+Total Fields: 12
+Unused Fields (5):
+  - actor
+  - host
+  - input
+  - related
+  - target
+
+Index: partial-.ds-logs-aws.route53_resolver_logs-corporate-2025.12.21-000173
+Total Fields: 12
+Unused Fields (2):
+  - awscloudwatch
+  - input
+
+Index: partial-.ds-logs-aws.cloudtrail-federal-2025.12.18-000224
+Total Fields: 12
+Unused Fields (5):
+  - actor
+  - host
+  - input
+  - related
+  - target
+
+Index: partial-.ds-logs-aws.route53_resolver_logs-corporate-2025.12.18-000167
+Total Fields: 12
+Unused Fields (2):
+  - awscloudwatch
+  - input
+
+Index: partial-.ds-logs-aws.cloudtrail-federal-2025.11.19-000162
+Total Fields: 12
+Unused Fields (5):
+  - actor
+  - host
+  - input
+  - related
+  - target
+
+Index: partial-.ds-logs-aws.cloudtrail-federal-2025.12.29-000246
+Total Fields: 12
+Unused Fields (5):
+  - actor
+  - host
+  - input
+  - related
+  - target
+
+Index: partial-.ds-logs-aws.route53_resolver_logs-corporate-2025.12.29-000189
+Total Fields: 12
+Unused Fields (2):
+  - awscloudwatch
+  - input
+
+Index: partial-.ds-logs-aws.cloudtrail-federal-2025.11.19-000161
+Total Fields: 12
+Unused Fields (5):
+  - actor
+  - host
+  - input
+  - related
+  - target
+
+Index: partial-.ds-logs-aws.waf-corporate-2025.12.22-000345
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-aws.waf-corporate-2025.12.11-000323
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-aws.waf-corporate-2026.01.10-000383
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-aws.waf-federal-2025.11.16-000913
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-aws.waf-federal-2025.11.25-001201
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: logs-cloud_security_posture.vulnerabilities_latest-default
+Total Fields: 15
+Unused Fields (15):
+  - @timestamp
+  - agent
+  - cloud
+  - cloud_security_posture
+  - cloudbeat
+  - data_stream
+  - ecs
+  - event
+  - host
+  - message
+  - network
+  - observer
+  - package
+  - resource
+  - vulnerability
+
+Index: partial-.ds-logs-aws.route53_resolver_logs-federal-2025.12.27-000196
+Total Fields: 12
+Unused Fields (2):
+  - awscloudwatch
+  - input
+
+Index: partial-.ds-logs-kubernetes.audit_logs-federal-2025.12.01-000318
+Total Fields: 17
+Unused Fields (11):
+  - agent
+  - client
+  - ecs
+  - error
+  - host
+  - input
+  - message
+  - related
+  - source
+  - user
+  - user_agent
+
+Index: partial-.ds-logs-kubernetes.audit_logs-corporate-2026.01.12-000420
+Total Fields: 17
+Unused Fields (11):
+  - agent
+  - client
+  - ecs
+  - error
+  - host
+  - input
+  - message
+  - related
+  - source
+  - user
+  - user_agent
+
+Index: partial-.ds-logs-aws.waf-corporate-2026.01.07-000377
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-aws.waf-federal-2025.12.04-001241
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-aws.waf-federal-2025.11.16-000925
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-aws.waf-federal-2025.11.16-000923
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-kubernetes.audit_logs-federal-2026.01.08-000392
+Total Fields: 17
+Unused Fields (11):
+  - agent
+  - client
+  - ecs
+  - error
+  - host
+  - input
+  - message
+  - related
+  - source
+  - user
+  - user_agent
+
+Index: partial-.ds-logs-aws.waf-federal-2025.11.16-000922
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-aws.waf-federal-2025.12.08-001249
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-aws.waf-federal-2026.01.09-001313
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-aws.waf-federal-2025.11.16-000919
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-aws.waf-federal-2025.11.16-000917
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-aws.waf-federal-2025.11.16-000915
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-kubernetes.audit_logs-federal-2025.12.23-000360
+Total Fields: 17
+Unused Fields (11):
+  - agent
+  - client
+  - ecs
+  - error
+  - host
+  - input
+  - message
+  - related
+  - source
+  - user
+  - user_agent
+
+Index: partial-.ds-logs-aws.cloudtrail-corporate-2025.11.28-000530
+Total Fields: 12
+Unused Fields (5):
+  - actor
+  - host
+  - input
+  - related
+  - target
+
+Index: partial-.ds-logs-aws.cloudtrail-corporate-2025.11.16-000411
+Total Fields: 12
+Unused Fields (5):
+  - actor
+  - host
+  - input
+  - related
+  - target
+
+Index: partial-.ds-logs-aws.cloudtrail-corporate-2026.01.04-000602
+Total Fields: 12
+Unused Fields (5):
+  - actor
+  - host
+  - input
+  - related
+  - target
+
+Index: partial-.ds-logs-aws.route53_resolver_logs-federal-2025.12.16-000174
+Total Fields: 12
+Unused Fields (2):
+  - awscloudwatch
+  - input
+
+Index: partial-.ds-logs-aws.route53_resolver_logs-federal-2026.01.16-000236
+Total Fields: 12
+Unused Fields (2):
+  - awscloudwatch
+  - input
+
+Index: partial-.ds-logs-kubernetes.audit_logs-federal-2025.11.25-000301
+Total Fields: 17
+Unused Fields (11):
+  - agent
+  - client
+  - ecs
+  - error
+  - host
+  - input
+  - message
+  - related
+  - source
+  - user
+  - user_agent
+
+Index: partial-.ds-logs-aws.cloudtrail-corporate-2025.11.16-000413
+Total Fields: 12
+Unused Fields (5):
+  - actor
+  - host
+  - input
+  - related
+  - target
+
+Index: partial-.ds-logs-aws.cloudtrail-corporate-2025.11.23-000497
+Total Fields: 12
+Unused Fields (5):
+  - actor
+  - host
+  - input
+  - related
+  - target
+
+Index: partial-.ds-logs-aws.route53_resolver_logs-corporate-2025.11.28-000127
+Total Fields: 12
+Unused Fields (2):
+  - awscloudwatch
+  - input
+
+Index: partial-.ds-logs-aws.waf-federal-2025.11.16-000927
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-aws.cloudtrail-corporate-2025.12.29-000590
+Total Fields: 12
+Unused Fields (5):
+  - actor
+  - host
+  - input
+  - related
+  - target
+
+Index: partial-.ds-logs-aws.cloudtrail-corporate-2025.11.16-000409
+Total Fields: 12
+Unused Fields (5):
+  - actor
+  - host
+  - input
+  - related
+  - target
+
+Index: partial-.ds-logs-aws.cloudtrail-corporate-2025.11.16-000407
+Total Fields: 12
+Unused Fields (5):
+  - actor
+  - host
+  - input
+  - related
+  - target
+
+Index: partial-.ds-logs-aws.waf-corporate-2025.11.29-000301
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-aws.route53_resolver_logs-federal-2025.11.22-000126
+Total Fields: 12
+Unused Fields (2):
+  - awscloudwatch
+  - input
+
+Index: partial-.ds-logs-aws.route53_resolver_logs-federal-2025.11.18-000118
+Total Fields: 12
+Unused Fields (2):
+  - awscloudwatch
+  - input
+
+Index: partial-.ds-logs-aws.route53_resolver_logs-corporate-2025.11.17-000105
+Total Fields: 12
+Unused Fields (2):
+  - awscloudwatch
+  - input
+
+Index: partial-.ds-logs-aws.route53_resolver_logs-federal-2025.12.31-000204
+Total Fields: 12
+Unused Fields (2):
+  - awscloudwatch
+  - input
+
+Index: partial-.ds-logs-aws.waf-corporate-2026.01.19-000401
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-kubernetes.audit_logs-corporate-2025.12.11-000358
+Total Fields: 17
+Unused Fields (11):
+  - agent
+  - client
+  - ecs
+  - error
+  - host
+  - input
+  - message
+  - related
+  - source
+  - user
+  - user_agent
+
+Index: partial-.ds-logs-aws.cloudtrail-federal-2025.12.01-000192
+Total Fields: 12
+Unused Fields (5):
+  - actor
+  - host
+  - input
+  - related
+  - target
+
+Index: partial-.ds-logs-kubernetes.audit_logs-corporate-2025.12.22-000378
+Total Fields: 17
+Unused Fields (11):
+  - agent
+  - client
+  - ecs
+  - error
+  - host
+  - input
+  - message
+  - related
+  - source
+  - user
+  - user_agent
+
+Index: partial-.ds-logs-aws.waf-federal-2025.12.23-001279
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-aws.route53_resolver_logs-federal-2026.01.05-000214
+Total Fields: 12
+Unused Fields (2):
+  - awscloudwatch
+  - input
+
+Index: partial-.ds-logs-kubernetes.audit_logs-federal-2025.11.18-000248
+Total Fields: 17
+Unused Fields (11):
+  - agent
+  - client
+  - ecs
+  - error
+  - host
+  - input
+  - message
+  - related
+  - source
+  - user
+  - user_agent
+
+Index: partial-.ds-logs-aws.route53_resolver_logs-corporate-2025.11.30-000131
+Total Fields: 12
+Unused Fields (2):
+  - awscloudwatch
+  - input
+
+Index: partial-.ds-logs-kubernetes.audit_logs-federal-2025.11.18-000246
+Total Fields: 17
+Unused Fields (11):
+  - agent
+  - client
+  - ecs
+  - error
+  - host
+  - input
+  - message
+  - related
+  - source
+  - user
+  - user_agent
+
+Index: partial-.ds-logs-kubernetes.audit_logs-federal-2025.12.08-000330
+Total Fields: 17
+Unused Fields (11):
+  - agent
+  - client
+  - ecs
+  - error
+  - host
+  - input
+  - message
+  - related
+  - source
+  - user
+  - user_agent
+
+Index: partial-.ds-logs-kubernetes.audit_logs-federal-2025.11.18-000250
+Total Fields: 17
+Unused Fields (11):
+  - agent
+  - client
+  - ecs
+  - error
+  - host
+  - input
+  - message
+  - related
+  - source
+  - user
+  - user_agent
+
+Index: partial-.ds-logs-aws.waf-federal-2025.12.26-001285
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-kubernetes.audit_logs-corporate-2025.12.16-000368
+Total Fields: 17
+Unused Fields (11):
+  - agent
+  - client
+  - ecs
+  - error
+  - host
+  - input
+  - message
+  - related
+  - source
+  - user
+  - user_agent
+
+Index: partial-.ds-logs-aws.route53_resolver_logs-corporate-2026.01.22-000237
+Total Fields: 15
+Unused Fields (2):
+  - awscloudwatch
+  - input
+
+Index: partial-.ds-logs-aws.cloudtrail-corporate-2026.01.22-000638
+Total Fields: 12
+Unused Fields (5):
+  - actor
+  - host
+  - input
+  - related
+  - target
+
+Index: partial-.ds-logs-kubernetes.audit_logs-corporate-2026.01.08-000412
+Total Fields: 17
+Unused Fields (11):
+  - agent
+  - client
+  - ecs
+  - error
+  - host
+  - input
+  - message
+  - related
+  - source
+  - user
+  - user_agent
+
+Index: partial-.ds-logs-kubernetes.audit_logs-corporate-2025.12.19-000374
+Total Fields: 17
+Unused Fields (11):
+  - agent
+  - client
+  - ecs
+  - error
+  - host
+  - input
+  - message
+  - related
+  - source
+  - user
+  - user_agent
+
+Index: partial-.ds-logs-aws.cloudtrail-corporate-2026.01.11-000616
+Total Fields: 12
+Unused Fields (5):
+  - actor
+  - host
+  - input
+  - related
+  - target
+
+Index: partial-.ds-logs-aws.waf-federal-2025.12.15-001263
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-kubernetes.audit_logs-federal-2025.11.20-000270
+Total Fields: 17
+Unused Fields (11):
+  - agent
+  - client
+  - ecs
+  - error
+  - host
+  - input
+  - message
+  - related
+  - source
+  - user
+  - user_agent
+
+Index: partial-.ds-logs-kubernetes.audit_logs-corporate-2025.12.08-000352
+Total Fields: 17
+Unused Fields (11):
+  - agent
+  - client
+  - ecs
+  - error
+  - host
+  - input
+  - message
+  - related
+  - source
+  - user
+  - user_agent
+
+Index: partial-.ds-logs-kubernetes.audit_logs-federal-2026.01.03-000382
+Total Fields: 17
+Unused Fields (11):
+  - agent
+  - client
+  - ecs
+  - error
+  - host
+  - input
+  - message
+  - related
+  - source
+  - user
+  - user_agent
+
+Index: partial-.ds-logs-aws.waf-federal-2026.01.15-001331
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-aws.waf-corporate-2025.11.23-000278
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-kubernetes.audit_logs-federal-2026.01.13-000402
+Total Fields: 17
+Unused Fields (11):
+  - agent
+  - client
+  - ecs
+  - error
+  - host
+  - input
+  - message
+  - related
+  - source
+  - user
+  - user_agent
+
+Index: partial-.ds-logs-aws.route53_resolver_logs-federal-2025.12.05-000152
+Total Fields: 12
+Unused Fields (2):
+  - awscloudwatch
+  - input
+
+Index: partial-.ds-logs-aws.waf-corporate-2025.11.28-000299
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-kubernetes.audit_logs-corporate-2026.01.19-000434
+Total Fields: 17
+Unused Fields (11):
+  - agent
+  - client
+  - ecs
+  - error
+  - host
+  - input
+  - message
+  - related
+  - source
+  - user
+  - user_agent
+
+Index: partial-.ds-logs-aws.cloudtrail-corporate-2025.11.15-000397
+Total Fields: 12
+Unused Fields (5):
+  - actor
+  - host
+  - input
+  - related
+  - target
+
+Index: partial-.ds-logs-kubernetes.audit_logs-corporate-2025.12.27-000388
+Total Fields: 17
+Unused Fields (11):
+  - agent
+  - client
+  - ecs
+  - error
+  - host
+  - input
+  - message
+  - related
+  - source
+  - user
+  - user_agent
+
+Index: partial-.ds-logs-aws.route53_resolver_logs-federal-2025.11.29-000140
+Total Fields: 12
+Unused Fields (2):
+  - awscloudwatch
+  - input
+
+Index: partial-.ds-logs-aws.cloudtrail-corporate-2025.11.15-000395
+Total Fields: 12
+Unused Fields (5):
+  - actor
+  - host
+  - input
+  - related
+  - target
+
+Index: partial-.ds-logs-aws.cloudtrail-federal-2025.11.23-000173
+Total Fields: 12
+Unused Fields (5):
+  - actor
+  - host
+  - input
+  - related
+  - target
+
+Index: partial-.ds-logs-aws.route53_resolver_logs-corporate-2026.01.11-000215
+Total Fields: 12
+Unused Fields (2):
+  - awscloudwatch
+  - input
+
+Index: partial-.ds-logs-aws.route53_resolver_logs-corporate-2025.12.04-000139
+Total Fields: 12
+Unused Fields (2):
+  - awscloudwatch
+  - input
+
+Index: partial-.ds-logs-aws.waf-corporate-2025.12.18-000337
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-aws.cloudtrail-corporate-2025.11.19-000448
+Total Fields: 12
+Unused Fields (5):
+  - actor
+  - host
+  - input
+  - related
+  - target
+
+Index: partial-.ds-logs-aws.waf-corporate-2025.12.29-000359
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-aws.cloudtrail-federal-2026.01.09-000268
+Total Fields: 12
+Unused Fields (5):
+  - actor
+  - host
+  - input
+  - related
+  - target
+
+Index: partial-.ds-logs-aws.route53_resolver_logs-corporate-2026.01.01-000195
+Total Fields: 12
+Unused Fields (2):
+  - awscloudwatch
+  - input
+
+Index: partial-.ds-logs-aws.cloudtrail-federal-2025.12.26-000240
+Total Fields: 12
+Unused Fields (5):
+  - actor
+  - host
+  - input
+  - related
+  - target
+
+Index: partial-.ds-logs-aws.cloudtrail-federal-2026.01.01-000252
+Total Fields: 12
+Unused Fields (5):
+  - actor
+  - host
+  - input
+  - related
+  - target
+
+Index: partial-.ds-logs-aws.route53_resolver_logs-federal-2025.12.22-000186
+Total Fields: 12
+Unused Fields (2):
+  - awscloudwatch
+  - input
+
+Index: partial-.ds-logs-aws.route53_resolver_logs-corporate-2025.12.26-000183
+Total Fields: 12
+Unused Fields (2):
+  - awscloudwatch
+  - input
+
+Index: partial-.ds-logs-aws.cloudtrail-federal-2026.01.10-000270
+Total Fields: 12
+Unused Fields (5):
+  - actor
+  - host
+  - input
+  - related
+  - target
+
+Index: partial-.ds-logs-aws.waf-corporate-2026.01.02-000367
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-aws.waf-corporate-2026.01.13-000389
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-aws.cloudtrail-corporate-2025.12.15-000562
+Total Fields: 12
+Unused Fields (5):
+  - actor
+  - host
+  - input
+  - related
+  - target
+
+Index: partial-.ds-logs-kubernetes.audit_logs-federal-2026.01.01-000378
+Total Fields: 17
+Unused Fields (11):
+  - agent
+  - client
+  - ecs
+  - error
+  - host
+  - input
+  - message
+  - related
+  - source
+  - user
+  - user_agent
+
+Index: partial-.ds-logs-aws.cloudtrail-corporate-2025.11.19-000456
+Total Fields: 12
+Unused Fields (5):
+  - actor
+  - host
+  - input
+  - related
+  - target
+
+Index: partial-.ds-logs-aws.cloudtrail-corporate-2025.11.19-000459
+Total Fields: 12
+Unused Fields (5):
+  - actor
+  - host
+  - input
+  - related
+  - target
+
+Index: partial-.ds-logs-aws.cloudtrail-corporate-2025.11.19-000458
+Total Fields: 12
+Unused Fields (5):
+  - actor
+  - host
+  - input
+  - related
+  - target
+
+Index: partial-.ds-logs-aws.cloudtrail-corporate-2025.11.19-000452
+Total Fields: 12
+Unused Fields (5):
+  - actor
+  - host
+  - input
+  - related
+  - target
+
+Index: partial-.ds-logs-aws.cloudtrail-corporate-2025.11.19-000454
+Total Fields: 12
+Unused Fields (5):
+  - actor
+  - host
+  - input
+  - related
+  - target
+
+Index: partial-.ds-logs-aws.cloudtrail-corporate-2025.11.19-000450
+Total Fields: 12
+Unused Fields (5):
+  - actor
+  - host
+  - input
+  - related
+  - target
+
+Index: partial-.ds-logs-aws.route53_resolver_logs-federal-2025.12.02-000146
+Total Fields: 12
+Unused Fields (2):
+  - awscloudwatch
+  - input
+
+Index: partial-.ds-logs-aws.waf-corporate-2025.12.07-000317
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-aws.waf-corporate-2025.12.27-000355
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-kubernetes.audit_logs-corporate-2026.01.06-000408
+Total Fields: 17
+Unused Fields (11):
+  - agent
+  - client
+  - ecs
+  - error
+  - host
+  - input
+  - message
+  - related
+  - source
+  - user
+  - user_agent
+
+Index: partial-.ds-logs-aws.route53_resolver_logs-federal-2026.01.08-000220
+Total Fields: 12
+Unused Fields (2):
+  - awscloudwatch
+  - input
+
+Index: partial-.ds-logs-aws.waf-federal-2026.01.04-001303
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-kubernetes.audit_logs-federal-2025.12.06-000326
+Total Fields: 17
+Unused Fields (11):
+  - agent
+  - client
+  - ecs
+  - error
+  - host
+  - input
+  - message
+  - related
+  - source
+  - user
+  - user_agent
+
+Index: partial-.ds-logs-aws.cloudtrail-corporate-2026.01.01-000596
+Total Fields: 12
+Unused Fields (5):
+  - actor
+  - host
+  - input
+  - related
+  - target
+
+Index: partial-.ds-logs-aws.waf-federal-2025.11.28-001231
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-aws.cloudtrail-corporate-2025.11.19-000461
+Total Fields: 12
+Unused Fields (5):
+  - actor
+  - host
+  - input
+  - related
+  - target
+
+Index: partial-.ds-logs-kubernetes.audit_logs-corporate-2025.11.22-000302
+Total Fields: 17
+Unused Fields (11):
+  - agent
+  - client
+  - ecs
+  - error
+  - host
+  - input
+  - message
+  - related
+  - source
+  - user
+  - user_agent
+
+Index: partial-.ds-logs-kubernetes.audit_logs-federal-2026.01.15-000406
+Total Fields: 17
+Unused Fields (11):
+  - agent
+  - client
+  - ecs
+  - error
+  - host
+  - input
+  - message
+  - related
+  - source
+  - user
+  - user_agent
+
+Index: partial-.ds-logs-kubernetes.audit_logs-corporate-2026.01.17-000430
+Total Fields: 17
+Unused Fields (11):
+  - agent
+  - client
+  - ecs
+  - error
+  - host
+  - input
+  - message
+  - related
+  - source
+  - user
+  - user_agent
+
+Index: partial-.ds-logs-kubernetes.audit_logs-corporate-2025.12.25-000384
+Total Fields: 17
+Unused Fields (11):
+  - agent
+  - client
+  - ecs
+  - error
+  - host
+  - input
+  - message
+  - related
+  - source
+  - user
+  - user_agent
+
+Index: partial-.ds-logs-aws.waf-federal-2025.12.12-001257
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-aws.cloudtrail-corporate-2025.12.04-000542
+Total Fields: 12
+Unused Fields (5):
+  - actor
+  - host
+  - input
+  - related
+  - target
+
+Index: partial-.ds-logs-aws.waf-corporate-2025.11.26-000295
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-aws.cloudtrail-federal-2025.11.25-000178
+Total Fields: 12
+Unused Fields (5):
+  - actor
+  - host
+  - input
+  - related
+  - target
+
+Index: partial-.ds-logs-aws.route53_resolver_logs-federal-2025.12.11-000164
+Total Fields: 12
+Unused Fields (2):
+  - awscloudwatch
+  - input
+
+Index: partial-.ds-logs-kubernetes.audit_logs-corporate-2025.12.05-000346
+Total Fields: 17
+Unused Fields (11):
+  - agent
+  - client
+  - ecs
+  - error
+  - host
+  - input
+  - message
+  - related
+  - source
+  - user
+  - user_agent
+
+Index: partial-.ds-logs-aws.waf-federal-2026.01.13-001326
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-aws.waf-corporate-2025.11.17-000243
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-aws.cloudtrail-corporate-2025.11.16-000401
+Total Fields: 12
+Unused Fields (5):
+  - actor
+  - host
+  - input
+  - related
+  - target
+
+Index: partial-.ds-logs-aws.waf-corporate-2025.11.17-000241
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-aws.waf-federal-2025.11.22-001137
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-aws.cloudtrail-corporate-2025.11.16-000405
+Total Fields: 12
+Unused Fields (5):
+  - actor
+  - host
+  - input
+  - related
+  - target
+
+Index: partial-.ds-logs-aws.cloudtrail-corporate-2025.11.16-000403
+Total Fields: 12
+Unused Fields (5):
+  - actor
+  - host
+  - input
+  - related
+  - target
+
+Index: partial-.ds-logs-kubernetes.audit_logs-federal-2025.11.16-000233
+Total Fields: 17
+Unused Fields (11):
+  - agent
+  - client
+  - ecs
+  - error
+  - host
+  - input
+  - message
+  - related
+  - source
+  - user
+  - user_agent
+
+Index: partial-.ds-logs-aws.route53_resolver_logs-corporate-2025.11.26-000123
+Total Fields: 12
+Unused Fields (2):
+  - awscloudwatch
+  - input
+
+Index: partial-.ds-logs-kubernetes.audit_logs-federal-2025.11.16-000231
+Total Fields: 17
+Unused Fields (11):
+  - agent
+  - client
+  - ecs
+  - error
+  - host
+  - input
+  - message
+  - related
+  - source
+  - user
+  - user_agent
+
+Index: partial-.ds-logs-aws.route53_resolver_logs-corporate-2026.01.07-000207
+Total Fields: 12
+Unused Fields (2):
+  - awscloudwatch
+  - input
+
+Index: partial-.ds-logs-aws.route53_resolver_logs-federal-2026.01.20-000244
+Total Fields: 12
+Unused Fields (2):
+  - awscloudwatch
+  - input
+
+Index: partial-.ds-logs-aws.cloudtrail-federal-2025.12.03-000196
+Total Fields: 12
+Unused Fields (5):
+  - actor
+  - host
+  - input
+  - related
+  - target
+
+Index: partial-.ds-logs-kubernetes.audit_logs-corporate-2025.12.31-000396
+Total Fields: 17
+Unused Fields (11):
+  - agent
+  - client
+  - ecs
+  - error
+  - host
+  - input
+  - message
+  - related
+  - source
+  - user
+  - user_agent
+
+Index: partial-.ds-logs-aws.waf-corporate-2025.11.17-000239
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-aws.waf-corporate-2025.11.17-000237
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-aws.route53_resolver_logs-corporate-2026.01.18-000229
+Total Fields: 12
+Unused Fields (2):
+  - awscloudwatch
+  - input
+
+Index: partial-.ds-logs-aws.route53_resolver_logs-federal-2026.01.03-000210
+Total Fields: 12
+Unused Fields (2):
+  - awscloudwatch
+  - input
+
+Index: partial-.ds-logs-aws.waf-federal-2026.01.01-001297
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-kubernetes.audit_logs-corporate-2025.11.15-000238
+Total Fields: 17
+Unused Fields (11):
+  - agent
+  - client
+  - ecs
+  - error
+  - host
+  - input
+  - message
+  - related
+  - source
+  - user
+  - user_agent
+
+Index: partial-.ds-logs-aws.cloudtrail-corporate-2025.11.26-000526
+Total Fields: 12
+Unused Fields (5):
+  - actor
+  - host
+  - input
+  - related
+  - target
+
+Index: partial-.ds-logs-aws.cloudtrail-corporate-2026.01.18-000630
+Total Fields: 12
+Unused Fields (5):
+  - actor
+  - host
+  - input
+  - related
+  - target
+
+Index: partial-.ds-logs-aws.cloudtrail-corporate-2025.12.21-000574
+Total Fields: 12
+Unused Fields (5):
+  - actor
+  - host
+  - input
+  - related
+  - target
+
+Index: partial-.ds-logs-kubernetes.audit_logs-federal-2025.12.28-000370
+Total Fields: 17
+Unused Fields (11):
+  - agent
+  - client
+  - ecs
+  - error
+  - host
+  - input
+  - message
+  - related
+  - source
+  - user
+  - user_agent
+
+Index: partial-.ds-logs-aws.route53_resolver_logs-federal-2026.01.19-000242
+Total Fields: 12
+Unused Fields (2):
+  - awscloudwatch
+  - input
+
+Index: partial-.ds-logs-aws.waf-federal-2025.12.06-001245
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-kubernetes.audit_logs-federal-2025.11.28-000312
+Total Fields: 17
+Unused Fields (11):
+  - agent
+  - client
+  - ecs
+  - error
+  - host
+  - input
+  - message
+  - related
+  - source
+  - user
+  - user_agent
+
+Index: partial-.ds-logs-kubernetes.audit_logs-federal-2025.12.17-000348
+Total Fields: 17
+Unused Fields (11):
+  - agent
+  - client
+  - ecs
+  - error
+  - host
+  - input
+  - message
+  - related
+  - source
+  - user
+  - user_agent
+
+Index: partial-.ds-logs-aws.cloudtrail-corporate-2025.12.26-000584
+Total Fields: 12
+Unused Fields (5):
+  - actor
+  - host
+  - input
+  - related
+  - target
+
+Index: partial-.ds-logs-aws.cloudtrail-corporate-2026.01.07-000608
+Total Fields: 12
+Unused Fields (5):
+  - actor
+  - host
+  - input
+  - related
+  - target
+
+Index: partial-.ds-logs-aws.route53_resolver_logs-corporate-2025.11.21-000113
+Total Fields: 12
+Unused Fields (2):
+  - awscloudwatch
+  - input
+
+Index: partial-.ds-logs-aws.waf-corporate-2026.01.20-000403
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-aws.cloudtrail-federal-2026.01.21-000292
+Total Fields: 12
+Unused Fields (5):
+  - actor
+  - host
+  - input
+  - related
+  - target
+
+Index: partial-.ds-logs-aws.route53_resolver_logs-federal-2026.01.14-000232
+Total Fields: 12
+Unused Fields (2):
+  - awscloudwatch
+  - input
+
+Index: partial-.ds-logs-aws.cloudtrail-corporate-2025.11.20-000470
+Total Fields: 12
+Unused Fields (5):
+  - actor
+  - host
+  - input
+  - related
+  - target
+
+Index: partial-.ds-logs-aws.cloudtrail-federal-2025.12.15-000220
+Total Fields: 12
+Unused Fields (5):
+  - actor
+  - host
+  - input
+  - related
+  - target
+
+Index: partial-.ds-logs-aws.route53_resolver_logs-corporate-2025.12.15-000161
+Total Fields: 12
+Unused Fields (2):
+  - awscloudwatch
+  - input
+
+Index: partial-.ds-logs-aws.waf-corporate-2026.01.18-000399
+Total Fields: 14
+Unused Fields (3):
+  - host
+  - input
+  - log
+
+Index: partial-.ds-logs-aws.cloudtrail-corporate-2025.12.10-000554
+Total Fields: 12
+Unused Fields (5):
+  - actor
+  - host
+  - input
+  - related
+  - target
+
+Index: partial-.ds-logs-kubernetes.audit_logs-federal-2025.12.12-000338
+Total Fields: 17
+Unused Fields (11):
+  - agent
+  - client
+  - ecs
+  - error
+  - host
+  - input
+  - message
+  - related
+  - source
+  - user
+  - user_agent
+

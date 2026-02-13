@@ -2,12 +2,19 @@
 Cluster health and diagnostics operations for Elastic Janitor.
 Cluster health, node information, statistics, and dry-run mode.
 """
+import time
+from datetime import datetime
+from collections import defaultdict
 from rich.table import Table
 from rich.progress import Progress, SpinnerColumn, TextColumn
 from rich.panel import Panel
+from rich.layout import Layout
+from rich.live import Live
+from rich.text import Text
 from rich import box
 from ..config import console, DRY_RUN_MODE
-from ..utils import show_breadcrumb
+from ..utils import show_breadcrumb, bytes_to_human
+from ..core import get_all_indices_info
 from .. import config
 
 

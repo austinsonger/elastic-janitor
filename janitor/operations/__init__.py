@@ -40,6 +40,28 @@ from .templates_policies import (
     option_list_pipelines,
     option_delete_pipelines,
 )
+from .pipeline_management import (
+    option_view_pipeline_details,
+    option_edit_pipeline,
+    option_view_version_history,
+    option_rollback_pipeline,
+    option_emergency_rollback,
+    option_export_pipeline,
+    option_import_pipeline,
+    option_clone_pipeline,
+)
+from .template_management import (
+    option_view_index_template_details,
+    option_view_component_template_details,
+    option_edit_index_template,
+    option_edit_component_template,
+    option_rollback_index_template,
+    option_rollback_component_template,
+    option_export_index_template,
+    option_export_component_template,
+    option_import_index_template,
+    option_import_component_template,
+)
 from .template_policy_advanced import (
     option_template_conflict_detector,
     option_ilm_policy_simulator,
@@ -100,6 +122,27 @@ from .advanced_cleanup import (
     option_timeseries_gap_detector,
     option_duplicate_document_detector,
 )
+from .data_quality import (
+    option_missing_field_analyzer,
+    option_data_type_inconsistency_detector,
+    option_null_value_statistics,
+    option_cardinality_analysis,
+)
+from .mapping_conflict_resolver import (
+    option_field_mapping_conflict_resolver,
+)
+from .aws_ingestion_diagnostics import (
+    option_firehose_forwarder_health_check,
+    option_common_issue_detection,
+    option_field_structure_analysis,
+    option_pipeline_troubleshooting,
+    option_data_quality_metrics,
+    option_quick_fixes_actions,
+)
+from .dependency_viewer import (
+    option_view_resource_dependencies,
+    option_rollback_with_dependencies,
+)
 
 __all__ = [
     # Index management - basic
@@ -132,6 +175,26 @@ __all__ = [
     'option_delete_ilm',
     'option_list_pipelines',
     'option_delete_pipelines',
+    # Pipeline Management
+    'option_view_pipeline_details',
+    'option_edit_pipeline',
+    'option_view_version_history',
+    'option_rollback_pipeline',
+    'option_emergency_rollback',
+    'option_export_pipeline',
+    'option_import_pipeline',
+    'option_clone_pipeline',
+    # Template Management
+    'option_view_index_template_details',
+    'option_view_component_template_details',
+    'option_edit_index_template',
+    'option_edit_component_template',
+    'option_rollback_index_template',
+    'option_rollback_component_template',
+    'option_export_index_template',
+    'option_export_component_template',
+    'option_import_index_template',
+    'option_import_component_template',
     # Template & Policy Advanced
     'option_template_conflict_detector',
     'option_ilm_policy_simulator',
@@ -185,4 +248,20 @@ __all__ = [
     'option_wildcard_index_deletion',
     'option_timeseries_gap_detector',
     'option_duplicate_document_detector',
+    # Data Quality & Validation
+    'option_missing_field_analyzer',
+    'option_data_type_inconsistency_detector',
+    'option_null_value_statistics',
+    'option_cardinality_analysis',
+    'option_field_mapping_conflict_resolver',
+    # AWS Ingestion Management
+    'option_firehose_forwarder_health_check',
+    'option_common_issue_detection',
+    'option_field_structure_analysis',
+    'option_pipeline_troubleshooting',
+    'option_data_quality_metrics',
+    'option_quick_fixes_actions',
+    # Dependency Viewer
+    'option_view_resource_dependencies',
+    'option_rollback_with_dependencies',
 ]

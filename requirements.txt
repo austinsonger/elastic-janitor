@@ -4,3 +4,4 @@ elasticsearch
 rich
 questionary
 pyyaml
+click>=8.0.0

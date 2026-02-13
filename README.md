@@ -2,6 +2,8 @@
 
 A comprehensive Elasticsearch cluster management tool for managing indices, data streams, templates, policies, snapshots, and cluster health.
 
+**Now with CLI support!** Use Elastic Janitor from the command line or interactive menu mode.
+
 ## Features
 
 ### Index Management
@@ -53,15 +55,23 @@ A comprehensive Elasticsearch cluster management tool for managing indices, data
 - Python 3.8 or higher
 - Access to an Elasticsearch cluster
 
-### Install Dependencies
+### Install from Source
 
 ```bash
+# Clone the repository
+git clone https://github.com/yourusername/elastic-janitor.git
+cd elastic-janitor
+
+# Install in development mode (recommended)
+pip install -e .
+
+# Or install dependencies only
 pip install -r requirements.txt
 ```
 
 ### Configuration
 
-Edit `config.py` to configure your Elasticsearch connection:
+Edit `janitor/config.py` to configure your Elasticsearch connection:
 
 ```python
 ELASTIC_URL = "https://your-elasticsearch-cluster:9243"
@@ -72,29 +82,58 @@ ELASTIC_API_KEY = "your-api-key-here"
 
 ## Usage
 
-There are three ways to run Elastic Janitor:
+Elastic Janitor supports two modes: **CLI mode** and **Interactive Menu mode**.
 
-### Method 1: As a Python Module (Recommended)
+### CLI Mode (New!)
+
+Use Elastic Janitor from the command line with specific commands:
 
 ```bash
+# Check cluster health
+elastic-janitor cluster health
+
+# List largest indices
+elastic-janitor index largest --top 25
+
+# Clean old data streams (dry-run first!)
+elastic-janitor datastream clean --retention 90d --dry-run
+
+# Use short alias
+ej cluster health
+```
+
+**See [CLI_USAGE.md](CLI_USAGE.md) for complete CLI documentation.**
+
+### Interactive Menu Mode
+
+Launch the interactive menu (no arguments):
+
+```bash
+# Using installed command
+elastic-janitor
+
+# Or as Python module
 python -m janitor
-```
 
-This is the recommended method as it properly handles Python package imports.
-
-### Method 2: Direct Execution
-
-```bash
-python janitor/__main__.py
-```
-
-### Method 3: Using the Launcher Script
-
-```bash
+# Or using launcher script
 python run.py
 ```
 
-Or make it executable:
+### Quick Examples
+
+```bash
+# CLI: Check cluster health with JSON output
+elastic-janitor cluster health --output json
+
+# CLI: Find top 50 largest indices
+elastic-janitor index largest --top 50 --pattern "logs-*"
+
+# CLI: Enable global dry-run mode
+elastic-janitor dry-run enable
+
+# Interactive: Launch menu
+elastic-janitor
+```
 
 ```bash
 chmod +x run.py

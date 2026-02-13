@@ -1,0 +1,64 @@
+{
+  "description": "CloudWatch logs pipeline with log.original preservation",
+  "processors": [
+    {
+      "set": {
+        "description": "Preserve original message before parsing",
+        "field": "log.original",
+        "copy_from": "message",
+        "override": false,
+        "ignore_failure": true
+      }
+    },
+    {
+      "set": {
+        "description": "Preserve CloudWatch message if it exists",
+        "field": "log.original",
+        "copy_from": "aws.cloudwatch.message",
+        "override": false,
+        "ignore_failure": true,
+        "if": "ctx?.aws?.cloudwatch?.message != null"
+      }
+    },
+    {
+      "json": {
+        "description": "Parse JSON from message field",
+        "field": "message",
+        "target_field": "parsed",
+        "ignore_failure": true
+      }
+    },
+    {
+      "script": {
+        "description": "Flatten parsed JSON to root level",
+        "lang": "painless",
+        "source": "if (ctx.parsed != null) { ctx.putAll(ctx.parsed); ctx.remove('parsed'); }",
+        "ignore_failure": true
+      }
+    },
+    {
+      "remove": {
+        "description": "Clean up temporary fields",
+        "field": ["parsed"],
+        "ignore_missing": true
+      }
+    }
+  ],
+  "on_failure": [
+    {
+      "set": {
+        "field": "tags",
+        "value": ["ingest_pipeline_failed"],
+        "override": false
+      }
+    },
+    {
+      "set": {
+        "field": "error.message",
+        "value": "{{ _ingest.on_failure_message }}",
+        "override": false
+      }
+    }
+  ]
+}
+

@@ -21,6 +21,8 @@ from .submenus import (
     submenu_performance_monitoring,
     submenu_bulk_automation,
     submenu_advanced_cleanup,
+    submenu_data_quality,
+    submenu_aws_ingestion,
 )
 
 
@@ -52,6 +54,8 @@ def menu():
     menu_table.add_row("⚡ Performance & Monitoring", "Query analysis, indexing rates, resource usage, hot spots")
     menu_table.add_row("🔧 Bulk Operations & Automation", "Batch operations, history log, config management")
     menu_table.add_row("🧹 Advanced Cleanup Features", "Orphaned docs, field cleanup, mapping cleanup, duplicates")
+    menu_table.add_row("🔍 Data Quality & Validation", "Missing fields, type conflicts, null values, cardinality")
+    menu_table.add_row("🔥 AWS Ingestion Management", "Firehose, Forwarder diagnostics, pipeline troubleshooting")
     menu_table.add_row("📈 Dashboard & Stats View", "Real-time monitoring dashboard")
     menu_table.add_row("🔍 Toggle Dry-Run Mode", f"Current: {dry_run_status}")
     menu_table.add_row("", "")
@@ -87,8 +91,10 @@ def main():
                     questionary.Choice("⚡ Performance & Monitoring", value="7"),
                     questionary.Choice("🔧 Bulk Operations & Automation", value="8"),
                     questionary.Choice("🧹 Advanced Cleanup Features", value="9"),
-                    questionary.Choice("📈 Dashboard & Stats View", value="10"),
-                    questionary.Choice("🔍 Toggle Dry-Run Mode", value="11"),
+                    questionary.Choice("🔍 Data Quality & Validation", value="10"),
+                    questionary.Choice("🔥 AWS Ingestion Management", value="11"),
+                    questionary.Choice("📈 Dashboard & Stats View", value="12"),
+                    questionary.Choice("🔍 Toggle Dry-Run Mode", value="13"),
                     questionary.Separator(),
                     questionary.Choice("Quit", value="q"),
                 ],
@@ -121,8 +127,12 @@ def main():
         elif choice == "9":
             submenu_advanced_cleanup(es)
         elif choice == "10":
-            option_dashboard_stats_view(es)
+            submenu_data_quality(es)
         elif choice == "11":
+            submenu_aws_ingestion(es)
+        elif choice == "12":
+            option_dashboard_stats_view(es)
+        elif choice == "13":
             toggle_dry_run_mode()
 
 

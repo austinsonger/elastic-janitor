@@ -31,6 +31,26 @@ from ..operations import (
     option_delete_ilm,
     option_list_pipelines,
     option_delete_pipelines,
+    option_view_pipeline_details,
+    option_edit_pipeline,
+    option_view_version_history,
+    option_rollback_pipeline,
+    option_emergency_rollback,
+    option_export_pipeline,
+    option_import_pipeline,
+    option_clone_pipeline,
+    option_view_index_template_details,
+    option_view_component_template_details,
+    option_edit_index_template,
+    option_edit_component_template,
+    option_rollback_index_template,
+    option_rollback_component_template,
+    option_export_index_template,
+    option_export_component_template,
+    option_import_index_template,
+    option_import_component_template,
+    option_view_resource_dependencies,
+    option_rollback_with_dependencies,
     option_template_conflict_detector,
     option_ilm_policy_simulator,
     option_bulk_policy_assignment,
@@ -77,6 +97,17 @@ from ..operations import (
     option_wildcard_index_deletion,
     option_timeseries_gap_detector,
     option_duplicate_document_detector,
+    option_missing_field_analyzer,
+    option_data_type_inconsistency_detector,
+    option_null_value_statistics,
+    option_cardinality_analysis,
+    option_field_mapping_conflict_resolver,
+    option_firehose_forwarder_health_check,
+    option_common_issue_detection,
+    option_field_structure_analysis,
+    option_pipeline_troubleshooting,
+    option_data_quality_metrics,
+    option_quick_fixes_actions,
 )
 
 
@@ -193,23 +224,55 @@ def submenu_templates_policies(es):
             choice = questionary.select(
                 "Select option:",
                 choices=[
-                    questionary.Choice("List index templates", value="1"),
-                    questionary.Choice("Delete index templates by name match", value="2"),
-                    questionary.Choice("List component templates", value="3"),
-                    questionary.Choice("Delete component templates by name match", value="4"),
-                    questionary.Choice("List ILM policies", value="5"),
-                    questionary.Choice("Delete ILM policies by name match", value="6"),
-                    questionary.Choice("List ingest pipelines", value="7"),
-                    questionary.Choice("Delete ingest pipelines by name match", value="8"),
-                    questionary.Separator(),
-                    questionary.Choice("Template Conflict Detector", value="9"),
-                    questionary.Choice("ILM Policy Simulator", value="10"),
-                    questionary.Choice("Bulk Policy Assignment", value="11"),
-                    questionary.Choice("Policy Effectiveness Report", value="12"),
-                    questionary.Choice("Template Inheritance Viewer", value="13"),
-                    questionary.Choice("Unused Template Detector", value="14"),
+                    questionary.Choice("📄 Index Templates", value="1"),
+                    questionary.Choice("🧩 Component Templates", value="2"),
+                    questionary.Choice("🔧 Ingest Pipelines", value="3"),
+                    questionary.Choice("♻️  ILM Policies", value="4"),
+                    questionary.Choice("🔍 Analysis & Tools", value="5"),
                     questionary.Separator(),
                     questionary.Choice("← Back to Main Menu", value="b"),
+                ],
+                style=custom_style
+            ).ask()
+        except KeyboardInterrupt:
+            console.print("\n[yellow]⚠️  Cancelled.[/yellow]\n")
+            return
+
+        if choice is None or choice in ("b", "back"):
+            return
+
+        if choice == "1":
+            submenu_index_templates(es)
+        elif choice == "2":
+            submenu_component_templates(es)
+        elif choice == "3":
+            submenu_ingest_pipelines(es)
+        elif choice == "4":
+            submenu_ilm_policies(es)
+        elif choice == "5":
+            submenu_template_analysis_tools(es)
+
+
+def submenu_index_templates(es):
+    """Index Templates sub-submenu."""
+    while True:
+        show_breadcrumb(["Main Menu", "Template & Policy Management", "Index Templates"])
+        console.print()
+
+        try:
+            choice = questionary.select(
+                "Select option:",
+                choices=[
+                    questionary.Choice("List index templates", value="1"),
+                    questionary.Choice("Delete index templates by name match", value="2"),
+                    questionary.Separator(),
+                    questionary.Choice("📄 View Index Template Details", value="3"),
+                    questionary.Choice("📝 Edit Index Template (with version control)", value="4"),
+                    questionary.Choice("⏮️  Rollback Index Template", value="5"),
+                    questionary.Choice("📤 Export Index Template to JSON", value="6"),
+                    questionary.Choice("📥 Import Index Template from JSON", value="7"),
+                    questionary.Separator(),
+                    questionary.Choice("← Back", value="b"),
                 ],
                 style=custom_style
             ).ask()
@@ -225,29 +288,195 @@ def submenu_templates_policies(es):
         elif choice == "2":
             option_delete_templates(es)
         elif choice == "3":
-            option_list_component_templates(es)
+            option_view_index_template_details(es)
         elif choice == "4":
-            option_delete_component_templates(es)
+            option_edit_index_template(es)
         elif choice == "5":
-            option_list_ilm(es)
+            option_rollback_index_template(es)
         elif choice == "6":
-            option_delete_ilm(es)
+            option_export_index_template(es)
         elif choice == "7":
+            option_import_index_template(es)
+
+
+def submenu_component_templates(es):
+    """Component Templates sub-submenu."""
+    while True:
+        show_breadcrumb(["Main Menu", "Template & Policy Management", "Component Templates"])
+        console.print()
+
+        try:
+            choice = questionary.select(
+                "Select option:",
+                choices=[
+                    questionary.Choice("List component templates", value="1"),
+                    questionary.Choice("Delete component templates by name match", value="2"),
+                    questionary.Separator(),
+                    questionary.Choice("📋 View Component Template Details", value="3"),
+                    questionary.Choice("✏️  Edit Component Template (with version control)", value="4"),
+                    questionary.Choice("⏮️  Rollback Component Template", value="5"),
+                    questionary.Choice("📤 Export Component Template to JSON", value="6"),
+                    questionary.Choice("📥 Import Component Template from JSON", value="7"),
+                    questionary.Separator(),
+                    questionary.Choice("← Back", value="b"),
+                ],
+                style=custom_style
+            ).ask()
+        except KeyboardInterrupt:
+            console.print("\n[yellow]⚠️  Cancelled.[/yellow]\n")
+            return
+
+        if choice is None or choice in ("b", "back"):
+            return
+
+        if choice == "1":
+            option_list_component_templates(es)
+        elif choice == "2":
+            option_delete_component_templates(es)
+        elif choice == "3":
+            option_view_component_template_details(es)
+        elif choice == "4":
+            option_edit_component_template(es)
+        elif choice == "5":
+            option_rollback_component_template(es)
+        elif choice == "6":
+            option_export_component_template(es)
+        elif choice == "7":
+            option_import_component_template(es)
+
+
+def submenu_ingest_pipelines(es):
+    """Ingest Pipelines sub-submenu."""
+    while True:
+        show_breadcrumb(["Main Menu", "Template & Policy Management", "Ingest Pipelines"])
+        console.print()
+
+        try:
+            choice = questionary.select(
+                "Select option:",
+                choices=[
+                    questionary.Choice("List ingest pipelines", value="1"),
+                    questionary.Choice("Delete ingest pipelines by name match", value="2"),
+                    questionary.Separator(),
+                    questionary.Choice("🔧 View Pipeline Details", value="3"),
+                    questionary.Choice("✏️  Edit Pipeline (with version control)", value="4"),
+                    questionary.Choice("📜 View Version History", value="5"),
+                    questionary.Choice("⏮️  Rollback Pipeline", value="6"),
+                    questionary.Choice("🚨 Emergency Rollback to Last Known-Good", value="7"),
+                    questionary.Choice("📤 Export Pipeline to JSON", value="8"),
+                    questionary.Choice("📥 Import Pipeline from JSON", value="9"),
+                    questionary.Choice("📋 Clone Pipeline", value="10"),
+                    questionary.Separator(),
+                    questionary.Choice("← Back", value="b"),
+                ],
+                style=custom_style
+            ).ask()
+        except KeyboardInterrupt:
+            console.print("\n[yellow]⚠️  Cancelled.[/yellow]\n")
+            return
+
+        if choice is None or choice in ("b", "back"):
+            return
+
+        if choice == "1":
             option_list_pipelines(es)
-        elif choice == "8":
+        elif choice == "2":
             option_delete_pipelines(es)
+        elif choice == "3":
+            option_view_pipeline_details(es)
+        elif choice == "4":
+            option_edit_pipeline(es)
+        elif choice == "5":
+            option_view_version_history(es)
+        elif choice == "6":
+            option_rollback_pipeline(es)
+        elif choice == "7":
+            option_emergency_rollback(es)
+        elif choice == "8":
+            option_export_pipeline(es)
         elif choice == "9":
-            option_template_conflict_detector(es)
+            option_import_pipeline(es)
         elif choice == "10":
+            option_clone_pipeline(es)
+
+
+def submenu_ilm_policies(es):
+    """ILM Policies sub-submenu."""
+    while True:
+        show_breadcrumb(["Main Menu", "Template & Policy Management", "ILM Policies"])
+        console.print()
+
+        try:
+            choice = questionary.select(
+                "Select option:",
+                choices=[
+                    questionary.Choice("List ILM policies", value="1"),
+                    questionary.Choice("Delete ILM policies by name match", value="2"),
+                    questionary.Choice("ILM Policy Simulator", value="3"),
+                    questionary.Choice("Bulk Policy Assignment", value="4"),
+                    questionary.Choice("Policy Effectiveness Report", value="5"),
+                    questionary.Separator(),
+                    questionary.Choice("← Back", value="b"),
+                ],
+                style=custom_style
+            ).ask()
+        except KeyboardInterrupt:
+            console.print("\n[yellow]⚠️  Cancelled.[/yellow]\n")
+            return
+
+        if choice is None or choice in ("b", "back"):
+            return
+
+        if choice == "1":
+            option_list_ilm(es)
+        elif choice == "2":
+            option_delete_ilm(es)
+        elif choice == "3":
             option_ilm_policy_simulator(es)
-        elif choice == "11":
+        elif choice == "4":
             option_bulk_policy_assignment(es)
-        elif choice == "12":
+        elif choice == "5":
             option_policy_effectiveness_report(es)
-        elif choice == "13":
+
+
+def submenu_template_analysis_tools(es):
+    """Template Analysis & Tools sub-submenu."""
+    while True:
+        show_breadcrumb(["Main Menu", "Template & Policy Management", "Analysis & Tools"])
+        console.print()
+
+        try:
+            choice = questionary.select(
+                "Select option:",
+                choices=[
+                    questionary.Choice("Template Conflict Detector", value="1"),
+                    questionary.Choice("Template Inheritance Viewer", value="2"),
+                    questionary.Choice("Unused Template Detector", value="3"),
+                    questionary.Separator(),
+                    questionary.Choice("🔍 View Resource Dependencies", value="4"),
+                    questionary.Choice("🔄 Rollback with Dependencies", value="5"),
+                    questionary.Separator(),
+                    questionary.Choice("← Back", value="b"),
+                ],
+                style=custom_style
+            ).ask()
+        except KeyboardInterrupt:
+            console.print("\n[yellow]⚠️  Cancelled.[/yellow]\n")
+            return
+
+        if choice is None or choice in ("b", "back"):
+            return
+
+        if choice == "1":
+            option_template_conflict_detector(es)
+        elif choice == "2":
             option_template_inheritance_viewer(es)
-        elif choice == "14":
+        elif choice == "3":
             option_unused_template_detector(es)
+        elif choice == "4":
+            option_view_resource_dependencies(es)
+        elif choice == "5":
+            option_rollback_with_dependencies(es)
 
 
 
@@ -262,20 +491,45 @@ def submenu_snapshots(es):
             choice = questionary.select(
                 "Select option:",
                 choices=[
+                    questionary.Choice("📸 Snapshot Management", value="1"),
+                    questionary.Choice("♻️  SLM Policies", value="2"),
+                    questionary.Choice("🔧 Advanced Operations", value="3"),
+                    questionary.Separator(),
+                    questionary.Choice("← Back to Main Menu", value="b"),
+                ],
+                style=custom_style
+            ).ask()
+        except KeyboardInterrupt:
+            console.print("\n[yellow]⚠️  Cancelled.[/yellow]\n")
+            return
+
+        if choice is None or choice in ("b", "back"):
+            return
+
+        if choice == "1":
+            submenu_snapshot_management(es)
+        elif choice == "2":
+            submenu_slm_policies(es)
+        elif choice == "3":
+            submenu_snapshot_advanced_operations(es)
+
+
+def submenu_snapshot_management(es):
+    """Snapshot Management sub-submenu."""
+    while True:
+        show_breadcrumb(["Main Menu", "Snapshot & Backup Management", "Snapshot Management"])
+        console.print()
+
+        try:
+            choice = questionary.select(
+                "Select option:",
+                choices=[
                     questionary.Choice("List snapshot repositories", value="1"),
                     questionary.Choice("List snapshots in a repository", value="2"),
                     questionary.Choice("Delete snapshots older than X days", value="3"),
-                    questionary.Choice("List SLM policies", value="4"),
-                    questionary.Choice("Delete SLM policies by name match", value="5"),
+                    questionary.Choice("Verify snapshot repository", value="4"),
                     questionary.Separator(),
-                    questionary.Choice("Verify snapshot repository", value="6"),
-                    questionary.Choice("Snapshot size analysis", value="7"),
-                    questionary.Choice("Automated snapshot cleanup", value="8"),
-                    questionary.Choice("Cross-repository snapshot copy", value="9"),
-                    questionary.Choice("Snapshot restore wizard", value="10"),
-                    questionary.Choice("Snapshot comparison", value="11"),
-                    questionary.Separator(),
-                    questionary.Choice("← Back to Main Menu", value="b"),
+                    questionary.Choice("← Back", value="b"),
                 ],
                 style=custom_style
             ).ask()
@@ -293,20 +547,75 @@ def submenu_snapshots(es):
         elif choice == "3":
             option_delete_old_snapshots(es)
         elif choice == "4":
-            option_list_slm(es)
-        elif choice == "5":
-            option_delete_slm(es)
-        elif choice == "6":
             option_verify_snapshot_repository(es)
-        elif choice == "7":
+
+
+def submenu_slm_policies(es):
+    """SLM Policies sub-submenu."""
+    while True:
+        show_breadcrumb(["Main Menu", "Snapshot & Backup Management", "SLM Policies"])
+        console.print()
+
+        try:
+            choice = questionary.select(
+                "Select option:",
+                choices=[
+                    questionary.Choice("List SLM policies", value="1"),
+                    questionary.Choice("Delete SLM policies by name match", value="2"),
+                    questionary.Separator(),
+                    questionary.Choice("← Back", value="b"),
+                ],
+                style=custom_style
+            ).ask()
+        except KeyboardInterrupt:
+            console.print("\n[yellow]⚠️  Cancelled.[/yellow]\n")
+            return
+
+        if choice is None or choice in ("b", "back"):
+            return
+
+        if choice == "1":
+            option_list_slm(es)
+        elif choice == "2":
+            option_delete_slm(es)
+
+
+def submenu_snapshot_advanced_operations(es):
+    """Snapshot Advanced Operations sub-submenu."""
+    while True:
+        show_breadcrumb(["Main Menu", "Snapshot & Backup Management", "Advanced Operations"])
+        console.print()
+
+        try:
+            choice = questionary.select(
+                "Select option:",
+                choices=[
+                    questionary.Choice("Snapshot size analysis", value="1"),
+                    questionary.Choice("Automated snapshot cleanup", value="2"),
+                    questionary.Choice("Cross-repository snapshot copy", value="3"),
+                    questionary.Choice("Snapshot restore wizard", value="4"),
+                    questionary.Choice("Snapshot comparison", value="5"),
+                    questionary.Separator(),
+                    questionary.Choice("← Back", value="b"),
+                ],
+                style=custom_style
+            ).ask()
+        except KeyboardInterrupt:
+            console.print("\n[yellow]⚠️  Cancelled.[/yellow]\n")
+            return
+
+        if choice is None or choice in ("b", "back"):
+            return
+
+        if choice == "1":
             option_snapshot_size_analysis(es)
-        elif choice == "8":
+        elif choice == "2":
             option_automated_snapshot_cleanup(es)
-        elif choice == "9":
+        elif choice == "3":
             option_cross_repository_copy(es)
-        elif choice == "10":
+        elif choice == "4":
             option_snapshot_restore_wizard(es)
-        elif choice == "11":
+        elif choice == "5":
             option_snapshot_comparison(es)
 
 
@@ -514,3 +823,86 @@ def submenu_advanced_cleanup(es):
             option_timeseries_gap_detector(es)
         elif choice == "6":
             option_duplicate_document_detector(es)
+
+
+
+
+def submenu_data_quality(es):
+    """Data Quality & Validation sub-menu."""
+    while True:
+        show_breadcrumb(["Main Menu", "Data Quality & Validation"])
+        console.print()
+
+        try:
+            choice = questionary.select(
+                "Select option:",
+                choices=[
+                    questionary.Choice("Missing Field Analyzer", value="1"),
+                    questionary.Choice("Data Type Inconsistency Detector", value="2"),
+                    questionary.Choice("Null Value Statistics", value="3"),
+                    questionary.Choice("Cardinality Analysis", value="4"),
+                    questionary.Choice("Field Mapping Conflict Resolver", value="5"),
+                    questionary.Separator(),
+                    questionary.Choice("← Back to Main Menu", value="b"),
+                ],
+                style=custom_style
+            ).ask()
+        except KeyboardInterrupt:
+            console.print("\n[yellow]⚠️  Cancelled.[/yellow]\n")
+            return
+
+        if choice is None or choice in ("b", "back"):
+            return
+
+        if choice == "1":
+            option_missing_field_analyzer(es)
+        elif choice == "2":
+            option_data_type_inconsistency_detector(es)
+        elif choice == "3":
+            option_null_value_statistics(es)
+        elif choice == "4":
+            option_cardinality_analysis(es)
+        elif choice == "5":
+            option_field_mapping_conflict_resolver(es)
+
+
+def submenu_aws_ingestion(es):
+    """AWS Ingestion Management sub-menu."""
+    while True:
+        show_breadcrumb(["Main Menu", "AWS Ingestion Management"])
+        console.print()
+
+        try:
+            choice = questionary.select(
+                "Select option:",
+                choices=[
+                    questionary.Choice("Firehose/Forwarder Health Check", value="1"),
+                    questionary.Choice("Common Issue Detection", value="2"),
+                    questionary.Choice("Field Structure Analysis", value="3"),
+                    questionary.Choice("Pipeline Troubleshooting", value="4"),
+                    questionary.Choice("Data Quality Metrics", value="5"),
+                    questionary.Choice("Quick Fixes & Actions", value="6"),
+                    questionary.Separator(),
+                    questionary.Choice("← Back to Main Menu", value="b"),
+                ],
+                style=custom_style
+            ).ask()
+        except KeyboardInterrupt:
+            console.print("\n[yellow]⚠️  Cancelled.[/yellow]\n")
+            return
+
+        if choice is None or choice in ("b", "back"):
+            return
+
+        if choice == "1":
+            option_firehose_forwarder_health_check(es)
+        elif choice == "2":
+            option_common_issue_detection(es)
+        elif choice == "3":
+            option_field_structure_analysis(es)
+        elif choice == "4":
+            option_pipeline_troubleshooting(es)
+        elif choice == "5":
+            option_data_quality_metrics(es)
+        elif choice == "6":
+            option_quick_fixes_actions(es)

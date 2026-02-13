@@ -13,7 +13,8 @@ from rich import box
 from ..config import console, PROTECT_SYSTEM, MAX_DELETE_LIMIT, DRY_RUN_MODE
 from ..utils import (
     safe_input, is_system, confirm_delete, confirm_action, show_breadcrumb,
-    size_to_bytes, bytes_to_human, get_number_input, get_text_input, select_from_list
+    size_to_bytes, bytes_to_human, get_number_input, get_text_input, select_from_list,
+    get_index_pattern_selection
 )
 
 
@@ -23,8 +24,8 @@ def option_orphaned_document_cleanup(es):
 
     console.print("[cyan]Configure document cleanup criteria[/cyan]\n")
 
-    # Get index pattern
-    index_pattern = get_text_input("Index pattern (e.g., logs-*, my-index):", default="*")
+    # Get index pattern using interactive selection
+    index_pattern = get_index_pattern_selection(es)
     if not index_pattern:
         return
 
@@ -153,8 +154,8 @@ def option_field_level_cleanup(es):
 
     console.print("[cyan]Configure field removal[/cyan]\n")
 
-    # Get index pattern
-    index_pattern = get_text_input("Index pattern (e.g., logs-*, my-index):", default="*")
+    # Get index pattern using interactive selection
+    index_pattern = get_index_pattern_selection(es)
     if not index_pattern:
         return
 
@@ -307,8 +308,8 @@ def option_mapping_cleanup(es):
 
     console.print("[cyan]Analyze index mappings for unused fields[/cyan]\n")
 
-    # Get index pattern
-    index_pattern = get_text_input("Index pattern (e.g., logs-*, my-index):", default="*")
+    # Get index pattern using interactive selection
+    index_pattern = get_index_pattern_selection(es)
     if not index_pattern:
         return
 
@@ -605,8 +606,8 @@ def option_timeseries_gap_detector(es):
 
     console.print("[cyan]Analyze time-series data for gaps[/cyan]\n")
 
-    # Get index pattern
-    index_pattern = get_text_input("Index pattern (e.g., logs-*, metrics-*):", default="*")
+    # Get index pattern using interactive selection
+    index_pattern = get_index_pattern_selection(es)
     if not index_pattern:
         return
 
@@ -768,8 +769,8 @@ def option_duplicate_document_detector(es):
 
     console.print("[cyan]Configure duplicate document detection[/cyan]\n")
 
-    # Get index pattern
-    index_pattern = get_text_input("Index pattern (e.g., logs-*, my-index):", default="*")
+    # Get index pattern using interactive selection
+    index_pattern = get_index_pattern_selection(es)
     if not index_pattern:
         return
 

@@ -23,6 +23,38 @@ MAX_DELETE_LIMIT = 5000
 DRY_RUN_MODE = False
 
 # ------------------------------------------------------------
+# Query Timeout Settings
+# ------------------------------------------------------------
+
+# Default timeout for Elasticsearch queries (seconds)
+DEFAULT_QUERY_TIMEOUT = 30
+
+# Timeout for slow queries like wildcard searches (seconds)
+SLOW_QUERY_TIMEOUT = 60
+
+# Client-side request timeout (seconds)
+REQUEST_TIMEOUT = 90
+
+# Reindex operation timeout (seconds)
+REINDEX_TIMEOUT = 300
+
+# ------------------------------------------------------------
+# Version Control Settings
+# ------------------------------------------------------------
+
+# Enable automatic dependency tracking when saving resource versions
+# When enabled, saving a resource will also capture snapshots of all related resources
+ENABLE_DEPENDENCY_TRACKING = True
+
+# Maximum depth for dependency chain traversal (prevents infinite recursion)
+# Depth 1: Direct dependencies only
+# Depth 2: Dependencies and their dependencies
+MAX_DEPENDENCY_DEPTH = 2
+
+# Maximum number of versions to keep per resource
+MAX_VERSIONS_PER_RESOURCE = 20
+
+# ------------------------------------------------------------
 # UI Configuration
 # ------------------------------------------------------------
 
