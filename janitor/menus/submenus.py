@@ -23,6 +23,9 @@ from ..operations import (
     option_backing_index_reindexing,
     option_data_stream_cloning,
     option_write_index_rotation,
+    option_data_stream_migration,
+    option_index_pattern_optimizer,
+    option_aggregation_optimizer,
     option_list_templates,
     option_delete_templates,
     option_list_component_templates,
@@ -79,12 +82,24 @@ from ..operations import (
     option_empty_index_cleanup,
     option_sparse_index_detector,
     option_cost_estimator,
+    option_shard_size_predictor,
+    option_resource_allocation_optimizer,
+    option_cold_frozen_roi_calculator,
+    option_query_cost_analyzer,
+    option_retention_policy_optimizer,
+    option_resource_right_sizing,
     option_slow_query_analyzer,
     option_indexing_performance_monitor,
     option_search_performance_dashboard,
     option_cluster_health_timeline,
     option_node_resource_usage,
     option_hot_spot_detector,
+    option_realtime_metrics_dashboard,
+    option_historical_trend_analysis,
+    option_jvm_heap_analysis,
+    option_thread_pool_monitor,
+    option_circuit_breaker_status,
+    option_disk_io_monitor,
     option_batch_index_operations,
     option_scheduled_cleanup_jobs,
     option_dry_run_mode,
@@ -101,6 +116,11 @@ from ..operations import (
     option_data_type_inconsistency_detector,
     option_null_value_statistics,
     option_cardinality_analysis,
+    option_timestamp_validation_detector,
+    option_field_explosion_detector,
+    option_duplicate_document_analyzer,
+    option_field_value_anomaly_detector,
+    option_ingestion_health_monitor,
     option_field_mapping_conflict_resolver,
     option_firehose_forwarder_health_check,
     option_common_issue_detection,
@@ -108,6 +128,33 @@ from ..operations import (
     option_pipeline_troubleshooting,
     option_data_quality_metrics,
     option_quick_fixes_actions,
+    option_ilm_policy_simulator,
+    option_rollover_prediction,
+    option_searchable_snapshot_manager,
+    option_data_stream_template_validator,
+    option_lifecycle_phase_distribution,
+)
+from ..operations.developer_tools import (
+    option_index_template_generator,
+    option_mapping_generator_from_json,
+    option_query_builder_ui,
+    option_bulk_api_helper,
+)
+from ..operations.data_governance import (
+    option_schema_evolution_tracker,
+    option_data_lineage_viewer,
+    option_pii_detection,
+    option_data_quality_scoring,
+    option_metadata_management,
+    option_data_dictionary,
+)
+from ..operations.performance_tuning import (
+    option_auto_tuning_engine,
+    option_shard_size_optimizer,
+    option_refresh_interval_tuner,
+    option_merge_policy_optimizer,
+    option_cache_tuning,
+    option_jvm_tuning_assistant,
 )
 
 
@@ -130,6 +177,7 @@ def submenu_index_management(es):
                     questionary.Choice("Cold/Frozen Tier Migration", value="7"),
                     questionary.Choice("Index Merge Optimization", value="8"),
                     questionary.Choice("List Largest Indices", value="9"),
+                    questionary.Choice("Index Pattern Optimizer", value="10"),
                     questionary.Separator(),
                     questionary.Choice("← Back to Main Menu", value="b"),
                 ],
@@ -160,6 +208,8 @@ def submenu_index_management(es):
             option_index_merge_optimization(es)
         elif choice == "9":
             option_list_largest_indices(es)
+        elif choice == "10":
+            option_index_pattern_optimizer(es)
 
 
 
@@ -182,6 +232,7 @@ def submenu_data_streams(es):
                     questionary.Choice("Backing Index Reindexing", value="6"),
                     questionary.Choice("Data Stream Cloning", value="7"),
                     questionary.Choice("Write Index Rotation", value="8"),
+                    questionary.Choice("Data Stream Migration", value="9"),
                     questionary.Separator(),
                     questionary.Choice("← Back to Main Menu", value="b"),
                 ],
@@ -210,6 +261,8 @@ def submenu_data_streams(es):
             option_data_stream_cloning(es)
         elif choice == "8":
             option_write_index_rotation(es)
+        elif choice == "9":
+            option_data_stream_migration(es)
 
 
 
@@ -416,6 +469,11 @@ def submenu_ilm_policies(es):
                     questionary.Choice("Bulk Policy Assignment", value="4"),
                     questionary.Choice("Policy Effectiveness Report", value="5"),
                     questionary.Separator(),
+                    questionary.Choice("🔄 Rollover Prediction", value="6"),
+                    questionary.Choice("📊 Lifecycle Phase Distribution", value="7"),
+                    questionary.Choice("📸 Searchable Snapshot Manager", value="8"),
+                    questionary.Choice("✅ Data Stream Template Validator", value="9"),
+                    questionary.Separator(),
                     questionary.Choice("← Back", value="b"),
                 ],
                 style=custom_style
@@ -437,6 +495,14 @@ def submenu_ilm_policies(es):
             option_bulk_policy_assignment(es)
         elif choice == "5":
             option_policy_effectiveness_report(es)
+        elif choice == "6":
+            option_rollover_prediction(es)
+        elif choice == "7":
+            option_lifecycle_phase_distribution(es)
+        elif choice == "8":
+            option_searchable_snapshot_manager(es)
+        elif choice == "9":
+            option_data_stream_template_validator(es)
 
 
 def submenu_template_analysis_tools(es):
@@ -670,6 +736,12 @@ def submenu_storage_optimization(es):
                     questionary.Choice("Empty Index Cleanup", value="4"),
                     questionary.Choice("Sparse Index Detector", value="5"),
                     questionary.Choice("Cost Estimator", value="6"),
+                    questionary.Choice("Shard Size Predictor", value="7"),
+                    questionary.Choice("Resource Allocation Optimizer", value="8"),
+                    questionary.Choice("Cold/Frozen Tier ROI Calculator", value="9"),
+                    questionary.Choice("Query Cost Analyzer", value="10"),
+                    questionary.Choice("Retention Policy Optimizer", value="11"),
+                    questionary.Choice("Resource Right-Sizing Advisor", value="12"),
                     questionary.Separator(),
                     questionary.Choice("← Back to Main Menu", value="b"),
                 ],
@@ -694,6 +766,18 @@ def submenu_storage_optimization(es):
             option_sparse_index_detector(es)
         elif choice == "6":
             option_cost_estimator(es)
+        elif choice == "7":
+            option_shard_size_predictor(es)
+        elif choice == "8":
+            option_resource_allocation_optimizer(es)
+        elif choice == "9":
+            option_cold_frozen_roi_calculator(es)
+        elif choice == "10":
+            option_query_cost_analyzer(es)
+        elif choice == "11":
+            option_retention_policy_optimizer(es)
+        elif choice == "12":
+            option_resource_right_sizing(es)
 
 
 def submenu_performance_monitoring(es):
@@ -712,6 +796,13 @@ def submenu_performance_monitoring(es):
                     questionary.Choice("Cluster Health Timeline", value="4"),
                     questionary.Choice("Node Resource Usage", value="5"),
                     questionary.Choice("Hot Spot Detector", value="6"),
+                    questionary.Choice("Real-time Metrics Dashboard", value="7"),
+                    questionary.Choice("Historical Trend Analysis", value="8"),
+                    questionary.Choice("JVM Heap Analysis", value="9"),
+                    questionary.Choice("Thread Pool Monitor", value="10"),
+                    questionary.Choice("Circuit Breaker Status", value="11"),
+                    questionary.Choice("Disk I/O Monitor", value="12"),
+                    questionary.Choice("Aggregation Optimizer", value="13"),
                     questionary.Separator(),
                     questionary.Choice("← Back to Main Menu", value="b"),
                 ],
@@ -736,6 +827,20 @@ def submenu_performance_monitoring(es):
             option_node_resource_usage(es)
         elif choice == "6":
             option_hot_spot_detector(es)
+        elif choice == "7":
+            option_realtime_metrics_dashboard(es)
+        elif choice == "8":
+            option_historical_trend_analysis(es)
+        elif choice == "9":
+            option_jvm_heap_analysis(es)
+        elif choice == "10":
+            option_thread_pool_monitor(es)
+        elif choice == "11":
+            option_circuit_breaker_status(es)
+        elif choice == "12":
+            option_disk_io_monitor(es)
+        elif choice == "13":
+            option_aggregation_optimizer(es)
 
 
 def submenu_bulk_automation(es):
@@ -842,6 +947,11 @@ def submenu_data_quality(es):
                     questionary.Choice("Null Value Statistics", value="3"),
                     questionary.Choice("Cardinality Analysis", value="4"),
                     questionary.Choice("Field Mapping Conflict Resolver", value="5"),
+                    questionary.Choice("Timestamp Validation & Drift Detector", value="6"),
+                    questionary.Choice("Field Explosion & Schema Bloat Detector", value="7"),
+                    questionary.Choice("Duplicate Document Analyzer", value="8"),
+                    questionary.Choice("Field Value Anomaly Detector", value="9"),
+                    questionary.Choice("Ingestion Health & Freshness Monitor", value="10"),
                     questionary.Separator(),
                     questionary.Choice("← Back to Main Menu", value="b"),
                 ],
@@ -864,6 +974,16 @@ def submenu_data_quality(es):
             option_cardinality_analysis(es)
         elif choice == "5":
             option_field_mapping_conflict_resolver(es)
+        elif choice == "6":
+            option_timestamp_validation_detector(es)
+        elif choice == "7":
+            option_field_explosion_detector(es)
+        elif choice == "8":
+            option_duplicate_document_analyzer(es)
+        elif choice == "9":
+            option_field_value_anomaly_detector(es)
+        elif choice == "10":
+            option_ingestion_health_monitor(es)
 
 
 def submenu_aws_ingestion(es):
@@ -906,3 +1026,123 @@ def submenu_aws_ingestion(es):
             option_data_quality_metrics(es)
         elif choice == "6":
             option_quick_fixes_actions(es)
+
+
+def submenu_developer_tools(es):
+    """Developer Tools sub-menu."""
+    while True:
+        show_breadcrumb(["Main Menu", "Developer Tools"])
+        console.print()
+
+        try:
+            choice = questionary.select(
+                "Select option:",
+                choices=[
+                    questionary.Choice("🛠️  Index Template Generator", value="1"),
+                    questionary.Choice("📄 Mapping Generator from JSON", value="2"),
+                    questionary.Choice("🔍 Query Builder", value="3"),
+                    questionary.Choice("📦 Bulk API Helper", value="4"),
+                    questionary.Separator(),
+                    questionary.Choice("← Back to Main Menu", value="b"),
+                ],
+                style=custom_style
+            ).ask()
+        except KeyboardInterrupt:
+            console.print("\n[yellow]⚠️  Cancelled.[/yellow]\n")
+            return
+
+        if choice is None or choice in ("b", "back"):
+            return
+
+        if choice == "1":
+            option_index_template_generator(es)
+        elif choice == "2":
+            option_mapping_generator_from_json(es)
+        elif choice == "3":
+            option_query_builder_ui(es)
+        elif choice == "4":
+            option_bulk_api_helper(es)
+
+
+def submenu_data_governance(es):
+    """Data Quality & Governance sub-menu."""
+    while True:
+        show_breadcrumb(["Main Menu", "Data Quality & Governance"])
+        console.print()
+
+        try:
+            choice = questionary.select(
+                "Select option:",
+                choices=[
+                    questionary.Choice("📊 Schema Evolution Tracker", value="1"),
+                    questionary.Choice("🔗 Data Lineage Viewer", value="2"),
+                    questionary.Choice("🔒 PII Detection", value="3"),
+                    questionary.Choice("⭐ Data Quality Scoring", value="4"),
+                    questionary.Choice("🏷️  Metadata Management", value="5"),
+                    questionary.Choice("📖 Data Dictionary", value="6"),
+                    questionary.Separator(),
+                    questionary.Choice("← Back to Main Menu", value="b"),
+                ],
+                style=custom_style
+            ).ask()
+        except KeyboardInterrupt:
+            console.print("\n[yellow]⚠️  Cancelled.[/yellow]\n")
+            return
+
+        if choice is None or choice in ("b", "back"):
+            return
+
+        if choice == "1":
+            option_schema_evolution_tracker(es)
+        elif choice == "2":
+            option_data_lineage_viewer(es)
+        elif choice == "3":
+            option_pii_detection(es)
+        elif choice == "4":
+            option_data_quality_scoring(es)
+        elif choice == "5":
+            option_metadata_management(es)
+        elif choice == "6":
+            option_data_dictionary(es)
+
+
+def submenu_performance_tuning(es):
+    """Performance Tuning sub-menu."""
+    while True:
+        show_breadcrumb(["Main Menu", "Performance Tuning"])
+        console.print()
+
+        try:
+            choice = questionary.select(
+                "Select option:",
+                choices=[
+                    questionary.Choice("🤖 Auto-Tuning Engine", value="1"),
+                    questionary.Choice("📦 Shard Size Optimizer", value="2"),
+                    questionary.Choice("🔄 Refresh Interval Tuner", value="3"),
+                    questionary.Choice("🔀 Merge Policy Optimizer", value="4"),
+                    questionary.Choice("💾 Cache Tuning", value="5"),
+                    questionary.Choice("☕ JVM Tuning Assistant", value="6"),
+                    questionary.Separator(),
+                    questionary.Choice("← Back to Main Menu", value="b"),
+                ],
+                style=custom_style
+            ).ask()
+        except KeyboardInterrupt:
+            console.print("\n[yellow]⚠️  Cancelled.[/yellow]\n")
+            return
+
+        if choice is None or choice in ("b", "back"):
+            return
+
+        if choice == "1":
+            option_auto_tuning_engine(es)
+        elif choice == "2":
+            option_shard_size_optimizer(es)
+        elif choice == "3":
+            option_refresh_interval_tuner(es)
+        elif choice == "4":
+            option_merge_policy_optimizer(es)
+        elif choice == "5":
+            option_cache_tuning(es)
+        elif choice == "6":
+            option_jvm_tuning_assistant(es)

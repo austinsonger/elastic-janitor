@@ -22,10 +22,12 @@
 13. [Advanced Cleanup Commands](#9-advanced-cleanup-commands)
 14. [Data Quality & Validation Commands](#10-data-quality--validation-commands)
 15. [AWS Ingestion Management Commands](#11-aws-ingestion-management-commands)
-16. [Dashboard & Stats Commands](#12-dashboard--stats-commands)
-17. [Global Dry-Run Mode Commands](#13-global-dry-run-mode-commands)
-18. [Error Handling](#error-handling)
-19. [Exit Codes](#exit-codes)
+16. [Data Quality & Governance Commands](#12-data-quality--governance-commands)
+17. [Performance Tuning Commands](#13-performance-tuning-commands)
+18. [Dashboard & Stats Commands](#14-dashboard--stats-commands)
+19. [Global Dry-Run Mode Commands](#15-global-dry-run-mode-commands)
+20. [Error Handling](#error-handling)
+21. [Exit Codes](#exit-codes)
 
 ---
 
@@ -80,6 +82,8 @@ ej <category> <action> [options]
 - `cleanup` - Advanced cleanup
 - `quality` or `dq` - Data quality
 - `aws` - AWS ingestion management
+- `governance` - Data quality and governance
+- `tuning` - Performance tuning
 - `dashboard` or `dash` - Dashboard and stats
 
 ---
@@ -3269,9 +3273,712 @@ ej aws quick-fix fix-throttling --index "aws-logs-*"
 
 ---
 
-## 12. Dashboard & Stats Commands
+## 12. Data Quality & Governance Commands
 
-### 12.1 Real-time Monitoring Dashboard
+### 12.1 Schema Evolution Tracker
+
+**Command:** `elastic-janitor governance schema-evolution`
+
+**Description:** Track mapping changes over time across indices matching a pattern.
+
+**Options:**
+| Option | Type | Required | Default | Description |
+|--------|------|----------|---------|-------------|
+| `--pattern` | string | No | `*` | Index pattern to track |
+| `--days` | int | No | `30` | Number of days to look back |
+
+**Examples:**
+
+```bash
+# Track schema evolution for logs indices
+elastic-janitor governance schema-evolution --pattern "logs-*"
+
+# Look back 60 days
+elastic-janitor governance schema-evolution --days 60
+
+# Export to JSON
+ej governance schema-evolution --pattern "metrics-*" --output json
+```
+
+**Output Format:**
+```
+Schema Evolution Timeline
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Index Pattern: logs-*
+Time Range: Last 30 days
+
+Changes Detected:
+  2024-01-15: logs-app-2024.01.15
+    + Added field: response_time (type: long)
+    + Added field: user_agent (type: keyword)
+
+  2024-01-20: logs-app-2024.01.20
+    ~ Modified field: status_code (text → keyword)
+    - Removed field: deprecated_field
+
+  2024-01-25: logs-app-2024.01.25
+    + Added field: geo.location (type: geo_point)
+
+Total Changes: 6 additions, 1 modification, 1 removal
+```
+
+**Use Cases:**
+- Monitor schema drift across time-series indices
+- Identify breaking changes in mappings
+- Track field additions and removals
+- Audit mapping evolution for compliance
+
+---
+
+### 12.2 Data Lineage Viewer
+
+**Command:** `elastic-janitor governance data-lineage`
+
+**Description:** Visualize data flow through ingest pipelines and transforms.
+
+**Examples:**
+
+```bash
+# View data lineage
+elastic-janitor governance data-lineage
+
+# Export lineage graph
+ej governance data-lineage --output json
+```
+
+**Output Format:**
+```
+Data Lineage Graph
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Pipeline: logs-processing
+  ↓
+  Processors:
+    1. grok (parse log format)
+    2. date (parse timestamp)
+    3. geoip (enrich with location)
+  ↓
+  Target Index: logs-processed-*
+
+Transform: logs-aggregation
+  Source: logs-processed-*
+  ↓
+  Aggregations:
+    - Group by: host.name
+    - Metrics: count, avg(response_time)
+  ↓
+  Destination: logs-summary
+
+Total Pipelines: 3
+Total Transforms: 1
+```
+
+**Use Cases:**
+- Understand data flow through the cluster
+- Identify pipeline dependencies
+- Troubleshoot data processing issues
+- Document data architecture
+
+---
+
+### 12.3 PII Detection
+
+**Command:** `elastic-janitor governance pii-detection`
+
+**Description:** Scan documents for PII patterns (emails, SSNs, phone numbers, credit cards, etc.).
+
+**Options:**
+| Option | Type | Required | Default | Description |
+|--------|------|----------|---------|-------------|
+| `--pattern` | string | No | `*` | Index pattern to scan |
+| `--sample-size` | int | No | `1000` | Sample size per index |
+
+**Examples:**
+
+```bash
+# Scan for PII in logs indices
+elastic-janitor governance pii-detection --pattern "logs-*"
+
+# Use larger sample size
+ej governance pii-detection --sample-size 5000
+
+# Export findings to JSON
+ej governance pii-detection --pattern "user-data-*" --output json
+```
+
+**Output Format:**
+```
+PII Detection Report
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Index: user-logs-2024.01.01
+Sample Size: 1,000 documents
+
+PII Patterns Found:
+  ✓ Email Addresses: 45 occurrences in field 'message'
+  ✓ Phone Numbers: 12 occurrences in field 'contact_info'
+  ✓ SSN: 3 occurrences in field 'user_data'
+  ⚠ Credit Cards: 8 occurrences in field 'payment_info'
+
+Recommendations:
+  • Consider masking email addresses in 'message' field
+  • Implement field-level security for 'payment_info'
+  • Review data retention policies for PII fields
+  • Enable audit logging for PII access
+
+Risk Level: HIGH
+```
+
+**Use Cases:**
+- Identify PII exposure risks
+- Ensure GDPR/CCPA compliance
+- Audit data for sensitive information
+- Plan data masking strategies
+
+---
+
+### 12.4 Data Quality Scoring
+
+**Command:** `elastic-janitor governance quality-score`
+
+**Description:** Score indices based on completeness, consistency, and validity.
+
+**Options:**
+| Option | Type | Required | Default | Description |
+|--------|------|----------|---------|-------------|
+| `--pattern` | string | No | `*` | Index pattern to score |
+| `--sample-size` | int | No | `1000` | Sample size per index |
+| `--threshold` | int | No | `70` | Quality threshold (0-100) |
+
+**Examples:**
+
+```bash
+# Score data quality
+elastic-janitor governance quality-score --pattern "logs-*"
+
+# Set custom threshold
+ej governance quality-score --threshold 80
+
+# Export scores to CSV
+ej governance quality-score --pattern "metrics-*" --output csv
+```
+
+**Output Format:**
+```
+Data Quality Scores
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Index: logs-app-2024.01.01
+Sample Size: 1,000 documents
+
+Quality Metrics:
+  Completeness: 92% ✓
+    - Required fields present: 95%
+    - Null values: 8%
+
+  Consistency: 85% ✓
+    - Type consistency: 98%
+    - Format consistency: 72%
+
+  Validity: 78% ✓
+    - Valid values: 88%
+    - Range compliance: 68%
+
+Overall Score: 85/100 ✓ PASS
+
+Recommendations:
+  • Improve format consistency in 'timestamp' field
+  • Validate range for 'response_time' field
+  • Reduce null values in 'user_id' field
+```
+
+**Use Cases:**
+- Monitor data quality over time
+- Identify data quality issues
+- Set quality standards and thresholds
+- Generate quality reports for stakeholders
+
+---
+
+### 12.5 Metadata Management
+
+**Command:** `elastic-janitor governance metadata`
+
+**Description:** Manage index metadata (owner, purpose, sensitivity, retention, etc.).
+
+**Examples:**
+
+```bash
+# Manage metadata interactively
+elastic-janitor governance metadata
+
+# View metadata for specific index
+ej governance metadata --index "logs-app-*"
+```
+
+**Output Format:**
+```
+Index Metadata Management
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Index: logs-app-2024.01.01
+
+Current Metadata:
+  Owner: platform-team
+  Purpose: Application logging
+  Sensitivity: Internal
+  Retention: 90 days
+  Cost Center: engineering
+  Tags: production, monitoring
+
+Actions:
+  1. Add metadata
+  2. Update metadata
+  3. Remove metadata
+  4. Search by metadata
+  5. Export metadata
+```
+
+**Use Cases:**
+- Track index ownership and responsibility
+- Classify data by sensitivity level
+- Manage retention policies
+- Enable cost allocation and chargeback
+
+---
+
+### 12.6 Data Dictionary
+
+**Command:** `elastic-janitor governance dictionary`
+
+**Description:** Maintain field documentation and data dictionary.
+
+**Examples:**
+
+```bash
+# Manage data dictionary
+elastic-janitor governance dictionary
+
+# Export dictionary to JSON
+ej governance dictionary --output json
+```
+
+**Output Format:**
+```
+Data Dictionary
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Index Pattern: logs-app-*
+
+Field Definitions:
+  @timestamp
+    Type: date
+    Description: Event timestamp in ISO 8601 format
+    Example: 2024-01-01T12:00:00Z
+    Required: Yes
+    Owner: platform-team
+
+  response_time
+    Type: long
+    Description: HTTP response time in milliseconds
+    Example: 250
+    Valid Range: 0-30000
+    Owner: api-team
+
+  user_id
+    Type: keyword
+    Description: Unique user identifier
+    Example: user_12345
+    PII: Yes
+    Owner: identity-team
+
+Total Fields: 45
+Documented: 38 (84%)
+```
+
+**Use Cases:**
+- Document field meanings and usage
+- Maintain data catalog
+- Onboard new team members
+- Ensure consistent field usage
+
+---
+
+## 13. Performance Tuning Commands
+
+### 13.1 Auto-Tuning Engine
+
+**Command:** `elastic-janitor tuning auto-tune`
+
+**Description:** Analyze cluster and recommend performance optimizations.
+
+**Examples:**
+
+```bash
+# Run auto-tuning analysis
+elastic-janitor tuning auto-tune
+
+# Export recommendations to JSON
+ej tuning auto-tune --output json
+```
+
+**Output Format:**
+```
+Auto-Tuning Recommendations
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Cluster Analysis Complete
+
+Recommendations:
+  1. Shard Count Optimization
+     Current: 1,250 shards across 5 nodes
+     Recommended: 750 shards (reduce by 40%)
+     Impact: Improved cluster stability, reduced overhead
+
+  2. Refresh Interval Tuning
+     Indices: logs-*
+     Current: 1s
+     Recommended: 30s
+     Impact: 30% improvement in indexing throughput
+
+  3. Merge Policy Adjustment
+     Indices: metrics-*
+     Current: default
+     Recommended: max_merged_segment=5gb
+     Impact: Reduced segment count, better search performance
+
+  4. Cache Configuration
+     Query Cache: Increase to 15% (currently 10%)
+     Request Cache: Enable for time-series indices
+     Impact: 25% improvement in query response time
+
+Priority: HIGH
+Estimated Performance Gain: 35%
+```
+
+**Use Cases:**
+- Optimize cluster performance automatically
+- Identify performance bottlenecks
+- Get actionable recommendations
+- Improve resource utilization
+
+---
+
+### 13.2 Shard Size Optimizer
+
+**Command:** `elastic-janitor tuning shard-optimizer`
+
+**Description:** Analyze shard distribution and recommend optimal shard counts.
+
+**Options:**
+| Option | Type | Required | Default | Description |
+|--------|------|----------|---------|-------------|
+| `--target-size` | int | No | `30` | Target shard size in GB |
+
+**Examples:**
+
+```bash
+# Analyze with default 30GB target
+elastic-janitor tuning shard-optimizer
+
+# Use custom target size
+ej tuning shard-optimizer --target-size 50
+```
+
+**Output Format:**
+```
+Shard Size Analysis
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Target Shard Size: 30 GB
+
+Index: logs-app-2024.01.01
+  Current Shards: 10
+  Avg Shard Size: 5.2 GB
+  Total Size: 52 GB
+  Recommended Shards: 2
+  Status: ⚠ OVER-SHARDED
+
+Index: metrics-system-2024.01.01
+  Current Shards: 1
+  Avg Shard Size: 85 GB
+  Total Size: 85 GB
+  Recommended Shards: 3
+  Status: ⚠ UNDER-SHARDED
+
+Recommendations:
+  • Reduce shards for logs-app-* from 10 to 2
+  • Increase shards for metrics-system-* from 1 to 3
+  • Consider using rollover for time-series indices
+
+Total Shards: 250
+Optimal Shards: 180
+Potential Savings: 28% reduction in overhead
+```
+
+**Use Cases:**
+- Optimize shard distribution
+- Prevent over-sharding and under-sharding
+- Improve cluster performance
+- Plan index template shard settings
+
+---
+
+### 13.3 Refresh Interval Tuner
+
+**Command:** `elastic-janitor tuning refresh-interval`
+
+**Description:** Analyze and optimize refresh intervals based on workload.
+
+**Options:**
+| Option | Type | Required | Default | Description |
+|--------|------|----------|---------|-------------|
+| `--pattern` | string | No | `*` | Index pattern to analyze |
+
+**Examples:**
+
+```bash
+# Analyze refresh intervals
+elastic-janitor tuning refresh-interval --pattern "logs-*"
+
+# Export analysis to JSON
+ej tuning refresh-interval --output json
+```
+
+**Output Format:**
+```
+Refresh Interval Analysis
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Index: logs-app-2024.01.01
+  Current Interval: 1s
+  Indexing Rate: 5,000 docs/sec
+  Search Rate: 10 queries/sec
+  Recommended: 30s
+  Reason: High indexing, low search frequency
+  Impact: +40% indexing throughput
+
+Index: search-catalog
+  Current Interval: 1s
+  Indexing Rate: 50 docs/sec
+  Search Rate: 500 queries/sec
+  Recommended: 1s (keep current)
+  Reason: High search frequency requires near real-time
+  Impact: No change
+
+Recommendations:
+  • Increase refresh interval for bulk indexing indices
+  • Keep 1s for user-facing search indices
+  • Consider -1 (disable) during bulk operations
+
+Estimated Performance Gain: 35% for indexing workloads
+```
+
+**Use Cases:**
+- Balance indexing vs search performance
+- Optimize for specific workload patterns
+- Reduce indexing overhead
+- Improve bulk indexing speed
+
+---
+
+### 13.4 Merge Policy Optimizer
+
+**Command:** `elastic-janitor tuning merge-policy`
+
+**Description:** Analyze segments and recommend merge policy optimizations.
+
+**Options:**
+| Option | Type | Required | Default | Description |
+|--------|------|----------|---------|-------------|
+| `--pattern` | string | No | `*` | Index pattern to analyze |
+
+**Examples:**
+
+```bash
+# Analyze merge policies
+elastic-janitor tuning merge-policy --pattern "logs-*"
+
+# Export recommendations
+ej tuning merge-policy --output json
+```
+
+**Output Format:**
+```
+Merge Policy Analysis
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Index: logs-app-2024.01.01
+  Total Segments: 450
+  Avg Segment Size: 250 MB
+  Largest Segment: 4.2 GB
+  Current Policy: default
+
+  Recommended Policy:
+    max_merged_segment: 5gb
+    segments_per_tier: 8
+    max_merge_at_once: 5
+
+  Impact:
+    • Reduce segment count by 60%
+    • Improve search performance by 25%
+    • Reduce merge I/O overhead
+
+Status: ⚠ TOO MANY SEGMENTS
+
+Recommendations:
+  • Force merge read-only indices to 1 segment
+  • Adjust merge policy for active indices
+  • Monitor merge throttling settings
+
+Total Indices Analyzed: 25
+Indices Needing Optimization: 12
+```
+
+**Use Cases:**
+- Optimize segment structure
+- Reduce segment overhead
+- Improve search performance
+- Manage merge I/O impact
+
+---
+
+### 13.5 Cache Tuning
+
+**Command:** `elastic-janitor tuning cache`
+
+**Description:** Analyze cache performance and recommend optimizations.
+
+**Examples:**
+
+```bash
+# Analyze cache performance
+elastic-janitor tuning cache
+
+# Export metrics to JSON
+ej tuning cache --output json
+```
+
+**Output Format:**
+```
+Cache Performance Analysis
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Query Cache:
+  Size: 10% of heap (2.5 GB)
+  Hit Rate: 45%
+  Evictions: 12,500/hour
+  Recommendation: Increase to 15%
+  Impact: +20% hit rate, fewer evictions
+
+Request Cache:
+  Size: 1% of heap (256 MB)
+  Hit Rate: 78%
+  Evictions: 500/hour
+  Recommendation: Keep current size
+  Impact: Performing well
+
+Field Data Cache:
+  Size: 8.2 GB (82% of limit)
+  Circuit Breaker: 10 GB
+  Recommendation: Increase limit to 12 GB
+  Impact: Prevent circuit breaker trips
+
+Shard Request Cache:
+  Enabled Indices: 45/100
+  Recommendation: Enable for time-series indices
+  Impact: Improved aggregation performance
+
+Recommendations:
+  • Increase query cache to 15%
+  • Enable request cache for logs-* indices
+  • Monitor field data usage
+  • Consider doc values for high-cardinality fields
+
+Estimated Performance Gain: 30% for cached queries
+```
+
+**Use Cases:**
+- Optimize cache configuration
+- Improve query performance
+- Reduce cache evictions
+- Prevent circuit breaker trips
+
+---
+
+### 13.6 JVM Tuning Assistant
+
+**Command:** `elastic-janitor tuning jvm`
+
+**Description:** Analyze JVM performance and recommend heap/GC optimizations.
+
+**Examples:**
+
+```bash
+# Analyze JVM performance
+elastic-janitor tuning jvm
+
+# Export recommendations
+ej tuning jvm --output json
+```
+
+**Output Format:**
+```
+JVM Performance Analysis
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Node: es-node-1
+
+Heap Configuration:
+  Current: 16 GB
+  Usage: 12.8 GB (80%)
+  Recommendation: Increase to 24 GB
+  Reason: Frequent GC pressure
+
+GC Statistics:
+  Young GC: 450/hour (avg 50ms)
+  Old GC: 12/hour (avg 2.5s)
+  GC Overhead: 8%
+  Recommendation: Tune GC settings
+
+  Suggested GC Flags:
+    -XX:+UseG1GC
+    -XX:MaxGCPauseMillis=200
+    -XX:G1HeapRegionSize=16m
+    -XX:InitiatingHeapOccupancyPercent=45
+
+Memory Pressure:
+  Circuit Breaker Trips: 25/day
+  OOM Errors: 0
+  Recommendation: Increase heap or reduce cache sizes
+
+Thread Pools:
+  Search: 85% utilization
+  Write: 45% utilization
+  Recommendation: Increase search threads from 13 to 20
+
+Recommendations:
+  • Increase heap to 24 GB (50% of 48 GB RAM)
+  • Apply recommended GC flags
+  • Monitor GC logs for improvements
+  • Consider adding nodes if heap > 32 GB needed
+
+Priority: HIGH
+Estimated Performance Gain: 40% reduction in GC pauses
+```
+
+**Use Cases:**
+- Optimize JVM heap size
+- Tune garbage collection
+- Prevent OOM errors
+- Improve node stability
+
+---
+
+## 14. Dashboard & Stats Commands
+
+### 14.1 Real-time Monitoring Dashboard
 
 **Command:** `elastic-janitor dashboard`
 
@@ -3424,9 +4131,9 @@ ej dashboard export --output metrics.csv --format csv --metrics cluster,indices
 
 ---
 
-## 13. Global Dry-Run Mode Commands
+## 15. Global Dry-Run Mode Commands
 
-### 13.1 Toggle Dry-Run Mode
+### 15.1 Toggle Dry-Run Mode
 
 **Command:** `elastic-janitor dry-run enable`
 **Command:** `elastic-janitor dry-run disable`
@@ -3455,7 +4162,7 @@ To disable: elastic-janitor dry-run disable
 
 ---
 
-### 13.2 Check Dry-Run Status
+### 15.2 Check Dry-Run Status
 
 **Command:** `elastic-janitor dry-run status`
 

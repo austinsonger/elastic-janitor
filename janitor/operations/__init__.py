@@ -16,6 +16,7 @@ from .index_advanced import (
     option_cold_frozen_migration,
     option_index_merge_optimization,
 )
+from .index_pattern_optimizer import option_index_pattern_optimizer
 from .data_streams_cleanup import option_clean_data_streams
 from .data_streams_standalone import option_clean_standalone_indices
 from .data_streams_preview import option_preview_data_streams
@@ -28,6 +29,7 @@ from .data_streams_advanced import (
     option_data_stream_cloning,
     option_write_index_rotation,
 )
+from .data_streams_migration import option_data_stream_migration
 from .templates_index import (
     option_list_templates,
     option_delete_templates,
@@ -97,6 +99,12 @@ from .storage_optimization import (
     option_empty_index_cleanup,
     option_sparse_index_detector,
     option_cost_estimator,
+    option_shard_size_predictor,
+    option_resource_allocation_optimizer,
+    option_cold_frozen_roi_calculator,
+    option_query_cost_analyzer,
+    option_retention_policy_optimizer,
+    option_resource_right_sizing,
 )
 from .performance_monitoring import (
     option_slow_query_analyzer,
@@ -105,7 +113,14 @@ from .performance_monitoring import (
     option_cluster_health_timeline,
     option_node_resource_usage,
     option_hot_spot_detector,
+    option_realtime_metrics_dashboard,
+    option_historical_trend_analysis,
+    option_jvm_heap_analysis,
+    option_thread_pool_monitor,
+    option_circuit_breaker_status,
+    option_disk_io_monitor,
 )
+from .performance_aggregations import option_aggregation_optimizer
 from .bulk_automation import (
     option_batch_index_operations,
     option_scheduled_cleanup_jobs,
@@ -127,6 +142,11 @@ from .data_quality import (
     option_data_type_inconsistency_detector,
     option_null_value_statistics,
     option_cardinality_analysis,
+    option_timestamp_validation_detector,
+    option_field_explosion_detector,
+    option_duplicate_document_analyzer,
+    option_field_value_anomaly_detector,
+    option_ingestion_health_monitor,
 )
 from .mapping_conflict_resolver import (
     option_field_mapping_conflict_resolver,
@@ -143,6 +163,29 @@ from .dependency_viewer import (
     option_view_resource_dependencies,
     option_rollback_with_dependencies,
 )
+from .lifecycle_enhancements import (
+    option_ilm_policy_simulator,
+    option_rollover_prediction,
+    option_searchable_snapshot_manager,
+    option_data_stream_template_validator,
+    option_lifecycle_phase_distribution,
+)
+from .data_governance import (
+    option_schema_evolution_tracker,
+    option_data_lineage_viewer,
+    option_pii_detection,
+    option_data_quality_scoring,
+    option_metadata_management,
+    option_data_dictionary,
+)
+from .performance_tuning import (
+    option_auto_tuning_engine,
+    option_shard_size_optimizer,
+    option_refresh_interval_tuner,
+    option_merge_policy_optimizer,
+    option_cache_tuning,
+    option_jvm_tuning_assistant,
+)
 
 __all__ = [
     # Index management - basic
@@ -157,6 +200,7 @@ __all__ = [
     'option_index_rollover_status',
     'option_cold_frozen_migration',
     'option_index_merge_optimization',
+    'option_index_pattern_optimizer',
     # Data streams
     'option_clean_data_streams',
     'option_clean_standalone_indices',
@@ -166,6 +210,7 @@ __all__ = [
     'option_backing_index_reindexing',
     'option_data_stream_cloning',
     'option_write_index_rotation',
+    'option_data_stream_migration',
     # Templates
     'option_list_templates',
     'option_delete_templates',
@@ -227,6 +272,12 @@ __all__ = [
     'option_empty_index_cleanup',
     'option_sparse_index_detector',
     'option_cost_estimator',
+    'option_shard_size_predictor',
+    'option_resource_allocation_optimizer',
+    'option_cold_frozen_roi_calculator',
+    'option_query_cost_analyzer',
+    'option_retention_policy_optimizer',
+    'option_resource_right_sizing',
     # Performance & Monitoring
     'option_slow_query_analyzer',
     'option_indexing_performance_monitor',
@@ -234,6 +285,13 @@ __all__ = [
     'option_cluster_health_timeline',
     'option_node_resource_usage',
     'option_hot_spot_detector',
+    'option_realtime_metrics_dashboard',
+    'option_historical_trend_analysis',
+    'option_jvm_heap_analysis',
+    'option_thread_pool_monitor',
+    'option_circuit_breaker_status',
+    'option_disk_io_monitor',
+    'option_aggregation_optimizer',
     # Bulk Operations & Automation
     'option_batch_index_operations',
     'option_scheduled_cleanup_jobs',
@@ -253,6 +311,11 @@ __all__ = [
     'option_data_type_inconsistency_detector',
     'option_null_value_statistics',
     'option_cardinality_analysis',
+    'option_timestamp_validation_detector',
+    'option_field_explosion_detector',
+    'option_duplicate_document_analyzer',
+    'option_field_value_anomaly_detector',
+    'option_ingestion_health_monitor',
     'option_field_mapping_conflict_resolver',
     # AWS Ingestion Management
     'option_firehose_forwarder_health_check',
@@ -264,4 +327,24 @@ __all__ = [
     # Dependency Viewer
     'option_view_resource_dependencies',
     'option_rollback_with_dependencies',
+    # Lifecycle Enhancements
+    'option_ilm_policy_simulator',
+    'option_rollover_prediction',
+    'option_searchable_snapshot_manager',
+    'option_data_stream_template_validator',
+    'option_lifecycle_phase_distribution',
+    # Data governance
+    'option_schema_evolution_tracker',
+    'option_data_lineage_viewer',
+    'option_pii_detection',
+    'option_data_quality_scoring',
+    'option_metadata_management',
+    'option_data_dictionary',
+    # Performance tuning
+    'option_auto_tuning_engine',
+    'option_shard_size_optimizer',
+    'option_refresh_interval_tuner',
+    'option_merge_policy_optimizer',
+    'option_cache_tuning',
+    'option_jvm_tuning_assistant',
 ]

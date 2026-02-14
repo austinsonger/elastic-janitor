@@ -4,7 +4,6 @@ Main menu for Elastic Janitor.
 import sys
 import questionary
 from questionary import Choice, Separator
-from rich.table import Table
 from rich.panel import Panel
 from rich import box
 from ..config import console, custom_style, DRY_RUN_MODE
@@ -23,6 +22,9 @@ from .submenus import (
     submenu_advanced_cleanup,
     submenu_data_quality,
     submenu_aws_ingestion,
+    submenu_developer_tools,
+    submenu_data_governance,
+    submenu_performance_tuning,
 )
 
 
@@ -34,35 +36,6 @@ def menu():
     global DRY_RUN_MODE
     dry_run_status = "[green]ENABLED[/green]" if DRY_RUN_MODE else "[red]DISABLED[/red]"
     console.print(f"[dim]Dry-Run Mode: {dry_run_status}[/dim]")
-
-    # Display menu table without the numbered column
-    menu_table = Table(
-        title="🧹 Elastic Janitor - Main Menu",
-        box=box.ROUNDED,
-        title_style="bold cyan",
-        show_header=False
-    )
-    menu_table.add_column("Category", style="white")
-    menu_table.add_column("Description", style="dim")
-
-    menu_table.add_row("📊 Index Management", "Health, shards, settings, aliases, rollover, optimization")
-    menu_table.add_row("🌊 Data Stream Management", "Clean and manage data streams")
-    menu_table.add_row("📋 Template & Policy Management", "Index templates, component templates, ILM, pipelines")
-    menu_table.add_row("💾 Snapshot & Backup Management", "Repositories, snapshots, SLM policies")
-    menu_table.add_row("🏥 Cluster Health & Diagnostics", "Cluster health, nodes, statistics")
-    menu_table.add_row("💰 Storage & Cost Optimization", "Forecast, tier distribution, compression, cost estimation")
-    menu_table.add_row("⚡ Performance & Monitoring", "Query analysis, indexing rates, resource usage, hot spots")
-    menu_table.add_row("🔧 Bulk Operations & Automation", "Batch operations, history log, config management")
-    menu_table.add_row("🧹 Advanced Cleanup Features", "Orphaned docs, field cleanup, mapping cleanup, duplicates")
-    menu_table.add_row("🔍 Data Quality & Validation", "Missing fields, type conflicts, null values, cardinality")
-    menu_table.add_row("🔥 AWS Ingestion Management", "Firehose, Forwarder diagnostics, pipeline troubleshooting")
-    menu_table.add_row("📈 Dashboard & Stats View", "Real-time monitoring dashboard")
-    menu_table.add_row("🔍 Toggle Dry-Run Mode", f"Current: {dry_run_status}")
-    menu_table.add_row("", "")
-    menu_table.add_row("Quit", "")
-
-    console.print()
-    console.print(menu_table)
     console.print()
 
 
@@ -93,8 +66,11 @@ def main():
                     questionary.Choice("🧹 Advanced Cleanup Features", value="9"),
                     questionary.Choice("🔍 Data Quality & Validation", value="10"),
                     questionary.Choice("🔥 AWS Ingestion Management", value="11"),
-                    questionary.Choice("📈 Dashboard & Stats View", value="12"),
-                    questionary.Choice("🔍 Toggle Dry-Run Mode", value="13"),
+                    questionary.Choice("🛠️  Developer Tools", value="12"),
+                    questionary.Choice("🏛️  Data Quality & Governance", value="13"),
+                    questionary.Choice("⚙️  Performance Tuning", value="14"),
+                    questionary.Choice("📈 Dashboard & Stats View", value="15"),
+                    questionary.Choice("🔄 Toggle Dry-Run Mode", value="16"),
                     questionary.Separator(),
                     questionary.Choice("Quit", value="q"),
                 ],
@@ -131,8 +107,14 @@ def main():
         elif choice == "11":
             submenu_aws_ingestion(es)
         elif choice == "12":
-            option_dashboard_stats_view(es)
+            submenu_developer_tools(es)
         elif choice == "13":
+            submenu_data_governance(es)
+        elif choice == "14":
+            submenu_performance_tuning(es)
+        elif choice == "15":
+            option_dashboard_stats_view(es)
+        elif choice == "16":
             toggle_dry_run_mode()
 
 

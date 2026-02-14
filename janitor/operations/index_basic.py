@@ -7,7 +7,7 @@ from rich.table import Table
 from rich.progress import Progress, SpinnerColumn, TextColumn
 from rich import box
 from ..config import console
-from ..utils import safe_input, show_breadcrumb, select_from_list
+from ..utils import safe_input, show_breadcrumb, select_from_list, is_system
 from ..utils.formatters import size_to_bytes
 
 

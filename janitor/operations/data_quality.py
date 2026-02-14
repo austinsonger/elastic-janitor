@@ -689,3 +689,1356 @@ def option_cardinality_analysis(es):
     except Exception as e:
         console.print(f"\n[red]❌ ERROR: Could not analyze cardinality: {e}[/red]\n")
 
+
+def option_timestamp_validation_detector(es):
+    """Detect timestamp issues including missing @timestamp, future timestamps, ingestion lag, and precision loss."""
+    show_breadcrumb(["Main Menu", "Data Quality & Validation", "Timestamp Validation & Drift Detector"])
+
+    console.print("\n[cyan]Analyzing timestamp quality...[/cyan]\n")
+
+    # Get index pattern using interactive selection
+    index_pattern = get_index_pattern_selection(es)
+
+    if not index_pattern:
+        return
+
+    # Get lag threshold
+    lag_threshold_minutes = get_number_input(
+        "Flag documents with ingestion lag above (minutes):",
+        default=60,
+        min_val=1
+    )
+
+    if lag_threshold_minutes is None:
+        return
+
+    try:
+        # Get matching indices
+        with Progress(
+            SpinnerColumn(),
+            TextColumn("[cyan]Fetching indices..."),
+            transient=True,
+        ) as progress:
+            progress.add_task("fetch", total=None)
+            indices_response = es.cat.indices(index=index_pattern, format="json", h="index,docs.count")
+
+        indices = []
+        for idx in indices_response:
+            index_name = idx.get("index")
+            if is_system(index_name):
+                continue
+            doc_count = int(idx.get("docs.count", "0") or 0)
+            if doc_count > 0:
+                indices.append({"name": index_name, "doc_count": doc_count})
+
+        if not indices:
+            console.print("\n[yellow]🟡 No matching indices found.[/yellow]\n")
+            return
+
+        console.print(f"\n[cyan]Found {len(indices)} indices to analyze[/cyan]\n")
+
+        # Confirm before proceeding
+        if not confirm_action(f"Analyze timestamp quality for {len(indices)} indices?"):
+            console.print("\n[yellow]⚠️  Cancelled.[/yellow]\n")
+            return
+
+        # Analyze each index
+        all_results = []
+
+        with Progress(
+            SpinnerColumn(),
+            TextColumn("[progress.description]{task.description}"),
+            BarColumn(),
+            TaskProgressColumn(),
+        ) as progress:
+            task = progress.add_task("[cyan]Analyzing indices...", total=len(indices))
+
+            for idx_info in indices:
+                index_name = idx_info["name"]
+                doc_count = idx_info["doc_count"]
+
+                progress.update(task, description=f"[cyan]Analyzing: {index_name[:50]}...")
+
+                try:
+                    issues = []
+
+                    # 1. Check for missing @timestamp
+                    missing_query = {
+                        "query": {
+                            "bool": {
+                                "must_not": {"exists": {"field": "@timestamp"}}
+                            }
+                        }
+                    }
+                    missing_count = es.count(index=index_name, body=missing_query).get("count", 0)
+                    missing_pct = (missing_count / doc_count * 100) if doc_count > 0 else 0
+
+                    if missing_count > 0:
+                        issues.append({
+                            "type": "Missing @timestamp",
+                            "count": missing_count,
+                            "percentage": missing_pct,
+                            "severity": "HIGH"
+                        })
+
+                    # 2. Check for future timestamps
+                    future_query = {
+                        "query": {
+                            "range": {
+                                "@timestamp": {"gte": "now"}
+                            }
+                        }
+                    }
+                    future_count = es.count(index=index_name, body=future_query).get("count", 0)
+                    future_pct = (future_count / doc_count * 100) if doc_count > 0 else 0
+
+                    if future_count > 0:
+                        issues.append({
+                            "type": "Future timestamps",
+                            "count": future_count,
+                            "percentage": future_pct,
+                            "severity": "MEDIUM"
+                        })
+
+                    # 3. Check for ingestion lag (if event.ingested exists)
+                    # First check if event.ingested field exists
+                    field_caps = es.field_caps(index=index_name, fields="event.ingested,@timestamp")
+                    has_ingested = "event.ingested" in field_caps.get("fields", {})
+
+                    if has_ingested:
+                        lag_query = {
+                            "size": 0,
+                            "query": {
+                                "bool": {
+                                    "must": [
+                                        {"exists": {"field": "@timestamp"}},
+                                        {"exists": {"field": "event.ingested"}}
+                                    ]
+                                }
+                            },
+                            "aggs": {
+                                "lag_stats": {
+                                    "stats": {
+                                        "script": {
+                                            "source": "(doc['event.ingested'].value.millis - doc['@timestamp'].value.millis) / 60000.0",
+                                            "lang": "painless"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                        lag_result = es.search(index=index_name, body=lag_query)
+                        lag_stats = lag_result.get("aggregations", {}).get("lag_stats", {})
+
+                        if lag_stats.get("count", 0) > 0:
+                            avg_lag = lag_stats.get("avg", 0)
+                            max_lag = lag_stats.get("max", 0)
+
+                            if avg_lag > lag_threshold_minutes:
+                                issues.append({
+                                    "type": "High ingestion lag",
+                                    "count": f"Avg: {avg_lag:.1f}m, Max: {max_lag:.1f}m",
+                                    "percentage": 0,
+                                    "severity": "MEDIUM"
+                                })
+
+                    # 4. Check for timestamp precision loss (all ending in .000Z)
+                    precision_query = {
+                        "size": 100,
+                        "query": {"exists": {"field": "@timestamp"}},
+                        "_source": ["@timestamp"]
+                    }
+
+                    precision_result = es.search(index=index_name, body=precision_query)
+                    hits = precision_result.get("hits", {}).get("hits", [])
+
+                    if hits:
+                        precision_loss_count = 0
+                        for hit in hits:
+                            timestamp_str = str(hit.get("_source", {}).get("@timestamp", ""))
+                            if ".000Z" in timestamp_str or not "." in timestamp_str:
+                                precision_loss_count += 1
+
+                        precision_loss_pct = (precision_loss_count / len(hits) * 100)
+
+                        if precision_loss_pct > 90:  # More than 90% have precision loss
+                            issues.append({
+                                "type": "Timestamp precision loss",
+                                "count": f"{precision_loss_pct:.0f}% of samples",
+                                "percentage": precision_loss_pct,
+                                "severity": "LOW"
+                            })
+
+                    if issues:
+                        all_results.append({
+                            "index": index_name,
+                            "doc_count": doc_count,
+                            "issues": issues
+                        })
+
+                except Exception as e:
+                    console.print(f"[yellow]⚠️  Could not analyze {index_name}: {e}[/yellow]")
+
+                progress.advance(task)
+
+        if not all_results:
+            console.print(f"\n[green]✅ No timestamp issues found![/green]\n")
+            return
+
+        # Display results
+        console.print(f"\n[yellow]⚠️  Found timestamp issues in {len(all_results)} indices[/yellow]\n")
+
+        for result in all_results:
+            index_name = result["index"]
+            doc_count = result["doc_count"]
+            issues = result["issues"]
+
+            table = Table(
+                title=f"Index: {index_name} ({doc_count:,} docs)",
+                box=box.ROUNDED,
+                title_style="bold cyan"
+            )
+
+            table.add_column("Issue Type", style="cyan")
+            table.add_column("Count/Value", style="yellow", justify="right")
+            table.add_column("Percentage", style="red", justify="right")
+            table.add_column("Severity", style="magenta")
+
+            for issue in issues:
+                severity_color = {
+                    "HIGH": "[bold red]HIGH[/bold red]",
+                    "MEDIUM": "[yellow]MEDIUM[/yellow]",
+                    "LOW": "[dim]LOW[/dim]"
+                }.get(issue["severity"], issue["severity"])
+
+                count_str = str(issue["count"]) if isinstance(issue["count"], str) else f"{issue['count']:,}"
+                pct_str = f"{issue['percentage']:.1f}%" if issue["percentage"] > 0 else "-"
+
+                table.add_row(
+                    issue["type"],
+                    count_str,
+                    pct_str,
+                    severity_color
+                )
+
+            console.print(table)
+            console.print()
+
+        # Display recommendations
+        console.print(Panel(
+            "[bold cyan]Recommendations:[/bold cyan]\n\n"
+            "• [yellow]Missing @timestamp[/yellow]: Add date processor with fallback to event.ingested in ingest pipeline\n"
+            "• [yellow]Future timestamps[/yellow]: Add validation in pipeline to reject or fix timestamps > now\n"
+            "• [yellow]High ingestion lag[/yellow]: Check AWS Firehose buffer settings, cluster performance, or pipeline complexity\n"
+            "• [yellow]Precision loss[/yellow]: Update date processor format to include milliseconds (e.g., 'yyyy-MM-dd'T'HH:mm:ss.SSSZ')",
+            title="[bold green]💡 Tips[/bold green]",
+            box=box.ROUNDED,
+            border_style="green"
+        ))
+        console.print()
+
+    except Exception as e:
+        console.print(f"\n[red]❌ ERROR: Could not analyze timestamps: {e}[/red]\n")
+
+
+def option_field_explosion_detector(es):
+    """Detect excessive field counts, rapid field growth, and schema bloat issues."""
+    show_breadcrumb(["Main Menu", "Data Quality & Validation", "Field Explosion & Schema Bloat Detector"])
+
+    console.print("\n[cyan]Analyzing field explosion and schema bloat...[/cyan]\n")
+
+    # Get index pattern using interactive selection
+    index_pattern = get_index_pattern_selection(es)
+
+    if not index_pattern:
+        return
+
+    # Get threshold
+    field_count_threshold = get_number_input(
+        "Flag indices with field count above:",
+        default=1000,
+        min_val=100
+    )
+
+    if field_count_threshold is None:
+        return
+
+    try:
+        # Get matching indices
+        with Progress(
+            SpinnerColumn(),
+            TextColumn("[cyan]Fetching indices..."),
+            transient=True,
+        ) as progress:
+            progress.add_task("fetch", total=None)
+            indices_response = es.cat.indices(index=index_pattern, format="json", h="index,docs.count")
+
+        indices = []
+        for idx in indices_response:
+            index_name = idx.get("index")
+            if is_system(index_name):
+                continue
+            doc_count = int(idx.get("docs.count", "0") or 0)
+            if doc_count > 0:
+                indices.append({"name": index_name, "doc_count": doc_count})
+
+        if not indices:
+            console.print("\n[yellow]🟡 No matching indices found.[/yellow]\n")
+            return
+
+        # Sort indices by name for time-series analysis
+        indices.sort(key=lambda x: x["name"])
+
+        console.print(f"\n[cyan]Found {len(indices)} indices to analyze[/cyan]\n")
+
+        # Confirm before proceeding
+        if not confirm_action(f"Analyze field counts for {len(indices)} indices?"):
+            console.print("\n[yellow]⚠️  Cancelled.[/yellow]\n")
+            return
+
+        # Analyze each index
+        all_results = []
+        field_count_history = []
+
+        with Progress(
+            SpinnerColumn(),
+            TextColumn("[progress.description]{task.description}"),
+            BarColumn(),
+            TaskProgressColumn(),
+        ) as progress:
+            task = progress.add_task("[cyan]Analyzing indices...", total=len(indices))
+
+            for idx_info in indices:
+                index_name = idx_info["name"]
+                doc_count = idx_info["doc_count"]
+
+                progress.update(task, description=f"[cyan]Analyzing: {index_name[:50]}...")
+
+                try:
+                    # Get mapping
+                    mapping = es.indices.get_mapping(index=index_name)
+                    index_mapping = mapping.get(index_name, {}).get("mappings", {})
+                    properties = index_mapping.get("properties", {})
+
+                    # Count total fields recursively
+                    def count_fields(props, depth=0, max_depth_tracker={"max": 0}):
+                        count = 0
+                        current_depth = depth + 1
+                        if current_depth > max_depth_tracker["max"]:
+                            max_depth_tracker["max"] = current_depth
+
+                        for field_name, field_def in props.items():
+                            count += 1
+                            if "properties" in field_def:
+                                count += count_fields(field_def["properties"], current_depth, max_depth_tracker)
+                            elif "fields" in field_def:
+                                count += len(field_def["fields"])
+
+                        return count
+
+                    max_depth_tracker = {"max": 0}
+                    total_fields = count_fields(properties, max_depth_tracker=max_depth_tracker)
+                    max_nesting_depth = max_depth_tracker["max"]
+
+                    # Track field count history for growth analysis
+                    field_count_history.append({
+                        "index": index_name,
+                        "field_count": total_fields
+                    })
+
+                    # Check for issues
+                    issues = []
+
+                    if total_fields >= field_count_threshold:
+                        issues.append({
+                            "type": "Excessive field count",
+                            "value": total_fields,
+                            "severity": "HIGH" if total_fields > 2000 else "MEDIUM"
+                        })
+
+                    if max_nesting_depth > 5:
+                        issues.append({
+                            "type": "Deep nesting",
+                            "value": f"{max_nesting_depth} levels",
+                            "severity": "MEDIUM" if max_nesting_depth > 10 else "LOW"
+                        })
+
+                    # Detect field naming inconsistencies
+                    field_names = []
+
+                    def collect_field_names(props, prefix=""):
+                        for field_name, field_def in props.items():
+                            full_name = f"{prefix}{field_name}" if prefix else field_name
+                            field_names.append(full_name)
+                            if "properties" in field_def:
+                                collect_field_names(field_def["properties"], f"{full_name}.")
+
+                    collect_field_names(properties)
+
+                    # Check for similar field names (potential duplicates)
+                    similar_fields = []
+                    for i, name1 in enumerate(field_names):
+                        for name2 in field_names[i+1:]:
+                            # Check for similar names (case-insensitive, underscore vs dot)
+                            normalized1 = name1.lower().replace("_", ".").replace("-", ".")
+                            normalized2 = name2.lower().replace("_", ".").replace("-", ".")
+                            if normalized1 == normalized2 and name1 != name2:
+                                similar_fields.append((name1, name2))
+
+                    if similar_fields and len(similar_fields) > 5:
+                        issues.append({
+                            "type": "Field naming inconsistencies",
+                            "value": f"{len(similar_fields)} pairs",
+                            "severity": "LOW"
+                        })
+
+                    if issues:
+                        all_results.append({
+                            "index": index_name,
+                            "doc_count": doc_count,
+                            "total_fields": total_fields,
+                            "max_depth": max_nesting_depth,
+                            "issues": issues,
+                            "similar_fields": similar_fields[:5]  # Show first 5
+                        })
+
+                except Exception as e:
+                    console.print(f"[yellow]⚠️  Could not analyze {index_name}: {e}[/yellow]")
+
+                progress.advance(task)
+
+        # Analyze field growth over time
+        growth_issues = []
+        if len(field_count_history) >= 2:
+            for i in range(1, len(field_count_history)):
+                prev = field_count_history[i-1]
+                curr = field_count_history[i]
+
+                if prev["field_count"] > 0:
+                    growth_pct = ((curr["field_count"] - prev["field_count"]) / prev["field_count"]) * 100
+
+                    if growth_pct > 50:  # More than 50% growth
+                        growth_issues.append({
+                            "from_index": prev["index"],
+                            "to_index": curr["index"],
+                            "from_count": prev["field_count"],
+                            "to_count": curr["field_count"],
+                            "growth_pct": growth_pct
+                        })
+
+        if not all_results and not growth_issues:
+            console.print(f"\n[green]✅ No field explosion issues found![/green]\n")
+            return
+
+        # Display results
+        if all_results:
+            console.print(f"\n[yellow]⚠️  Found field explosion issues in {len(all_results)} indices[/yellow]\n")
+
+            for result in all_results:
+                index_name = result["index"]
+                doc_count = result["doc_count"]
+                total_fields = result["total_fields"]
+                max_depth = result["max_depth"]
+                issues = result["issues"]
+
+                table = Table(
+                    title=f"Index: {index_name} ({doc_count:,} docs, {total_fields} fields, max depth: {max_depth})",
+                    box=box.ROUNDED,
+                    title_style="bold cyan"
+                )
+
+                table.add_column("Issue Type", style="cyan")
+                table.add_column("Value", style="yellow", justify="right")
+                table.add_column("Severity", style="magenta")
+
+                for issue in issues:
+                    severity_color = {
+                        "HIGH": "[bold red]HIGH[/bold red]",
+                        "MEDIUM": "[yellow]MEDIUM[/yellow]",
+                        "LOW": "[dim]LOW[/dim]"
+                    }.get(issue["severity"], issue["severity"])
+
+                    table.add_row(
+                        issue["type"],
+                        str(issue["value"]),
+                        severity_color
+                    )
+
+                console.print(table)
+
+                # Show similar fields if any
+                if result.get("similar_fields"):
+                    console.print("[dim]Similar field names (potential duplicates):[/dim]")
+                    for name1, name2 in result["similar_fields"]:
+                        console.print(f"  [yellow]•[/yellow] {name1} ≈ {name2}")
+
+                console.print()
+
+        # Display growth issues
+        if growth_issues:
+            console.print(f"\n[yellow]⚠️  Detected rapid field growth in {len(growth_issues)} index transitions[/yellow]\n")
+
+            growth_table = Table(
+                title="Field Count Growth Analysis",
+                box=box.ROUNDED,
+                title_style="bold cyan"
+            )
+
+            growth_table.add_column("From Index", style="cyan")
+            growth_table.add_column("To Index", style="cyan")
+            growth_table.add_column("From Count", style="white", justify="right")
+            growth_table.add_column("To Count", style="yellow", justify="right")
+            growth_table.add_column("Growth %", style="red", justify="right")
+
+            for growth in growth_issues[:10]:  # Show top 10
+                growth_table.add_row(
+                    growth["from_index"],
+                    growth["to_index"],
+                    f"{growth['from_count']:,}",
+                    f"{growth['to_count']:,}",
+                    f"+{growth['growth_pct']:.1f}%"
+                )
+
+            console.print(growth_table)
+            console.print()
+
+        # Display recommendations
+        console.print(Panel(
+            "[bold cyan]Recommendations:[/bold cyan]\n\n"
+            "• [yellow]Excessive field count[/yellow]: Disable dynamic mapping and use explicit mappings\n"
+            "• [yellow]Deep nesting[/yellow]: Flatten nested objects or use flattened field type\n"
+            "• [yellow]Field naming inconsistencies[/yellow]: Normalize field names in ingest pipeline\n"
+            "• [yellow]Rapid field growth[/yellow]: Investigate data sources causing new fields, implement field name validation\n"
+            "• [yellow]Prevention[/yellow]: Set index.mapping.total_fields.limit to prevent runaway field creation",
+            title="[bold green]💡 Tips[/bold green]",
+            box=box.ROUNDED,
+            border_style="green"
+        ))
+        console.print()
+
+    except Exception as e:
+        console.print(f"\n[red]❌ ERROR: Could not analyze field explosion: {e}[/red]\n")
+
+
+def option_duplicate_document_analyzer(es):
+    """Detect exact and near-duplicate documents using composite aggregations."""
+    show_breadcrumb(["Main Menu", "Data Quality & Validation", "Duplicate Document Analyzer"])
+
+    console.print("\n[cyan]Detecting duplicate documents...[/cyan]\n")
+
+    # Get index pattern using interactive selection
+    index_pattern = get_index_pattern_selection(es)
+
+    if not index_pattern:
+        return
+
+    # Get fields to check for duplicates
+    console.print("\n[yellow]Enter fields to check for duplicates (comma-separated):[/yellow]")
+    console.print("[dim]Common choices: message,@timestamp or message.keyword,@timestamp[/dim]")
+    fields_input = safe_input("Fields (default: message.keyword,@timestamp): ").strip()
+
+    if not fields_input:
+        fields_input = "message.keyword,@timestamp"
+
+    duplicate_fields = [f.strip() for f in fields_input.split(",") if f.strip()]
+
+    if not duplicate_fields:
+        console.print("\n[yellow]⚠️  No valid fields specified.[/yellow]\n")
+        return
+
+    # Get sample size
+    sample_size = get_number_input(
+        "Maximum duplicates to find per index (0 for all):",
+        default=1000,
+        min_val=0
+    )
+
+    if sample_size is None:
+        return
+
+    try:
+        # Get matching indices
+        with Progress(
+            SpinnerColumn(),
+            TextColumn("[cyan]Fetching indices..."),
+            transient=True,
+        ) as progress:
+            progress.add_task("fetch", total=None)
+            indices_response = es.cat.indices(index=index_pattern, format="json", h="index,docs.count")
+
+        indices = []
+        for idx in indices_response:
+            index_name = idx.get("index")
+            if is_system(index_name):
+                continue
+            doc_count = int(idx.get("docs.count", "0") or 0)
+            if doc_count > 0:
+                indices.append({"name": index_name, "doc_count": doc_count})
+
+        if not indices:
+            console.print("\n[yellow]🟡 No matching indices found.[/yellow]\n")
+            return
+
+        console.print(f"\n[cyan]Found {len(indices)} indices to analyze[/cyan]\n")
+
+        # Confirm before proceeding
+        if not confirm_action(f"Search for duplicates in {len(indices)} indices?"):
+            console.print("\n[yellow]⚠️  Cancelled.[/yellow]\n")
+            return
+
+        # Analyze each index
+        all_results = []
+
+        with Progress(
+            SpinnerColumn(),
+            TextColumn("[progress.description]{task.description}"),
+            BarColumn(),
+            TaskProgressColumn(),
+        ) as progress:
+            task = progress.add_task("[cyan]Analyzing indices...", total=len(indices))
+
+            for idx_info in indices:
+                index_name = idx_info["name"]
+                doc_count = idx_info["doc_count"]
+
+                progress.update(task, description=f"[cyan]Analyzing: {index_name[:50]}...")
+
+                try:
+                    # Check if fields exist in this index
+                    field_caps = es.field_caps(index=index_name, fields=",".join(duplicate_fields))
+                    available_fields = list(field_caps.get("fields", {}).keys())
+
+                    # Filter to only available fields
+                    valid_fields = [f for f in duplicate_fields if f in available_fields]
+
+                    if not valid_fields:
+                        console.print(f"[yellow]⚠️  Fields not found in {index_name}, skipping[/yellow]")
+                        progress.advance(task)
+                        continue
+
+                    # Build composite aggregation sources
+                    sources = []
+                    for field in valid_fields:
+                        sources.append({
+                            field.replace(".", "_"): {"terms": {"field": field}}
+                        })
+
+                    # Use composite aggregation to find duplicates
+                    agg_query = {
+                        "size": 0,
+                        "aggs": {
+                            "duplicates": {
+                                "composite": {
+                                    "size": sample_size if sample_size > 0 else 1000,
+                                    "sources": sources
+                                }
+                            }
+                        }
+                    }
+
+                    search_result = es.search(index=index_name, body=agg_query)
+                    buckets = search_result.get("aggregations", {}).get("duplicates", {}).get("buckets", [])
+
+                    # Filter buckets with more than 1 document
+                    duplicate_buckets = [b for b in buckets if b.get("doc_count", 0) > 1]
+
+                    if duplicate_buckets:
+                        total_duplicates = sum(b["doc_count"] - 1 for b in duplicate_buckets)  # Subtract 1 to count only extras
+                        duplicate_pct = (total_duplicates / doc_count * 100) if doc_count > 0 else 0
+
+                        # Get index size for storage calculation
+                        stats = es.indices.stats(index=index_name)
+                        total_size = stats["indices"][index_name]["total"]["store"]["size_in_bytes"]
+                        estimated_waste = total_size * (duplicate_pct / 100)
+
+                        all_results.append({
+                            "index": index_name,
+                            "doc_count": doc_count,
+                            "duplicate_groups": len(duplicate_buckets),
+                            "total_duplicates": total_duplicates,
+                            "duplicate_pct": duplicate_pct,
+                            "estimated_waste": estimated_waste,
+                            "sample_duplicates": duplicate_buckets[:5]  # Show first 5
+                        })
+
+                except Exception as e:
+                    console.print(f"[yellow]⚠️  Could not analyze {index_name}: {e}[/yellow]")
+
+                progress.advance(task)
+
+        if not all_results:
+            console.print(f"\n[green]✅ No duplicate documents found![/green]\n")
+            return
+
+        # Display results
+        console.print(f"\n[yellow]⚠️  Found duplicates in {len(all_results)} indices[/yellow]\n")
+
+        for result in all_results:
+            index_name = result["index"]
+            doc_count = result["doc_count"]
+            duplicate_groups = result["duplicate_groups"]
+            total_duplicates = result["total_duplicates"]
+            duplicate_pct = result["duplicate_pct"]
+            estimated_waste = result["estimated_waste"]
+
+            table = Table(
+                title=f"Index: {index_name} ({doc_count:,} docs)",
+                box=box.ROUNDED,
+                title_style="bold cyan"
+            )
+
+            table.add_column("Metric", style="cyan")
+            table.add_column("Value", style="yellow", justify="right")
+
+            table.add_row("Duplicate Groups", f"{duplicate_groups:,}")
+            table.add_row("Total Duplicate Docs", f"{total_duplicates:,}")
+            table.add_row("Duplicate Percentage", f"{duplicate_pct:.2f}%")
+            table.add_row("Estimated Storage Waste", bytes_to_human(estimated_waste))
+
+            console.print(table)
+
+            # Show sample duplicates
+            if result.get("sample_duplicates"):
+                console.print("\n[dim]Sample duplicate groups:[/dim]")
+                for i, bucket in enumerate(result["sample_duplicates"][:3], 1):
+                    key_str = ", ".join([f"{k}={v}" for k, v in bucket.get("key", {}).items()])
+                    console.print(f"  [yellow]{i}.[/yellow] {key_str[:100]}... ({bucket['doc_count']} copies)")
+
+            console.print()
+
+        # Display recommendations
+        console.print(Panel(
+            "[bold cyan]Recommendations:[/bold cyan]\n\n"
+            "• [yellow]Add fingerprint processor[/yellow]: Use fingerprint processor in ingest pipeline to generate document IDs\n"
+            "  Example: {\"fingerprint\": {\"fields\": [\"message\", \"@timestamp\"], \"target_field\": \"_id\"}}\n"
+            "• [yellow]Configure AWS Firehose[/yellow]: Enable document ID generation to prevent retry duplicates\n"
+            "• [yellow]Cleanup existing duplicates[/yellow]: Use _delete_by_query with aggregations to remove duplicates\n"
+            "• [yellow]Monitor ingestion[/yellow]: Set up alerts for sudden increases in duplicate rate",
+            title="[bold green]💡 Tips[/bold green]",
+            box=box.ROUNDED,
+            border_style="green"
+        ))
+        console.print()
+
+    except Exception as e:
+        console.print(f"\n[red]❌ ERROR: Could not detect duplicates: {e}[/red]\n")
+
+
+def option_field_value_anomaly_detector(es):
+    """Detect field value anomalies including base64 encoding, truncation, and encoding issues."""
+    show_breadcrumb(["Main Menu", "Data Quality & Validation", "Field Value Anomaly Detector"])
+
+    console.print("\n[cyan]Detecting field value anomalies...[/cyan]\n")
+
+    # Get index pattern using interactive selection
+    index_pattern = get_index_pattern_selection(es)
+
+    if not index_pattern:
+        return
+
+    # Get field to analyze
+    console.print("\n[yellow]Enter field to analyze for anomalies:[/yellow]")
+    console.print("[dim]Common choices: message, message.keyword, log.original[/dim]")
+    field_name = safe_input("Field name (default: message): ").strip()
+
+    if not field_name:
+        field_name = "message"
+
+    # Get sample size
+    sample_size = get_number_input(
+        "Sample size for analysis (per index):",
+        default=1000,
+        min_val=100
+    )
+
+    if sample_size is None:
+        return
+
+    try:
+        # Get matching indices
+        with Progress(
+            SpinnerColumn(),
+            TextColumn("[cyan]Fetching indices..."),
+            transient=True,
+        ) as progress:
+            progress.add_task("fetch", total=None)
+            indices_response = es.cat.indices(index=index_pattern, format="json", h="index,docs.count")
+
+        indices = []
+        for idx in indices_response:
+            index_name = idx.get("index")
+            if is_system(index_name):
+                continue
+            doc_count = int(idx.get("docs.count", "0") or 0)
+            if doc_count > 0:
+                indices.append({"name": index_name, "doc_count": doc_count})
+
+        if not indices:
+            console.print("\n[yellow]🟡 No matching indices found.[/yellow]\n")
+            return
+
+        console.print(f"\n[cyan]Found {len(indices)} indices to analyze[/cyan]\n")
+
+        # Confirm before proceeding
+        if not confirm_action(f"Analyze field values in {len(indices)} indices?"):
+            console.print("\n[yellow]⚠️  Cancelled.[/yellow]\n")
+            return
+
+        # Analyze each index
+        all_results = []
+
+        with Progress(
+            SpinnerColumn(),
+            TextColumn("[progress.description]{task.description}"),
+            BarColumn(),
+            TaskProgressColumn(),
+        ) as progress:
+            task = progress.add_task("[cyan]Analyzing indices...", total=len(indices))
+
+            for idx_info in indices:
+                index_name = idx_info["name"]
+                doc_count = idx_info["doc_count"]
+
+                progress.update(task, description=f"[cyan]Analyzing: {index_name[:50]}...")
+
+                try:
+                    # Check if field exists
+                    field_caps = es.field_caps(index=index_name, fields=field_name)
+                    if field_name not in field_caps.get("fields", {}):
+                        progress.advance(task)
+                        continue
+
+                    anomalies = []
+
+                    # 1. Check for base64-encoded data
+                    base64_query = {
+                        "size": 0,
+                        "query": {
+                            "bool": {
+                                "must": [
+                                    {"exists": {"field": field_name}},
+                                    {"regexp": {field_name: "^[A-Za-z0-9+/]{40,}={0,2}$"}}
+                                ]
+                            }
+                        }
+                    }
+
+                    try:
+                        base64_count = es.count(index=index_name, body=base64_query).get("count", 0)
+                        base64_pct = (base64_count / doc_count * 100) if doc_count > 0 else 0
+
+                        if base64_count > 0:
+                            anomalies.append({
+                                "type": "Base64-encoded data",
+                                "count": base64_count,
+                                "percentage": base64_pct,
+                                "severity": "MEDIUM"
+                            })
+                    except Exception:
+                        # Regexp might not be supported on all field types
+                        pass
+
+                    # 2. Check for invalid UTF-8 characters (replacement character)
+                    utf8_query = {
+                        "size": 0,
+                        "query": {
+                            "bool": {
+                                "must": [
+                                    {"exists": {"field": field_name}},
+                                    {"wildcard": {field_name: "*\ufffd*"}}
+                                ]
+                            }
+                        }
+                    }
+
+                    try:
+                        utf8_count = es.count(index=index_name, body=utf8_query).get("count", 0)
+                        utf8_pct = (utf8_count / doc_count * 100) if doc_count > 0 else 0
+
+                        if utf8_count > 0:
+                            anomalies.append({
+                                "type": "Invalid UTF-8 characters",
+                                "count": utf8_count,
+                                "percentage": utf8_pct,
+                                "severity": "LOW"
+                            })
+                    except Exception:
+                        pass
+
+                    # 3. Sample documents for truncation and length analysis
+                    sample_query = {
+                        "size": min(sample_size, 1000),
+                        "query": {"exists": {"field": field_name}},
+                        "_source": [field_name]
+                    }
+
+                    sample_result = es.search(index=index_name, body=sample_query)
+                    hits = sample_result.get("hits", {}).get("hits", [])
+
+                    if hits:
+                        truncated_count = 0
+                        empty_count = 0
+                        length_stats = []
+
+                        for hit in hits:
+                            source = hit.get("_source", {})
+                            field_value = source.get(field_name, "")
+
+                            # Handle both string and array values
+                            if isinstance(field_value, list):
+                                field_value = " ".join(str(v) for v in field_value)
+                            else:
+                                field_value = str(field_value)
+
+                            # Check for empty strings
+                            if field_value == "":
+                                empty_count += 1
+                                continue
+
+                            length_stats.append(len(field_value))
+
+                            # Check for truncation indicators
+                            # JSON truncation: ends without closing bracket
+                            if field_value.startswith("{") and not field_value.rstrip().endswith("}"):
+                                truncated_count += 1
+                            elif field_value.startswith("[") and not field_value.rstrip().endswith("]"):
+                                truncated_count += 1
+                            # Message truncation: very long and ends abruptly
+                            elif len(field_value) > 5000 and not field_value[-1] in ".!?\n":
+                                truncated_count += 1
+
+                        # Calculate statistics
+                        if length_stats:
+                            avg_length = sum(length_stats) / len(length_stats)
+                            max_length = max(length_stats)
+                            min_length = min(length_stats)
+
+                            # Check for truncation
+                            truncated_pct = (truncated_count / len(hits) * 100)
+                            if truncated_count > 0:
+                                anomalies.append({
+                                    "type": "Truncated messages",
+                                    "count": f"{truncated_pct:.1f}% of sample",
+                                    "percentage": truncated_pct,
+                                    "severity": "MEDIUM"
+                                })
+
+                            # Check for empty strings
+                            empty_pct = (empty_count / len(hits) * 100)
+                            if empty_count > 0:
+                                anomalies.append({
+                                    "type": "Empty strings",
+                                    "count": f"{empty_pct:.1f}% of sample",
+                                    "percentage": empty_pct,
+                                    "severity": "LOW"
+                                })
+
+                            # Check for unusual length patterns
+                            if max_length > 100000:  # Very large messages
+                                anomalies.append({
+                                    "type": "Extremely large values",
+                                    "count": f"Max: {max_length:,} chars",
+                                    "percentage": 0,
+                                    "severity": "MEDIUM"
+                                })
+
+                    if anomalies:
+                        all_results.append({
+                            "index": index_name,
+                            "doc_count": doc_count,
+                            "field": field_name,
+                            "anomalies": anomalies
+                        })
+
+                except Exception as e:
+                    console.print(f"[yellow]⚠️  Could not analyze {index_name}: {e}[/yellow]")
+
+                progress.advance(task)
+
+        if not all_results:
+            console.print(f"\n[green]✅ No field value anomalies found![/green]\n")
+            return
+
+        # Display results
+        console.print(f"\n[yellow]⚠️  Found field value anomalies in {len(all_results)} indices[/yellow]\n")
+
+        for result in all_results:
+            index_name = result["index"]
+            doc_count = result["doc_count"]
+            field = result["field"]
+            anomalies = result["anomalies"]
+
+            table = Table(
+                title=f"Index: {index_name} ({doc_count:,} docs) - Field: {field}",
+                box=box.ROUNDED,
+                title_style="bold cyan"
+            )
+
+            table.add_column("Anomaly Type", style="cyan")
+            table.add_column("Count/Value", style="yellow", justify="right")
+            table.add_column("Percentage", style="red", justify="right")
+            table.add_column("Severity", style="magenta")
+
+            for anomaly in anomalies:
+                severity_color = {
+                    "HIGH": "[bold red]HIGH[/bold red]",
+                    "MEDIUM": "[yellow]MEDIUM[/yellow]",
+                    "LOW": "[dim]LOW[/dim]"
+                }.get(anomaly["severity"], anomaly["severity"])
+
+                count_str = str(anomaly["count"]) if isinstance(anomaly["count"], str) else f"{anomaly['count']:,}"
+                pct_str = f"{anomaly['percentage']:.1f}%" if anomaly["percentage"] > 0 else "-"
+
+                table.add_row(
+                    anomaly["type"],
+                    count_str,
+                    pct_str,
+                    severity_color
+                )
+
+            console.print(table)
+            console.print()
+
+        # Display recommendations
+        console.print(Panel(
+            "[bold cyan]Recommendations:[/bold cyan]\n\n"
+            "• [yellow]Base64-encoded data[/yellow]: Add decode processor in ingest pipeline\n"
+            "  Example: {\"decode\": {\"field\": \"message\", \"target_field\": \"decoded_message\"}}\n"
+            "• [yellow]Invalid UTF-8[/yellow]: Configure proper encoding in AWS Firehose or add conversion processor\n"
+            "• [yellow]Truncated messages[/yellow]: Increase CloudWatch/Firehose message size limits or split large messages\n"
+            "• [yellow]Empty strings[/yellow]: Add validation in pipeline to reject or flag empty messages\n"
+            "• [yellow]Extremely large values[/yellow]: Add truncate processor or increase http.max_content_length",
+            title="[bold green]💡 Tips[/bold green]",
+            box=box.ROUNDED,
+            border_style="green"
+        ))
+        console.print()
+
+    except Exception as e:
+        console.print(f"\n[red]❌ ERROR: Could not detect field value anomalies: {e}[/red]\n")
+
+
+def option_ingestion_health_monitor(es):
+    """Monitor ingestion health including stale data streams, ingestion lag, and time-series gaps."""
+    show_breadcrumb(["Main Menu", "Data Quality & Validation", "Ingestion Health & Freshness Monitor"])
+
+    console.print("\n[cyan]Monitoring ingestion health and freshness...[/cyan]\n")
+
+    # Get index pattern using interactive selection
+    index_pattern = get_index_pattern_selection(es)
+
+    if not index_pattern:
+        return
+
+    # Get staleness threshold
+    staleness_hours = get_number_input(
+        "Flag indices with no data in last X hours:",
+        default=24,
+        min_val=1
+    )
+
+    if staleness_hours is None:
+        return
+
+    # Get gap threshold
+    gap_threshold_minutes = get_number_input(
+        "Flag time gaps larger than X minutes:",
+        default=60,
+        min_val=1
+    )
+
+    if gap_threshold_minutes is None:
+        return
+
+    try:
+        # Get matching indices
+        with Progress(
+            SpinnerColumn(),
+            TextColumn("[cyan]Fetching indices..."),
+            transient=True,
+        ) as progress:
+            progress.add_task("fetch", total=None)
+            indices_response = es.cat.indices(index=index_pattern, format="json", h="index,docs.count")
+
+        indices = []
+        for idx in indices_response:
+            index_name = idx.get("index")
+            if is_system(index_name):
+                continue
+            doc_count = int(idx.get("docs.count", "0") or 0)
+            if doc_count > 0:
+                indices.append({"name": index_name, "doc_count": doc_count})
+
+        if not indices:
+            console.print("\n[yellow]🟡 No matching indices found.[/yellow]\n")
+            return
+
+        console.print(f"\n[cyan]Found {len(indices)} indices to analyze[/cyan]\n")
+
+        # Confirm before proceeding
+        if not confirm_action(f"Analyze ingestion health for {len(indices)} indices?"):
+            console.print("\n[yellow]⚠️  Cancelled.[/yellow]\n")
+            return
+
+        # Analyze each index
+        all_results = []
+        import datetime
+
+        with Progress(
+            SpinnerColumn(),
+            TextColumn("[progress.description]{task.description}"),
+            BarColumn(),
+            TaskProgressColumn(),
+        ) as progress:
+            task = progress.add_task("[cyan]Analyzing indices...", total=len(indices))
+
+            for idx_info in indices:
+                index_name = idx_info["name"]
+                doc_count = idx_info["doc_count"]
+
+                progress.update(task, description=f"[cyan]Analyzing: {index_name[:50]}...")
+
+                try:
+                    issues = []
+
+                    # 1. Check for stale data (no recent documents)
+                    max_timestamp_query = {
+                        "size": 0,
+                        "query": {"exists": {"field": "@timestamp"}},
+                        "aggs": {
+                            "max_timestamp": {"max": {"field": "@timestamp"}},
+                            "min_timestamp": {"min": {"field": "@timestamp"}}
+                        }
+                    }
+
+                    timestamp_result = es.search(index=index_name, body=max_timestamp_query)
+                    aggs = timestamp_result.get("aggregations", {})
+
+                    max_ts = aggs.get("max_timestamp", {}).get("value")
+                    min_ts = aggs.get("min_timestamp", {}).get("value")
+
+                    if max_ts:
+                        # Convert to datetime
+                        max_dt = datetime.datetime.fromtimestamp(max_ts / 1000.0, tz=datetime.timezone.utc)
+                        now = datetime.datetime.now(datetime.timezone.utc)
+                        hours_since_last = (now - max_dt).total_seconds() / 3600
+
+                        if hours_since_last > staleness_hours:
+                            issues.append({
+                                "type": "Stale data stream",
+                                "value": f"{hours_since_last:.1f} hours since last document",
+                                "severity": "HIGH" if hours_since_last > 168 else "MEDIUM"  # 1 week
+                            })
+
+                        # 2. Check for ingestion lag (if event.ingested exists)
+                        field_caps = es.field_caps(index=index_name, fields="event.ingested,@timestamp")
+                        has_ingested = "event.ingested" in field_caps.get("fields", {})
+
+                        if has_ingested:
+                            lag_query = {
+                                "size": 0,
+                                "query": {
+                                    "bool": {
+                                        "must": [
+                                            {"exists": {"field": "@timestamp"}},
+                                            {"exists": {"field": "event.ingested"}}
+                                        ]
+                                    }
+                                },
+                                "aggs": {
+                                    "lag_stats": {
+                                        "stats": {
+                                            "script": {
+                                                "source": "(doc['event.ingested'].value.millis - doc['@timestamp'].value.millis) / 60000.0",
+                                                "lang": "painless"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+
+                            lag_result = es.search(index=index_name, body=lag_query)
+                            lag_stats = lag_result.get("aggregations", {}).get("lag_stats", {})
+
+                            if lag_stats.get("count", 0) > 0:
+                                avg_lag = lag_stats.get("avg", 0)
+                                max_lag = lag_stats.get("max", 0)
+
+                                if avg_lag > 60:  # More than 1 hour average lag
+                                    issues.append({
+                                        "type": "High ingestion lag",
+                                        "value": f"Avg: {avg_lag:.1f}m, Max: {max_lag:.1f}m",
+                                        "severity": "MEDIUM"
+                                    })
+
+                        # 3. Check for time-series gaps
+                        if min_ts and max_ts:
+                            # Calculate appropriate interval based on data range
+                            time_range_hours = (max_ts - min_ts) / (1000 * 3600)
+
+                            if time_range_hours > 0:
+                                # Use appropriate interval
+                                if time_range_hours < 24:
+                                    interval = "1h"
+                                elif time_range_hours < 168:  # 1 week
+                                    interval = "6h"
+                                else:
+                                    interval = "1d"
+
+                                gap_query = {
+                                    "size": 0,
+                                    "query": {"exists": {"field": "@timestamp"}},
+                                    "aggs": {
+                                        "timeline": {
+                                            "date_histogram": {
+                                                "field": "@timestamp",
+                                                "fixed_interval": interval,
+                                                "min_doc_count": 0
+                                            }
+                                        }
+                                    }
+                                }
+
+                                gap_result = es.search(index=index_name, body=gap_query)
+                                buckets = gap_result.get("aggregations", {}).get("timeline", {}).get("buckets", [])
+
+                                # Find gaps (buckets with 0 documents)
+                                gaps = [b for b in buckets if b.get("doc_count", 0) == 0]
+
+                                if gaps and len(gaps) > 0:
+                                    gap_pct = (len(gaps) / len(buckets) * 100) if buckets else 0
+
+                                    if gap_pct > 10:  # More than 10% gaps
+                                        issues.append({
+                                            "type": "Time-series gaps",
+                                            "value": f"{len(gaps)} gaps ({gap_pct:.1f}% of timeline)",
+                                            "severity": "MEDIUM" if gap_pct > 25 else "LOW"
+                                        })
+
+                        # 4. Check for ingestion rate anomalies
+                        rate_query = {
+                            "size": 0,
+                            "query": {"exists": {"field": "@timestamp"}},
+                            "aggs": {
+                                "hourly_rate": {
+                                    "date_histogram": {
+                                        "field": "@timestamp",
+                                        "fixed_interval": "1h"
+                                    },
+                                    "aggs": {
+                                        "rate_stats": {
+                                            "stats_bucket": {
+                                                "buckets_path": "_count"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                        try:
+                            rate_result = es.search(index=index_name, body=rate_query)
+                            hourly_buckets = rate_result.get("aggregations", {}).get("hourly_rate", {}).get("buckets", [])
+
+                            if len(hourly_buckets) >= 10:  # Need enough data points
+                                doc_counts = [b.get("doc_count", 0) for b in hourly_buckets if b.get("doc_count", 0) > 0]
+
+                                if doc_counts:
+                                    avg_rate = sum(doc_counts) / len(doc_counts)
+                                    max_rate = max(doc_counts)
+                                    min_rate = min(doc_counts)
+
+                                    # Check for sudden drops (min < 50% of avg)
+                                    if min_rate < (avg_rate * 0.5) and avg_rate > 10:
+                                        issues.append({
+                                            "type": "Ingestion rate drop",
+                                            "value": f"Min: {min_rate:.0f}/h, Avg: {avg_rate:.0f}/h",
+                                            "severity": "MEDIUM"
+                                        })
+
+                                    # Check for sudden spikes (max > 200% of avg)
+                                    if max_rate > (avg_rate * 2) and avg_rate > 10:
+                                        issues.append({
+                                            "type": "Ingestion rate spike",
+                                            "value": f"Max: {max_rate:.0f}/h, Avg: {avg_rate:.0f}/h",
+                                            "severity": "LOW"
+                                        })
+                        except Exception:
+                            # Stats bucket aggregation might fail
+                            pass
+
+                    if issues:
+                        all_results.append({
+                            "index": index_name,
+                            "doc_count": doc_count,
+                            "issues": issues,
+                            "last_ingestion": max_dt.isoformat() if max_ts else "Unknown"
+                        })
+
+                except Exception as e:
+                    console.print(f"[yellow]⚠️  Could not analyze {index_name}: {e}[/yellow]")
+
+                progress.advance(task)
+
+        if not all_results:
+            console.print(f"\n[green]✅ All data streams are healthy![/green]\n")
+            return
+
+        # Display results
+        console.print(f"\n[yellow]⚠️  Found ingestion health issues in {len(all_results)} indices[/yellow]\n")
+
+        for result in all_results:
+            index_name = result["index"]
+            doc_count = result["doc_count"]
+            issues = result["issues"]
+            last_ingestion = result["last_ingestion"]
+
+            table = Table(
+                title=f"Index: {index_name} ({doc_count:,} docs) - Last: {last_ingestion}",
+                box=box.ROUNDED,
+                title_style="bold cyan"
+            )
+
+            table.add_column("Issue Type", style="cyan")
+            table.add_column("Details", style="yellow")
+            table.add_column("Severity", style="magenta")
+
+            for issue in issues:
+                severity_color = {
+                    "HIGH": "[bold red]HIGH[/bold red]",
+                    "MEDIUM": "[yellow]MEDIUM[/yellow]",
+                    "LOW": "[dim]LOW[/dim]"
+                }.get(issue["severity"], issue["severity"])
+
+                table.add_row(
+                    issue["type"],
+                    issue["value"],
+                    severity_color
+                )
+
+            console.print(table)
+            console.print()
+
+        # Display recommendations
+        console.print(Panel(
+            "[bold cyan]Recommendations:[/bold cyan]\n\n"
+            "• [yellow]Stale data stream[/yellow]: Check AWS Firehose/ESF configuration, verify log source is active\n"
+            "• [yellow]High ingestion lag[/yellow]: Reduce Firehose buffer interval, check cluster performance, optimize pipeline\n"
+            "• [yellow]Time-series gaps[/yellow]: Investigate log source interruptions, check for network issues\n"
+            "• [yellow]Ingestion rate anomalies[/yellow]: Review application behavior, check for batch processing or failures\n"
+            "• [yellow]Monitoring[/yellow]: Set up CloudWatch alarms for Firehose metrics and Elasticsearch ingestion rate",
+            title="[bold green]💡 Tips[/bold green]",
+            box=box.ROUNDED,
+            border_style="green"
+        ))
+        console.print()
+
+    except Exception as e:
+        console.print(f"\n[red]❌ ERROR: Could not monitor ingestion health: {e}[/red]\n")
+
+
+
+
+
+

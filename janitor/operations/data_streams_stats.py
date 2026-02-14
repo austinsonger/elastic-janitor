@@ -7,8 +7,9 @@ from rich.table import Table
 from rich.progress import Progress, SpinnerColumn, TextColumn
 from rich.panel import Panel
 from rich import box
-from ..config import console
-from ..utils import show_breadcrumb
+from ..config import console, PROTECT_SYSTEM
+from ..utils import show_breadcrumb, is_system, safe_input, bytes_to_human
+from ..core import get_all_indices_info
 
 
 def option_data_stream_statistics(es):

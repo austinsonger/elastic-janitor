@@ -2,11 +2,13 @@
 Index management operations for Elastic Janitor - Part 2.
 Advanced index operations (aliases, rollover, migration, optimization).
 """
+from collections import defaultdict
+from datetime import datetime, timedelta, timezone
 from rich.table import Table
 from rich.progress import Progress, SpinnerColumn, TextColumn
 from rich import box
 from ..config import console
-from ..utils import show_breadcrumb, select_from_list, confirm_action
+from ..utils import show_breadcrumb, select_from_list, confirm_action, get_number_input, is_system
 from ..core import get_all_indices_info
 
 

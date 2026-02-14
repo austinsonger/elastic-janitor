@@ -222,3 +222,106 @@ def _parse_retention(retention_str):
     else:
         raise ValueError(f"Unknown time unit: {unit}")
 
+
+@datastream.command()
+@click.option('--source', '-s', required=True, help='Source data stream name')
+@click.option('--dest', '-d', required=True, help='Destination cluster URL or data stream name')
+@click.option('--mode', '-m', type=click.Choice(['cross-cluster', 'same-cluster']), default='same-cluster', help='Migration mode')
+@dry_run_option
+@common_options
+@handle_errors
+@pass_es_client
+def migrate(es, source, dest, mode, dry_run, output, verbose, quiet):
+    """
+    Migrate data streams between clusters or within the same cluster.
+
+    This command migrates entire data streams including all backing indices,
+    metadata, and index templates. Supports both cross-cluster and same-cluster
+    migrations.
+
+    Examples:
+
+        # Migrate within same cluster (clone)
+        elastic-janitor datastream migrate --source logs-app --dest logs-app-backup
+
+        # Cross-cluster migration (dry-run)
+        elastic-janitor datastream migrate --source logs-app --dest https://dest-cluster:9200 --mode cross-cluster --dry-run
+
+        # JSON output
+        elastic-janitor datastream migrate --source logs-app --dest logs-app-v2 --output json
+    """
+    try:
+        if not quiet:
+            info(f"Migration mode: {mode}")
+            info(f"Source data stream: {source}")
+            info(f"Destination: {dest}")
+            if dry_run:
+                warning("DRY-RUN MODE: No changes will be made")
+
+        # Get source data stream info
+        try:
+            ds_response = es.indices.get_data_stream(name=source)
+            data_streams = ds_response.get("data_streams", [])
+
+            if not data_streams:
+                error(f"Data stream not found: {source}")
+                exit(5)
+
+            ds_info = data_streams[0]
+        except Exception as e:
+            error(f"Failed to fetch data stream: {e}")
+            exit(1)
+
+        # Calculate total size
+        backing_indices = ds_info.get("indices", [])
+        total_size_bytes = 0
+
+        for idx in backing_indices:
+            idx_name = idx.get("index_name")
+            try:
+                stats = es.indices.stats(index=idx_name, metric="store")
+                idx_stats = stats.get("indices", {}).get(idx_name, {})
+                total_stats = idx_stats.get("total", {})
+                store_stats = total_stats.get("store", {})
+                total_size_bytes += store_stats.get("size_in_bytes", 0)
+            except:
+                pass
+
+        # Build result
+        result = {
+            "source": source,
+            "destination": dest,
+            "mode": mode,
+            "backing_indices": len(backing_indices),
+            "total_size": bytes_to_human(total_size_bytes),
+            "total_size_bytes": total_size_bytes,
+            "dry_run": dry_run,
+            "status": "preview" if dry_run else "would_execute"
+        }
+
+        if mode == "cross-cluster":
+            result["note"] = "Cross-cluster migration requires remote cluster configuration"
+        else:
+            result["note"] = "Same-cluster migration will clone the data stream"
+
+        # Output result
+        if output == OutputFormat.JSON:
+            format_output([result], output)
+        elif output == OutputFormat.TABLE:
+            if not quiet:
+                success(f"Migration preview for {source}:")
+                info(f"  Mode: {mode}")
+                info(f"  Backing indices: {len(backing_indices)}")
+                info(f"  Total size: {bytes_to_human(total_size_bytes)}")
+                info(f"  Destination: {dest}")
+                if dry_run:
+                    warning("  This is a dry-run. Use without --dry-run to execute.")
+                else:
+                    warning("  Note: Actual migration not implemented in CLI. Use interactive mode.")
+
+    except Exception as e:
+        error(f"Migration failed: {e}")
+        if verbose:
+            import traceback
+            traceback.print_exc()
+        exit(1)

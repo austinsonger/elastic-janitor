@@ -15,7 +15,7 @@ from ..utils.formatters import parse_epoch_millis
 def option_list_snapshot_repos(es):
     with Progress(SpinnerColumn(), TextColumn("[cyan]Fetching snapshot repositories..."), transient=True) as progress:
         progress.add_task("fetch", total=None)
-        resp = es.snapshot.get_repository(repository="_all")
+        resp = es.snapshot.get_repository(name="_all")
 
     repos = list(resp.keys())
 
@@ -278,7 +278,7 @@ def option_verify_snapshot_repository(es):
         console.print(f"\n[cyan]Verifying repository '{repo}'...[/cyan]\n")
         with Progress(SpinnerColumn(), TextColumn(f"[cyan]Running verification on {repo}..."), transient=True) as progress:
             progress.add_task("verify", total=None)
-            resp = es.snapshot.verify_repository(repository=repo)
+            resp = es.snapshot.verify_repository(name=repo)
     except Exception as e:
         console.print(f"\n[red]❌ ERROR: Could not verify repository: {e}[/red]\n")
         return
@@ -600,7 +600,7 @@ def option_cross_repository_copy(es):
 
     # Verify destination repository exists
     try:
-        es.snapshot.get_repository(repository=dest_repo)
+        es.snapshot.get_repository(name=dest_repo)
     except Exception as e:
         console.print(f"\n[red]❌ ERROR: Destination repository '{dest_repo}' not found: {e}[/red]\n")
         return

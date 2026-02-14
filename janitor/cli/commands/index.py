@@ -179,3 +179,139 @@ def health(es, pattern, status, output, verbose, quiet):
             traceback.print_exc()
         exit(1)
 
+
+@index.command(name='analyze-patterns')
+@click.option('--days', '-d', default=7, help='Number of days to analyze', type=int)
+@click.option('--pattern', '-p', default='*', help='Index pattern to filter')
+@common_options
+@handle_errors
+@pass_es_client
+def analyze_patterns(es, days, pattern, output, verbose, quiet):
+    """
+    Analyze query workload and recommend optimal index patterns.
+
+    This command analyzes your index patterns and query workload to recommend
+    optimal time-based partitioning, routing strategies, and shard configurations.
+
+    Examples:
+
+        # Analyze patterns over last 7 days
+        elastic-janitor index analyze-patterns
+
+        # Analyze specific pattern over 30 days
+        elastic-janitor index analyze-patterns --days 30 --pattern "logs-*"
+
+        # JSON output
+        elastic-janitor index analyze-patterns --output json
+    """
+    try:
+        if not quiet:
+            info(f"Analyzing index patterns over last {days} days")
+            info(f"Pattern filter: {pattern}")
+
+        # Get index statistics
+        try:
+            stats = es.indices.stats(metric="search,store")
+            indices_info_raw = es.cat.indices(format="json", h="index,creation.date,docs.count,store.size")
+        except Exception as e:
+            error(f"Failed to fetch statistics: {e}")
+            exit(1)
+
+        # Filter indices by pattern
+        import fnmatch
+        from collections import defaultdict
+        import re
+
+        indices_info = [idx for idx in indices_info_raw if fnmatch.fnmatch(idx.get("index", ""), pattern)]
+
+        if not indices_info:
+            error(f"No indices found matching pattern: {pattern}")
+            exit(5)
+
+        # Analyze patterns
+        pattern_groups = defaultdict(list)
+        indices_stats = stats.get("indices", {})
+
+        for idx_info in indices_info:
+            index_name = idx_info.get("index", "")
+
+            # Skip system indices
+            if index_name.startswith("."):
+                continue
+
+            # Detect pattern
+            detected_pattern = re.sub(r'\d{4}\.\d{2}\.\d{2}', 'YYYY.MM.DD', index_name)
+            detected_pattern = re.sub(r'\d{4}-\d{2}-\d{2}', 'YYYY-MM-DD', detected_pattern)
+            detected_pattern = re.sub(r'\d{4}\.\d{2}', 'YYYY.MM', detected_pattern)
+            detected_pattern = re.sub(r'\d{4}-\d{2}', 'YYYY-MM', detected_pattern)
+            detected_pattern = re.sub(r'-\d{6}$', '-NNNNNN', detected_pattern)
+
+            pattern_groups[detected_pattern].append({
+                "name": index_name,
+                "docs": int(idx_info.get("docs.count", 0) or 0),
+                "size": idx_info.get("store.size", "0b")
+            })
+
+        # Build analysis results
+        analysis_results = []
+
+        for detected_pattern, indices in pattern_groups.items():
+            if len(indices) < 2:
+                continue
+
+            # Calculate query statistics
+            total_queries = 0
+            total_query_time = 0
+
+            for idx in indices:
+                idx_stats = indices_stats.get(idx["name"], {})
+                search_stats = idx_stats.get("total", {}).get("search", {})
+                total_queries += search_stats.get("query_total", 0)
+                total_query_time += search_stats.get("query_time_in_millis", 0)
+
+            avg_response_time = (total_query_time / total_queries) if total_queries > 0 else 0
+
+            # Identify issues
+            issues = []
+            if len(indices) > 365:
+                issues.append("Over-partitioned")
+            elif len(indices) > 100:
+                issues.append("Many indices")
+            if avg_response_time > 1000:
+                issues.append("Slow queries")
+
+            analysis_results.append({
+                "pattern": detected_pattern,
+                "index_count": len(indices),
+                "total_queries": total_queries,
+                "avg_response_time_ms": round(avg_response_time, 2),
+                "issues": ", ".join(issues) if issues else "None"
+            })
+
+        # Sort by query count
+        analysis_results.sort(key=lambda x: x["total_queries"], reverse=True)
+
+        if not analysis_results:
+            if not quiet:
+                info("No patterns found with multiple indices")
+            exit(0)
+
+        # Output results
+        if output == OutputFormat.JSON:
+            format_output(analysis_results, output)
+        elif output == OutputFormat.TABLE:
+            if not quiet:
+                success(f"Found {len(analysis_results)} index patterns:")
+                for result in analysis_results[:10]:  # Show top 10
+                    info(f"\nPattern: {result['pattern']}")
+                    info(f"  Indices: {result['index_count']}")
+                    info(f"  Queries: {result['total_queries']:,}")
+                    info(f"  Avg Response: {result['avg_response_time_ms']:.2f}ms")
+                    info(f"  Issues: {result['issues']}")
+
+    except Exception as e:
+        error(f"Pattern analysis failed: {e}")
+        if verbose:
+            import traceback
+            traceback.print_exc()
+        exit(1)

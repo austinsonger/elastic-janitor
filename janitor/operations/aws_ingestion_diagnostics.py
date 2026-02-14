@@ -1055,6 +1055,73 @@ def option_field_structure_analysis(es):
     try:
         console.print(f"\n[cyan]Analyzing field structures in {index_pattern}...[/cyan]\n")
 
+        # Get index status information to filter out closed/frozen/partial indices
+        with Progress(
+            SpinnerColumn(),
+            TextColumn("[cyan]Fetching index information..."),
+            transient=True,
+        ) as progress:
+            progress.add_task("fetch", total=None)
+            indices_response = es.cat.indices(
+                index=index_pattern,
+                format="json",
+                h="index,status,docs.count,dt"  # dt = data tier
+            )
+
+        # Filter indices - skip closed, frozen, and partial indices
+        queryable_indices = []
+        skipped_indices = []
+
+        for idx in indices_response:
+            index_name = idx.get("index")
+            status = idx.get("status", "").lower()
+            tier = idx.get("dt", "").lower()
+            doc_count = int(idx.get("docs.count", "0") or 0)
+
+            # Skip system indices
+            if is_system(index_name):
+                continue
+
+            # Skip closed indices
+            if status == "close":
+                skipped_indices.append((index_name, "closed"))
+                continue
+
+            # Skip frozen tier indices (searchable snapshots with limited query capabilities)
+            if tier == "frozen":
+                skipped_indices.append((index_name, "frozen tier"))
+                continue
+
+            # Skip partial indices (searchable snapshots)
+            # Partial indices have "partial-" prefix or are in frozen tier
+            if index_name.startswith("partial-") or "partial" in index_name.lower():
+                skipped_indices.append((index_name, "partial/searchable snapshot"))
+                continue
+
+            # Only include indices with documents
+            if doc_count > 0:
+                queryable_indices.append(index_name)
+
+        if not queryable_indices:
+            console.print("\n[yellow]🟡 No queryable indices found matching pattern.[/yellow]")
+            if skipped_indices:
+                console.print(f"\n[dim]Skipped {len(skipped_indices)} indices:[/dim]")
+                for idx_name, reason in skipped_indices[:10]:
+                    console.print(f"  [dim]• {idx_name} ({reason})[/dim]")
+                if len(skipped_indices) > 10:
+                    console.print(f"  [dim]... and {len(skipped_indices) - 10} more[/dim]")
+            console.print()
+            return
+
+        # Build query pattern for queryable indices only
+        queryable_pattern = ",".join(queryable_indices)
+
+        console.print(f"[cyan]Analyzing {len(queryable_indices)} queryable indices...[/cyan]")
+        if skipped_indices:
+            console.print(f"[dim]Skipped {len(skipped_indices)} indices (closed/frozen/partial)[/dim]\n")
+        else:
+            console.print()
+
         validation_results = []
 
         with Progress(
@@ -1078,7 +1145,7 @@ def option_field_structure_analysis(es):
                     },
                     "size": 0
                 }
-                result = es.search(index=index_pattern, body=missing_log_group_query)
+                result = es.search(index=queryable_pattern, body=missing_log_group_query)
                 missing_log_group = result["hits"]["total"]["value"]
 
                 # Docs with aws.cloudwatch but missing log_stream
@@ -1091,7 +1158,7 @@ def option_field_structure_analysis(es):
                     },
                     "size": 0
                 }
-                result = es.search(index=index_pattern, body=missing_log_stream_query)
+                result = es.search(index=queryable_pattern, body=missing_log_stream_query)
                 missing_log_stream = result["hits"]["total"]["value"]
 
                 if missing_log_group > 0 or missing_log_stream > 0:
@@ -1129,7 +1196,7 @@ def option_field_structure_analysis(es):
                     },
                     "size": 0
                 }
-                result = es.search(index=index_pattern, body=firehose_no_arn_query)
+                result = es.search(index=queryable_pattern, body=firehose_no_arn_query)
                 missing_arn = result["hits"]["total"]["value"]
 
                 if missing_arn > 0:
@@ -1172,7 +1239,7 @@ def option_field_structure_analysis(es):
                     },
                     "size": 0
                 }
-                result = es.search(index=index_pattern, body=extracted_fields_query)
+                result = es.search(index=queryable_pattern, body=extracted_fields_query)
                 has_extracted = result["hits"]["total"]["value"]
 
                 if has_extracted > 0:
@@ -1218,7 +1285,7 @@ def option_field_structure_analysis(es):
                     },
                     "size": 0
                 }
-                result = es.search(index=index_pattern, body=k8s_pattern_query)
+                result = es.search(index=queryable_pattern, body=k8s_pattern_query)
                 missing_k8s = result["hits"]["total"]["value"]
 
                 if missing_k8s > 0:
@@ -1257,7 +1324,7 @@ def option_field_structure_analysis(es):
                     },
                     "size": 0
                 }
-                result = es.search(index=index_pattern, body=missing_timestamp_query)
+                result = es.search(index=queryable_pattern, body=missing_timestamp_query)
                 missing_ts = result["hits"]["total"]["value"]
 
                 if missing_ts > 0:
@@ -1325,20 +1392,108 @@ def option_field_structure_analysis(es):
         console.print(validation_table)
         console.print()
 
-        # Summary
+        # Determine which specific validation failures were detected
+        has_timestamp_failure = any(r["check"] == "Timestamp Parsing" and r["status"] == "Fail" for r in validation_results)
+        has_metadata_missing = any(r["check"] == "CloudWatch Metadata" and r["status"] == "Warning" for r in validation_results)
+        has_firehose_arn_missing = any(r["check"] == "Firehose ARN" and r["status"] == "Warning" for r in validation_results)
+        has_extracted_fields = any(r["check"] == "CloudWatch Field Extraction" and r["status"] == "Warning" for r in validation_results)
+        has_k8s_metadata_missing = any(r["check"] == "Kubernetes Metadata" and r["status"] == "Warning" for r in validation_results)
+
+        # Build issue-specific action recommendations
+        if fail_count > 0 or warn_count > 0:
+            actions = []
+
+            if has_timestamp_failure:
+                actions.append(
+                    "[bold red]For Missing @timestamp:[/bold red]\n"
+                    "  1. Go to: [yellow]Template & Policy Management → Edit Pipeline[/yellow]\n"
+                    "  2. Add date processor with fallback to event.ingested:\n"
+                    "     [dim]{\n"
+                    "       \"date\": {\n"
+                    "         \"field\": \"@timestamp\",\n"
+                    "         \"target_field\": \"@timestamp\",\n"
+                    "         \"formats\": [\"ISO8601\"],\n"
+                    "         \"on_failure\": [\n"
+                    "           {\"set\": {\"field\": \"@timestamp\", \"value\": \"{{event.ingested}}\"}}\n"
+                    "         ]\n"
+                    "       }\n"
+                    "     }[/dim]\n"
+                    "  3. [red]Critical:[/red] Fix immediately as time-series queries will fail\n"
+                    "  4. Go to: [yellow]Quick Fixes & Actions → 🔄 Bulk Reindex[/yellow] → Reprocess"
+                )
+
+            if has_metadata_missing or has_firehose_arn_missing:
+                actions.append(
+                    "[bold yellow]For Missing CloudWatch/Firehose Metadata:[/bold yellow]\n"
+                    "  1. Check AWS Firehose/ESF configuration:\n"
+                    "     [dim]• Firehose: Set ProcessingConfiguration.Enabled = true\n"
+                    "     • ESF: Configure metadata enrichment in Lambda\n"
+                    "     • Verify CloudWatch log subscription filter settings[/dim]\n"
+                    "  2. Ensure metadata fields are included in delivery stream\n"
+                    "  3. Example Firehose configuration:\n"
+                    "     [dim]ProcessingConfiguration:\n"
+                    "       Enabled: true\n"
+                    "       Processors:\n"
+                    "         - Type: MetadataExtraction\n"
+                    "           Parameters:\n"
+                    "             - ParameterName: JsonParsingEngine\n"
+                    "               ParameterValue: JQ-1.6[/dim]\n"
+                    "  4. See: [yellow]AWS_FIREHOSE_ESF_ALL_ISSUES.md[/yellow] for detailed configuration"
+                )
+
+            if has_extracted_fields:
+                actions.append(
+                    "[bold yellow]For CloudWatch Field Extraction:[/bold yellow]\n"
+                    "  1. Update Firehose configuration to disable extracted fields:\n"
+                    "     [dim]{\n"
+                    "       \"cloudwatch_logs\": {\n"
+                    "         \"include_cw_extracted_fields\": false\n"
+                    "       }\n"
+                    "     }[/dim]\n"
+                    "  2. Redeploy Firehose delivery stream with updated config\n"
+                    "  3. [yellow]Warning:[/yellow] Extracted fields waste storage and duplicate data\n"
+                    "  4. See: [yellow]AWS_FIREHOSE_ESF_ALL_ISSUES.md[/yellow] → CloudWatch Extracted Fields section"
+                )
+
+            if has_k8s_metadata_missing:
+                actions.append(
+                    "[bold yellow]For Missing Kubernetes Metadata:[/bold yellow]\n"
+                    "  1. Ensure Fluent Bit/Fluentd includes kubernetes enrichment:\n"
+                    "     [dim]# Fluent Bit configuration\n"
+                    "     [FILTER]\n"
+                    "         Name                kubernetes\n"
+                    "         Match               kube.*\n"
+                    "         Kube_URL            https://kubernetes.default.svc:443\n"
+                    "         Kube_CA_File        /var/run/secrets/kubernetes.io/serviceaccount/ca.crt\n"
+                    "         Kube_Token_File     /var/run/secrets/kubernetes.io/serviceaccount/token\n"
+                    "         Merge_Log           On\n"
+                    "         K8S-Logging.Parser  On\n"
+                    "         K8S-Logging.Exclude On[/dim]\n"
+                    "  2. Verify RBAC permissions for Fluent Bit/Fluentd\n"
+                    "  3. Check pod logs for kubernetes filter errors"
+                )
+
+            action_text = "\n\n".join(actions) if actions else ""
+
+        # Summary panel with actionable recommendations
         if fail_count > 0:
             console.print(Panel(
                 f"[bold red]❌ {fail_count} critical validation failure(s)[/bold red]\n\n"
                 f"Warnings: {warn_count}\n\n"
-                f"Immediate action required to fix critical issues.",
-                title="[bold red]Validation Failed[/bold red]",
+                f"[bold white]📋 Step-by-Step Fix Guide:[/bold white]\n\n"
+                f"{action_text}\n\n"
+                f"[dim]💡 Tip: See AWS_INGESTION_FIXES_GUIDE.md for detailed instructions[/dim]",
+                title="[bold red]Validation Failed - Action Required[/bold red]",
                 box=box.ROUNDED,
                 border_style="red"
             ))
         elif warn_count > 0:
             console.print(Panel(
                 f"[bold yellow]⚠️  {warn_count} warning(s) detected[/bold yellow]\n\n"
-                f"Field structures are mostly correct but some improvements recommended.",
+                f"Field structures are mostly correct but some improvements recommended.\n\n"
+                f"[bold white]📋 Recommended Actions:[/bold white]\n\n"
+                f"{action_text}\n\n"
+                f"[dim]💡 Tip: See AWS_FIREHOSE_ESF_ALL_ISSUES.md for configuration examples[/dim]",
                 title="[bold yellow]Validation Warnings[/bold yellow]",
                 box=box.ROUNDED,
                 border_style="yellow"
@@ -1352,6 +1507,139 @@ def option_field_structure_analysis(es):
                 border_style="green"
             ))
         console.print()
+
+        # Offer interactive quick actions menu if there are issues
+        if fail_count > 0 or warn_count > 0:
+            console.print("[bold cyan]What would you like to do next?[/bold cyan]\n")
+
+            action_choices = []
+
+            if has_timestamp_failure:
+                action_choices.append(
+                    questionary.Choice("🔍 View Pipeline Troubleshooting (check date processors)", value="pipeline_troubleshooting")
+                )
+                action_choices.append(
+                    questionary.Choice("🔄 Go to Bulk Reindex (reprocess with fixed pipeline)", value="bulk_reindex")
+                )
+
+            if has_timestamp_failure or has_metadata_missing or has_extracted_fields:
+                action_choices.append(
+                    questionary.Choice("✏️  Edit Pipeline Configuration", value="edit_pipeline")
+                )
+
+            if has_metadata_missing or has_firehose_arn_missing or has_extracted_fields:
+                action_choices.append(
+                    questionary.Choice("📖 View Firehose/ESF Configuration Guide", value="config_guide")
+                )
+
+            if has_k8s_metadata_missing:
+                action_choices.append(
+                    questionary.Choice("🐳 View Kubernetes Enrichment Guide", value="k8s_guide")
+                )
+
+            action_choices.extend([
+                questionary.Choice("📤 Export Affected Documents", value="export_docs"),
+                questionary.Separator(),
+                questionary.Choice("📚 View AWS Ingestion Fixes Guide", value="view_guide"),
+                questionary.Choice("← Return to AWS Ingestion Menu", value="back")
+            ])
+
+            try:
+                next_action = questionary.select(
+                    "Select action:",
+                    choices=action_choices
+                ).ask()
+
+                if next_action == "pipeline_troubleshooting":
+                    console.print("\n[cyan]→ Navigating to Pipeline Troubleshooting...[/cyan]\n")
+                    option_pipeline_troubleshooting(es)
+
+                elif next_action == "bulk_reindex":
+                    console.print("\n[cyan]→ Navigating to Bulk Reindex...[/cyan]\n")
+                    _bulk_reindex_failed_documents(es)
+
+                elif next_action == "edit_pipeline":
+                    console.print("\n[yellow]ℹ️  To edit pipelines:[/yellow]")
+                    console.print("   Go to: [cyan]Main Menu → Template & Policy Management → Edit Pipeline[/cyan]\n")
+
+                elif next_action == "config_guide":
+                    console.print("\n[cyan]📖 Opening Firehose/ESF Configuration Guide...[/cyan]\n")
+                    try:
+                        import os
+                        guide_path = os.path.join(os.path.dirname(__file__), "..", "..", "AWS_FIREHOSE_ESF_ALL_ISSUES.md")
+                        if os.path.exists(guide_path):
+                            console.print(Panel(
+                                "[bold white]AWS Firehose/ESF Configuration Tips:[/bold white]\n\n"
+                                "1. [cyan]Enable Metadata Inclusion:[/cyan]\n"
+                                "   - Firehose: Set ProcessingConfiguration.Enabled = true\n"
+                                "   - ESF: Configure metadata enrichment in Lambda\n\n"
+                                "2. [cyan]Disable Extracted Fields:[/cyan]\n"
+                                "   - Set include_cw_extracted_fields: false\n"
+                                "   - Prevents duplicate data and wasted storage\n\n"
+                                "3. [cyan]Optimize Buffer Settings:[/cyan]\n"
+                                "   - Buffer size: 1-5 MB\n"
+                                "   - Buffer interval: 60-300 seconds\n\n"
+                                "4. [cyan]Ensure Complete Metadata:[/cyan]\n"
+                                "   - CloudWatch: log_group, log_stream\n"
+                                "   - Firehose: arn, request_id\n\n"
+                                f"[dim]Full guide: {guide_path}[/dim]",
+                                title="[bold cyan]Configuration Guide[/bold cyan]",
+                                border_style="cyan"
+                            ))
+                        else:
+                            console.print("[yellow]Guide file not found. See AWS_FIREHOSE_ESF_ALL_ISSUES.md in project root.[/yellow]\n")
+                    except Exception as e:
+                        console.print(f"[yellow]Could not open guide: {e}[/yellow]\n")
+
+                elif next_action == "k8s_guide":
+                    console.print("\n[cyan]📖 Kubernetes Enrichment Guide[/cyan]\n")
+                    console.print(Panel(
+                        "[bold white]Kubernetes Metadata Enrichment:[/bold white]\n\n"
+                        "1. [cyan]Fluent Bit Configuration:[/cyan]\n"
+                        "   - Add kubernetes filter to enrich logs\n"
+                        "   - Ensure proper RBAC permissions\n"
+                        "   - Set Merge_Log: On to parse JSON logs\n\n"
+                        "2. [cyan]Required Fields:[/cyan]\n"
+                        "   - kubernetes.pod.name\n"
+                        "   - kubernetes.namespace\n"
+                        "   - kubernetes.container.name\n"
+                        "   - kubernetes.labels.*\n\n"
+                        "3. [cyan]Troubleshooting:[/cyan]\n"
+                        "   - Check Fluent Bit pod logs for errors\n"
+                        "   - Verify ServiceAccount has list/get permissions\n"
+                        "   - Ensure Kube_URL is accessible from pod\n\n"
+                        "[dim]See Fluent Bit documentation for complete configuration[/dim]",
+                        title="[bold cyan]Kubernetes Enrichment[/bold cyan]",
+                        border_style="cyan"
+                    ))
+                    console.print()
+
+                elif next_action == "export_docs":
+                    console.print("\n[yellow]ℹ️  To export affected documents:[/yellow]")
+                    console.print("   Go to: [cyan]Quick Fixes & Actions → Export Failed Logs to File[/cyan]")
+                    console.print("   [dim]Note: Modify the query to match specific validation failures[/dim]\n")
+
+                elif next_action == "view_guide":
+                    console.print("\n[cyan]📖 Opening AWS Ingestion Fixes Guide...[/cyan]\n")
+                    try:
+                        import os
+                        guide_path = os.path.join(os.path.dirname(__file__), "..", "..", "AWS_INGESTION_FIXES_GUIDE.md")
+                        if os.path.exists(guide_path):
+                            with open(guide_path, 'r') as f:
+                                guide_content = f.read()
+                            console.print(Panel(
+                                guide_content[:2000] + "\n\n[dim]... (file continues)[/dim]",
+                                title="[bold cyan]AWS Ingestion Fixes Guide (Preview)[/bold cyan]",
+                                border_style="cyan"
+                            ))
+                            console.print(f"\n[green]Full guide available at: {guide_path}[/green]\n")
+                        else:
+                            console.print("[yellow]Guide file not found. See AWS_INGESTION_FIXES_GUIDE.md in project root.[/yellow]\n")
+                    except Exception as e:
+                        console.print(f"[yellow]Could not open guide: {e}[/yellow]\n")
+
+            except KeyboardInterrupt:
+                console.print("\n[yellow]⚠️  Cancelled.[/yellow]\n")
 
     except Exception as e:
         console.print(f"\n[red]❌ ERROR: Could not analyze field structures: {e}[/red]\n")
