@@ -1,15 +1,20 @@
 """
 Configuration and constants for Elastic Janitor.
 """
+import os
+from dotenv import load_dotenv
 from rich.console import Console
 from questionary import Style
+
+# Load environment variables from .env file
+load_dotenv()
 
 # ------------------------------------------------------------
 # Elasticsearch Settings
 # ------------------------------------------------------------
 
-ELASTIC_URL = "https://cirrusmd-siem.es.us-gov-east-1.aws.elastic-cloud.com:9243"
-ELASTIC_API_KEY = "azBpcFY1d0JaelVXTU5aeTRZZms6eUpZUVJCS1ozNjZKZ21kMWNEVUJkdw=="
+ELASTIC_URL = os.getenv("ELASTIC_URL", "https://cirrusmd-siem.es.us-gov-east-1.aws.elastic-cloud.com:9243")
+ELASTIC_API_KEY = os.getenv("ELASTIC_API_KEY", "")
 
 # ------------------------------------------------------------
 # Application Settings
