@@ -7,7 +7,7 @@ from rich.table import Table
 from rich.panel import Panel
 from rich.syntax import Syntax
 from rich.tree import Tree
-from ..config import console, DRY_RUN_MODE
+from ..config import console, GOD_MODE
 from ..utils import show_breadcrumb, confirm_action, select_from_list
 from ..utils.version_control import (
     get_resource_versions, get_resource_dependencies, compare_dependency_with_current,
@@ -257,7 +257,7 @@ def option_rollback_with_dependencies(es):
             console.print("[dim]Only the main resource will be rolled back.[/dim]")
 
         # Confirm rollback
-        if DRY_RUN_MODE:
+        if not GOD_MODE:
             console.print(f"\n[bold yellow]DRY RUN MODE - No changes will be made[/bold yellow]")
 
         if not confirm_action(f"Proceed with rollback of '{selected_resource}' and {len(dependencies)} dependencies?"):

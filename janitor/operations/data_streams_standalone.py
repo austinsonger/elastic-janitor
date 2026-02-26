@@ -7,7 +7,7 @@ from rich.table import Table
 from rich.progress import Progress, SpinnerColumn, TextColumn, BarColumn, TaskProgressColumn
 from rich.panel import Panel
 from rich import box
-from ..config import console, DEFAULT_RETENTION_DAYS, MAX_DELETE_LIMIT, DRY_RUN_MODE
+from ..config import console, DEFAULT_RETENTION_DAYS, MAX_DELETE_LIMIT, GOD_MODE
 from ..utils import is_system, confirm_delete, safe_input, show_breadcrumb
 from ..core import get_all_indices_info
 
@@ -180,9 +180,9 @@ def option_clean_standalone_indices(es):
         console.print("\n[yellow]⚠️  Cancelled.[/yellow]\n")
         return
 
-    global DRY_RUN_MODE
-    if DRY_RUN_MODE:
-        console.print("\n[yellow]🔍 DRY-RUN MODE: Simulating deletion...[/yellow]\n")
+    global GOD_MODE
+    if not GOD_MODE:
+        console.print("\n[yellow]🔍 SAFE MODE: Simulating deletion...[/yellow]\n")
         console.print(f"[blue]Would delete {len(delete_list)} standalone indices:[/blue]\n")
         for idx_name, created, size, size_bytes, tier in delete_list[:10]:
             console.print(f"  [blue]•[/blue] {idx_name} ({size})")

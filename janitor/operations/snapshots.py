@@ -7,7 +7,7 @@ import questionary
 from rich.table import Table
 from rich.progress import Progress, SpinnerColumn, TextColumn, BarColumn, TaskProgressColumn
 from rich import box
-from ..config import console, DRY_RUN_MODE
+from ..config import console, GOD_MODE
 from ..utils import confirm_delete, safe_input, show_breadcrumb, select_from_list
 from ..utils.formatters import parse_epoch_millis
 
@@ -130,9 +130,9 @@ def option_delete_old_snapshots(es):
         console.print("\n[yellow]⚠️  Cancelled.[/yellow]\n")
         return
 
-    global DRY_RUN_MODE
-    if DRY_RUN_MODE:
-        console.print("\n[yellow]🔍 DRY-RUN MODE: Simulating deletion...[/yellow]\n")
+    global GOD_MODE
+    if not GOD_MODE:
+        console.print("\n[yellow]🔍 SAFE MODE: Simulating deletion...[/yellow]\n")
         console.print(f"[blue]Would delete {len(delete_list)} snapshots from {repo}:[/blue]\n")
         for name, started in delete_list[:10]:
             age_days = (datetime.now(timezone.utc) - started).days
@@ -226,9 +226,9 @@ def option_delete_slm(es):
         console.print("\n[yellow]⚠️  Cancelled.[/yellow]\n")
         return
 
-    global DRY_RUN_MODE
-    if DRY_RUN_MODE:
-        console.print("\n[yellow]🔍 DRY-RUN MODE: Simulating deletion...[/yellow]\n")
+    global GOD_MODE
+    if not GOD_MODE:
+        console.print("\n[yellow]🔍 SAFE MODE: Simulating deletion...[/yellow]\n")
         console.print(f"[blue]Would delete {len(matches)} SLM policies:[/blue]\n")
         for p in matches[:10]:
             console.print(f"  [blue]•[/blue] {p}")
@@ -528,9 +528,9 @@ def option_automated_snapshot_cleanup(es):
         console.print("\n[yellow]⚠️  Cancelled.[/yellow]\n")
         return
 
-    global DRY_RUN_MODE
-    if DRY_RUN_MODE:
-        console.print("\n[yellow]🔍 DRY-RUN MODE: Simulating deletion...[/yellow]\n")
+    global GOD_MODE
+    if not GOD_MODE:
+        console.print("\n[yellow]🔍 SAFE MODE: Simulating deletion...[/yellow]\n")
         console.print(f"[blue]Would delete {len(delete_list)} snapshots from {repo}[/blue]\n")
         console.print("\n[green]✅ Dry-run complete. No actual changes made.[/green]\n")
         return
@@ -619,9 +619,9 @@ def option_cross_repository_copy(es):
         console.print("\n[yellow]⚠️  Cancelled.[/yellow]\n")
         return
 
-    global DRY_RUN_MODE
-    if DRY_RUN_MODE:
-        console.print("\n[yellow]🔍 DRY-RUN MODE: Simulating copy...[/yellow]\n")
+    global GOD_MODE
+    if not GOD_MODE:
+        console.print("\n[yellow]🔍 SAFE MODE: Simulating copy...[/yellow]\n")
         console.print(f"[blue]Would copy snapshot '{snapshot_name}' from '{source_repo}' to '{dest_repo}' as '{new_snapshot_name}'[/blue]\n")
         console.print("\n[green]✅ Dry-run complete. No actual changes made.[/green]\n")
         return
@@ -761,9 +761,9 @@ def option_snapshot_restore_wizard(es):
         console.print("\n[yellow]⚠️  Cancelled.[/yellow]\n")
         return
 
-    global DRY_RUN_MODE
-    if DRY_RUN_MODE:
-        console.print("\n[yellow]🔍 DRY-RUN MODE: Simulating restore...[/yellow]\n")
+    global GOD_MODE
+    if not GOD_MODE:
+        console.print("\n[yellow]🔍 SAFE MODE: Simulating restore...[/yellow]\n")
         console.print(f"[blue]Would restore {len(indices_to_restore)} indices from snapshot '{selected_snapshot}'[/blue]\n")
         console.print("\n[green]✅ Dry-run complete. No actual changes made.[/green]\n")
         return

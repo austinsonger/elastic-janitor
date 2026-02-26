@@ -9,7 +9,7 @@ from rich.table import Table
 from rich.progress import Progress, SpinnerColumn, TextColumn, BarColumn, TaskProgressColumn
 from rich.panel import Panel
 from rich import box
-from ..config import console, MAX_DELETE_LIMIT, DRY_RUN_MODE, PROTECT_SYSTEM
+from ..config import console, MAX_DELETE_LIMIT, GOD_MODE, PROTECT_SYSTEM
 from ..utils import (
     safe_input, is_system, confirm_delete, confirm_action, 
     show_breadcrumb, select_from_list, get_number_input, bytes_to_human
@@ -508,9 +508,9 @@ def option_bulk_policy_assignment(es):
         console.print("\n[yellow]⚠️  Cancelled.[/yellow]\n")
         return
 
-    global DRY_RUN_MODE
-    if DRY_RUN_MODE:
-        console.print("\n[yellow]🔍 DRY-RUN MODE: Simulating policy assignment...[/yellow]\n")
+    global GOD_MODE
+    if not GOD_MODE:
+        console.print("\n[yellow]🔍 SAFE MODE: Simulating policy assignment...[/yellow]\n")
         console.print(f"[blue]Would assign policy '{target_policy}' to {len(selected_indices)} indices[/blue]\n")
         console.print("\n[green]✅ Dry-run complete. No actual changes made.[/green]\n")
         return
@@ -969,9 +969,9 @@ def option_unused_template_detector(es):
         console.print(f"\n[red]❌ Refusing to delete more than {MAX_DELETE_LIMIT} templates in one run.[/red]\n")
         return
 
-    global DRY_RUN_MODE
-    if DRY_RUN_MODE:
-        console.print("\n[yellow]🔍 DRY-RUN MODE: Simulating deletion...[/yellow]\n")
+    global GOD_MODE
+    if not GOD_MODE:
+        console.print("\n[yellow]🔍 SAFE MODE: Simulating deletion...[/yellow]\n")
         console.print(f"[blue]Would delete {len(unused_index_templates)} index templates and {len(unused_component_templates)} component templates[/blue]\n")
         console.print("\n[green]✅ Dry-run complete. No actual changes made.[/green]\n")
         return

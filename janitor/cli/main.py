@@ -23,11 +23,11 @@ def cli():
         # List largest indices
         elastic-janitor index largest --top 25
         
-        # Clean old data streams (dry-run first!)
-        elastic-janitor datastream clean --retention 90d --dry-run
+        # Clean old data streams (simulates by default - safe mode)
+        elastic-janitor datastream clean --retention 90d
         
-        # Enable global dry-run mode
-        elastic-janitor dry-run enable
+        # Enable God-Mode for destructive operations
+        elastic-janitor god-mode enable
     
     For detailed help on any command:
     
@@ -37,13 +37,13 @@ def cli():
 
 
 # Import command groups
-from .commands import cluster, index, datastream, dryrun, performance, governance, tuning, template, policy
+from .commands import cluster, index, datastream, godmode, performance, governance, tuning, template, policy
 
 # Register command groups
 cli.add_command(cluster.cluster)
 cli.add_command(index.index)
 cli.add_command(datastream.datastream)
-cli.add_command(dryrun.dryrun)
+cli.add_command(godmode.godmode)
 cli.add_command(performance.perf)
 cli.add_command(governance.governance)
 cli.add_command(tuning.tuning)

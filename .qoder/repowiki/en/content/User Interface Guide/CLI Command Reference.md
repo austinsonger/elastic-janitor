@@ -17,7 +17,21 @@
 - [janitor/cli/utils/output.py](file://janitor/cli/utils/output.py)
 - [docs/CLI_COMMAND_INDEX.md](file://docs/CLI_COMMAND_INDEX.md)
 - [docs/MIGRATION.md](file://docs/MIGRATION.md)
+- [docs/CLI_COMMAND_COMPARISON.md](file://docs/CLI_COMMAND_COMPARISON.md)
+- [docs/CLI_COVERAGE_SUMMARY.md](file://docs/CLI_COVERAGE_SUMMARY.md)
+- [docs/CLI_IMPLEMENTATION_PLAN.md](file://docs/CLI_IMPLEMENTATION_PLAN.md)
+- [docs/CLI_QUICK_REFERENCE.md](file://docs/CLI_QUICK_REFERENCE.md)
+- [docs/CLI_USAGE.md](file://docs/CLI_USAGE.md)
+- [docs/CLI_COMMAND_LIBRARY.md](file://docs/CLI_COMMAND_LIBRARY.md)
 </cite>
+
+## Update Summary
+**Changes Made**
+- Updated documentation to reflect comprehensive CLI documentation infrastructure including CLI_COMMAND_COMPARISON.md, CLI_COVERAGE_SUMMARY.md, CLI_IMPLEMENTATION_PLAN.md, and CLI_COVERAGE_AUDIT.md
+- Enhanced template and policy command groups documentation with advanced analysis capabilities for template validation and performance impact analysis
+- Added detailed coverage analysis showing current implementation status (28/113 commands, 24.8% coverage)
+- Updated command library with expanded template and policy management capabilities
+- Added implementation roadmap for future command expansion
 
 ## Table of Contents
 1. [Introduction](#introduction)
@@ -25,17 +39,18 @@
 3. [Core Components](#core-components)
 4. [Architecture Overview](#architecture-overview)
 5. [Detailed Component Analysis](#detailed-component-analysis)
-6. [Dependency Analysis](#dependency-analysis)
-7. [Performance Considerations](#performance-considerations)
-8. [Troubleshooting Guide](#troubleshooting-guide)
-9. [Conclusion](#conclusion)
-10. [Appendices](#appendices)
+6. [Implementation Coverage and Roadmap](#implementation-coverage-and-roadmap)
+7. [Dependency Analysis](#dependency-analysis)
+8. [Performance Considerations](#performance-considerations)
+9. [Troubleshooting Guide](#troubleshooting-guide)
+10. [Conclusion](#conclusion)
+11. [Appendices](#appendices)
 
 ## Introduction
-This document provides a comprehensive CLI command reference for the Click-based command-line interface of the Elastic Janitor tool. It covers nine command groups: index, datastream, cluster, governance, performance, policy, template, tuning, and dryrun. For each group, you will find command syntax, parameter options, flags, output formats, and result interpretation. Practical examples demonstrate common workflows and automation scenarios, including command chaining, batch operations, and scripting. Guidance is included for migrating from menu-based operations to CLI usage, along with error handling, verbose output, and troubleshooting.
+This document provides a comprehensive CLI command reference for the Click-based command-line interface of the Elastic Janitor tool. The CLI has evolved to include comprehensive documentation infrastructure and advanced command groups for template and policy management. Currently covering 28 out of 113 planned commands (24.8% coverage), the system provides nine command groups: index, datastream, cluster, governance, performance, policy, template, tuning, and dryrun. For each group, you will find command syntax, parameter options, flags, output formats, and result interpretation. Practical examples demonstrate common workflows and automation scenarios, including command chaining, batch operations, and scripting. Guidance is included for migrating from menu-based operations to CLI usage, along with error handling, verbose output, and troubleshooting.
 
 ## Project Structure
-The CLI is organized around a central entry point that registers nine command groups. Each group is implemented as a separate module under janitor/cli/commands/. Shared utilities provide common options, error handling, and output formatting.
+The CLI is organized around a central entry point that registers nine command groups. Each group is implemented as a separate module under janitor/cli/commands/. Shared utilities provide common options, error handling, and output formatting. The documentation infrastructure includes comprehensive coverage tracking, implementation plans, and detailed command libraries.
 
 ```mermaid
 graph TB
@@ -48,6 +63,16 @@ CLI --> POL["policy<br/>janitor/cli/commands/policy.py"]
 CLI --> TMP["template<br/>janitor/cli/commands/template.py"]
 CLI --> TUN["tuning<br/>janitor/cli/commands/tuning.py"]
 CLI --> DR["dryrun<br/>janitor/cli/commands/dryrun.py"]
+subgraph "Documentation Infrastructure"
+COMP["CLI_COMMAND_COMPARISON.md"]
+COV["CLI_COVERAGE_SUMMARY.md"]
+PLAN["CLI_IMPLEMENTATION_PLAN.md"]
+LIB["CLI_COMMAND_LIBRARY.md"]
+end
+COMP --> CLI
+COV --> CLI
+PLAN --> CLI
+LIB --> CLI
 subgraph "Shared Utilities"
 DEC["decorators<br/>janitor/cli/utils/decorators.py"]
 OUT["output<br/>janitor/cli/utils/output.py"]
@@ -77,6 +102,10 @@ DEC --> OUT
 - [janitor/cli/commands/dryrun.py](file://janitor/cli/commands/dryrun.py#L9-L12)
 - [janitor/cli/utils/decorators.py](file://janitor/cli/utils/decorators.py#L13-L88)
 - [janitor/cli/utils/output.py](file://janitor/cli/utils/output.py#L14-L153)
+- [docs/CLI_COMMAND_COMPARISON.md](file://docs/CLI_COMMAND_COMPARISON.md#L1-L191)
+- [docs/CLI_COVERAGE_SUMMARY.md](file://docs/CLI_COVERAGE_SUMMARY.md#L1-L174)
+- [docs/CLI_IMPLEMENTATION_PLAN.md](file://docs/CLI_IMPLEMENTATION_PLAN.md#L1-L316)
+- [docs/CLI_COMMAND_LIBRARY.md](file://docs/CLI_COMMAND_LIBRARY.md#L1-L800)
 
 **Section sources**
 - [janitor/cli/main.py](file://janitor/cli/main.py#L8-L51)
@@ -86,6 +115,7 @@ DEC --> OUT
 - Central CLI entry point registers nine command groups and exposes version/help options.
 - Shared decorators provide common options (verbose, quiet, output format), dry-run flag, and error handling.
 - Shared output utilities support JSON, YAML, CSV, and table formats with Rich rendering.
+- Comprehensive documentation infrastructure tracks coverage, implementation status, and future roadmap.
 
 Key shared elements:
 - Version and help options at the CLI root.
@@ -100,11 +130,12 @@ Key shared elements:
 - [janitor/cli/utils/output.py](file://janitor/cli/utils/output.py#L14-L153)
 
 ## Architecture Overview
-The CLI follows a modular architecture:
+The CLI follows a modular architecture with comprehensive documentation support:
 - A Click group defines the root CLI with version/help.
 - Nine subgroups register commands for index, datastream, cluster, governance, performance, policy, template, tuning, and dryrun.
 - Each command uses shared decorators for connection, error handling, and output formatting.
 - Output formatting is centralized to ensure consistent JSON/YAML/CSV/table rendering.
+- Documentation infrastructure tracks implementation progress and future development plans.
 
 ```mermaid
 sequenceDiagram
@@ -166,7 +197,7 @@ Commands:
   - Output: table (default), json, yaml.
   - Behavior: Parses retention to a cutoff date, enumerates data streams, identifies eligible backing indices (excluding write index), aggregates totals, and optionally deletes in batches respecting a maximum deletion limit.
 - datastream migrate
-  - Options: --source/-s (required), --dest/-d (required), --mode/-m (choices: same-cluster, cross-cluster, default same-cluster), plus dry-run and common options.
+  - Options: --source/-s (required), --dest/-d (required), --mode/-m (choices: cross-cluster, same-cluster, default same-cluster), plus dry-run and common options.
   - Output: table (default), json.
   - Behavior: Provides a preview of migration including backing indices and total size; actual migration is deferred to interactive mode.
 
@@ -365,8 +396,60 @@ Example usages:
 - [janitor/cli/commands/dryrun.py](file://janitor/cli/commands/dryrun.py#L36-L53)
 - [janitor/cli/commands/dryrun.py](file://janitor/cli/commands/dryrun.py#L55-L87)
 
+## Implementation Coverage and Roadmap
+
+### Current Coverage Status
+The CLI currently implements 28 out of 113 planned commands, representing 24.8% coverage. The implementation comparison matrix shows:
+
+- **Cluster Commands**: 3/3 (100% complete)
+- **Dry-Run Commands**: 3/3 (100% complete)
+- **Governance Commands**: 6/6 (100% complete)
+- **Tuning Commands**: 6/6 (100% complete)
+- **Policy Commands**: 2/6 (33% complete)
+- **Index Commands**: 3/9 (33% complete)
+- **Data Stream Commands**: 2/8 (25% complete)
+- **Performance Commands**: 1/6 (17% complete)
+- **Template Commands**: 2/14 (14% complete)
+
+### Implementation Roadmap
+The implementation plan outlines a phased approach to expand CLI coverage:
+
+**Phase 1 (Weeks 1-4)**: Critical Commands
+- Implement Snapshot commands (11 commands)
+- Implement Pipeline commands (11 commands)
+- Expand Template commands (12 new commands)
+
+**Phase 2 (Weeks 5-8)**: Important Commands
+- Implement Storage commands (6 commands)
+- Expand Index commands (7 new commands)
+- Expand Data Stream commands (7 new commands)
+- Implement Bulk and Policy commands (10 commands)
+
+**Phase 3 (Weeks 9-11)**: Nice-to-Have Commands
+- Implement Performance commands (6 commands)
+- Implement Cleanup and Quality commands (11 commands)
+- Implement AWS and Dashboard commands (11 commands)
+
+### Priority Commands
+The top 10 most critical missing commands include:
+1. `snapshot list` - Backup visibility
+2. `snapshot delete` - Backup management
+3. `snapshot restore` - Disaster recovery
+4. `pipeline list` - Config visibility
+5. `pipeline edit` - Config management
+6. `template index list` - Standardization
+7. `template index edit` - Config management
+8. `storage cost` - Cost optimization
+9. `storage forecast` - Capacity planning
+10. `bulk schedule` - Automation
+
+**Section sources**
+- [docs/CLI_COMMAND_COMPARISON.md](file://docs/CLI_COMMAND_COMPARISON.md#L1-L191)
+- [docs/CLI_COVERAGE_SUMMARY.md](file://docs/CLI_COVERAGE_SUMMARY.md#L1-L174)
+- [docs/CLI_IMPLEMENTATION_PLAN.md](file://docs/CLI_IMPLEMENTATION_PLAN.md#L1-L316)
+
 ## Dependency Analysis
-The CLI relies on shared decorators and output utilities across all command groups. The decorators encapsulate connection management, error handling, and common flags. The output formatter ensures consistent rendering across formats.
+The CLI relies on shared decorators and output utilities across all command groups. The decorators encapsulate connection management, error handling, and common flags. The output formatter ensures consistent rendering across formats. The documentation infrastructure provides comprehensive coverage tracking and implementation planning.
 
 ```mermaid
 graph LR
@@ -388,6 +471,9 @@ OUT --> POL
 OUT --> TMP
 OUT --> TUN
 OUT --> DR
+COMP["CLI_COMMAND_COMPARISON.md"] --> CLI["main.py"]
+COV["CLI_COVERAGE_SUMMARY.md"] --> CLI
+PLAN["CLI_IMPLEMENTATION_PLAN.md"] --> CLI
 ```
 
 **Diagram sources**
@@ -402,6 +488,9 @@ OUT --> DR
 - [janitor/cli/commands/template.py](file://janitor/cli/commands/template.py#L5-L6)
 - [janitor/cli/commands/tuning.py](file://janitor/cli/commands/tuning.py#L5-L6)
 - [janitor/cli/commands/dryrun.py](file://janitor/cli/commands/dryrun.py#L5)
+- [docs/CLI_COMMAND_COMPARISON.md](file://docs/CLI_COMMAND_COMPARISON.md#L1-L191)
+- [docs/CLI_COVERAGE_SUMMARY.md](file://docs/CLI_COVERAGE_SUMMARY.md#L1-L174)
+- [docs/CLI_IMPLEMENTATION_PLAN.md](file://docs/CLI_IMPLEMENTATION_PLAN.md#L1-L316)
 
 **Section sources**
 - [janitor/cli/utils/decorators.py](file://janitor/cli/utils/decorators.py#L13-L88)
@@ -413,6 +502,7 @@ OUT --> DR
 - Use --batch-size in datastream clean to control deletion throughput and avoid overwhelming the cluster.
 - Prefer filtering with --pattern to reduce API load and response sizes.
 - Use --threshold in performance aggregations to focus on queries exceeding acceptable latency.
+- Monitor implementation progress using the coverage reports to prioritize development efforts.
 
 ## Troubleshooting Guide
 Common issues and remedies:
@@ -421,14 +511,16 @@ Common issues and remedies:
 - Dry-run safety: Use dry-run commands or --dry-run flags to preview destructive actions before execution.
 - Non-zero exit codes: Some commands exit with specific codes (e.g., cluster health exits with non-zero for red status) to integrate with monitoring systems.
 - Output readability: Switch to --output json for reliable parsing in scripts; use --output table for human-friendly summaries.
+- Coverage awareness: Use CLI_COMMAND_COMPARISON.md to understand which commands are implemented versus planned.
 
 **Section sources**
 - [janitor/cli/utils/decorators.py](file://janitor/cli/utils/decorators.py#L29-L46)
 - [janitor/cli/utils/output.py](file://janitor/cli/utils/output.py#L22-L153)
 - [janitor/cli/commands/cluster.py](file://janitor/cli/commands/cluster.py#L118-L125)
+- [docs/CLI_COMMAND_COMPARISON.md](file://docs/CLI_COMMAND_COMPARISON.md#L1-L191)
 
 ## Conclusion
-The Elastic Janitor CLI offers a comprehensive, modular command interface for Elasticsearch cluster management. With shared decorators and output utilities, commands consistently expose common options, robust error handling, and flexible output formats. The nine command groups cover essential areas: index management, data streams, cluster diagnostics, governance, performance monitoring, policy analysis, template validation, tuning, and dry-run safety. The provided examples and guidance enable efficient automation and migration from menu-based workflows.
+The Elastic Janitor CLI offers a comprehensive, modular command interface for Elasticsearch cluster management with extensive documentation infrastructure. Currently implementing 28 out of 113 planned commands (24.8% coverage), the system provides nine command groups covering essential areas: index management, data streams, cluster diagnostics, governance, performance monitoring, policy analysis, template validation, tuning, and dry-run safety. The comprehensive documentation infrastructure including CLI_COMMAND_COMPARISON.md, CLI_COVERAGE_SUMMARY.md, and CLI_IMPLEMENTATION_PLAN.md provides clear visibility into current status and future development plans. The provided examples and guidance enable efficient automation and migration from menu-based workflows, with a well-defined roadmap for expanding coverage to 100% complete functionality.
 
 ## Appendices
 
@@ -491,7 +583,22 @@ For power users migrating from menu-based operations to CLI usage:
 - Export JSON outputs for historical tracking and regression testing.
 - Use batch operations (e.g., datastream clean --batch-size) to control throughput.
 - Combine commands in scripts to automate recurring tasks (e.g., daily health checks followed by capacity reporting).
+- Monitor implementation progress using CLI_COMMAND_COMPARISON.md to track coverage improvements.
 
 **Section sources**
 - [janitor/cli/commands/dryrun.py](file://janitor/cli/commands/dryrun.py#L15-L34)
 - [docs/MIGRATION.md](file://docs/MIGRATION.md#L1-L261)
+- [docs/CLI_COMMAND_COMPARISON.md](file://docs/CLI_COMMAND_COMPARISON.md#L1-L191)
+
+### Implementation Progress Tracking
+Use the documentation infrastructure to track CLI development progress:
+- CLI_COMMAND_COMPARISON.md: Visual comparison of documented vs implemented commands
+- CLI_COVERAGE_SUMMARY.md: Quick reference to overall coverage and priority status
+- CLI_IMPLEMENTATION_PLAN.md: Concrete action plan for completing CLI command coverage
+- CLI_COMMAND_LIBRARY.md: Comprehensive command documentation with examples and usage
+
+**Section sources**
+- [docs/CLI_COMMAND_COMPARISON.md](file://docs/CLI_COMMAND_COMPARISON.md#L1-L191)
+- [docs/CLI_COVERAGE_SUMMARY.md](file://docs/CLI_COVERAGE_SUMMARY.md#L1-L174)
+- [docs/CLI_IMPLEMENTATION_PLAN.md](file://docs/CLI_IMPLEMENTATION_PLAN.md#L1-L316)
+- [docs/CLI_COMMAND_LIBRARY.md](file://docs/CLI_COMMAND_LIBRARY.md#L1-L800)

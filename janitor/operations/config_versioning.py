@@ -12,7 +12,7 @@ from rich.progress import Progress, SpinnerColumn, TextColumn
 from rich.panel import Panel
 from rich.syntax import Syntax
 from rich import box
-from ..config import console, DRY_RUN_MODE
+from ..config import console, GOD_MODE
 from ..utils import confirm_action, safe_input, show_breadcrumb, select_from_list
 from ..utils.history_logger import log_operation
 
@@ -350,12 +350,12 @@ def restore_config_version(es, version_number, dry_run=False):
     if not version:
         return {"success": False, "message": "Version not found"}
 
-    is_dry_run = DRY_RUN_MODE or dry_run
+    is_safe_mode = not GOD_MODE or dry_run
 
     console.print(f"\n[cyan]Restoring configuration version {version_number}...[/cyan]\n")
 
-    if is_dry_run:
-        console.print("[yellow]DRY RUN MODE: No changes will be applied[/yellow]\n")
+    if is_safe_mode:
+        console.print("[yellow]SAFE MODE: No changes will be applied[/yellow]\n")
 
     try:
         # Get current settings for comparison
@@ -367,7 +367,7 @@ def restore_config_version(es, version_number, dry_run=False):
         if cluster_settings:
             console.print("[cyan]Applying cluster settings...[/cyan]")
 
-            if not is_dry_run:
+            if not is_safe_mode:
                 # Apply persistent settings
                 persistent = {}
                 transient = {}
@@ -396,7 +396,7 @@ def restore_config_version(es, version_number, dry_run=False):
         if allocation_settings:
             console.print("[cyan]Applying allocation settings...[/cyan]")
 
-            if not is_dry_run:
+            if not is_safe_mode:
                 es.cluster.put_settings(body=allocation_settings)
                 console.print("[green]✓ Allocation settings applied[/green]")
             else:

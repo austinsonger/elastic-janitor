@@ -11,7 +11,7 @@ from rich.table import Table
 from rich.progress import Progress, SpinnerColumn, TextColumn, BarColumn, TaskProgressColumn
 from rich.panel import Panel
 from rich import box
-from ..config import console, PROTECT_SYSTEM, DRY_RUN_MODE
+from ..config import console, PROTECT_SYSTEM, GOD_MODE
 from ..utils import confirm_action, safe_input, show_breadcrumb, select_from_list
 from ..utils.history_logger import log_operation
 
@@ -254,7 +254,7 @@ def _rollback_index_deletion(es, target_resources, previous_state):
     console.print(f"Repository: {snapshot_repo}")
     console.print(f"Snapshot: {snapshot_name}\n")
 
-    if DRY_RUN_MODE:
+    if not GOD_MODE:
         console.print("[yellow]DRY RUN: Would restore indices from snapshot[/yellow]\n")
         return {"success": True, "message": "DRY RUN: Restore would be performed"}
 
@@ -283,7 +283,7 @@ def _rollback_settings_change(es, target_resources, previous_state):
 
     console.print(f"\n[cyan]Restoring previous settings for {len(target_resources)} index(es)...[/cyan]\n")
 
-    if DRY_RUN_MODE:
+    if not GOD_MODE:
         console.print("[yellow]DRY RUN: Would restore previous settings[/yellow]\n")
         return {"success": True, "message": "DRY RUN: Settings would be restored"}
 
@@ -325,7 +325,7 @@ def _rollback_index_state_change(es, operation_type, target_resources, previous_
 
     console.print(f"\n[cyan]{action} {len(target_resources)} index(es)...[/cyan]\n")
 
-    if DRY_RUN_MODE:
+    if not GOD_MODE:
         console.print(f"[yellow]DRY RUN: Would {action.lower()} indices[/yellow]\n")
         return {"success": True, "message": f"DRY RUN: Indices would be {action.lower()}"}
 
@@ -496,7 +496,7 @@ def perform_rollback_interactive(es, operations):
         console.print(f"\n[green]✅ {result['message']}[/green]\n")
 
         # Mark as rolled back
-        if not DRY_RUN_MODE:
+        if GOD_MODE:
             mark_operation_rolled_back(selected_op["operation_id"])
 
         # Log the rollback

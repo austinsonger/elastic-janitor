@@ -24,8 +24,10 @@ PROTECT_SYSTEM = True
 DEFAULT_RETENTION_DAYS = 90
 MAX_DELETE_LIMIT = 5000
 
-# Global dry-run mode flag
-DRY_RUN_MODE = False
+# God-Mode flag - when False (default), all operations are non-destructive simulations
+# Set to True to enable destructive operations (requires confirmation phrase)
+GOD_MODE = False
+GOD_MODE_CONFIRMATION_PHRASE = "I UNDERSTAND"
 
 # ------------------------------------------------------------
 # Query Timeout Settings

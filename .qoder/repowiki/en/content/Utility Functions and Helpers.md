@@ -17,7 +17,21 @@
 - [template_management.py](file://janitor/operations/template_management.py)
 - [rollback.py](file://janitor/operations/rollback.py)
 - [change_history.py](file://janitor/operations/change_history.py)
+- [template_policy_advanced.py](file://janitor/operations/template_policy_advanced.py)
+- [lifecycle_enhancements.py](file://janitor/operations/lifecycle_enhancements.py)
+- [templates_policies.py](file://janitor/operations/templates_policies.py)
 </cite>
+
+## Update Summary
+**Changes Made**
+- Added comprehensive template conflict detection capabilities
+- Enhanced ILM policy simulation with advanced analytical features
+- Integrated policy health checking and validation mechanisms
+- Added template validation analyzer with configuration issue detection
+- Implemented lifecycle phase distribution analysis with cost calculations
+- Enhanced template inheritance viewer with component template analysis
+- Added unused template detector for cleanup operations
+- Expanded utility functions with advanced analytical operations
 
 ## Table of Contents
 1. [Introduction](#introduction)
@@ -25,25 +39,27 @@
 3. [Core Components](#core-components)
 4. [Architecture Overview](#architecture-overview)
 5. [Detailed Component Analysis](#detailed-component-analysis)
-6. [Dependency Analysis](#dependency-analysis)
-7. [Performance Considerations](#performance-considerations)
-8. [Troubleshooting Guide](#troubleshooting-guide)
-9. [Conclusion](#conclusion)
-10. [Appendices](#appendices)
+6. [Advanced Template and Policy Management](#advanced-template-and-policy-management)
+7. [Dependency Analysis](#dependency-analysis)
+8. [Performance Considerations](#performance-considerations)
+9. [Troubleshooting Guide](#troubleshooting-guide)
+10. [Conclusion](#conclusion)
+11. [Appendices](#appendices)
 
 ## Introduction
-This document covers the utility functions and helpers that underpin Elastic Janitor’s operational safety, user experience, and auditability. It focuses on:
+This document covers the utility functions and helpers that underpin Elastic Janitor's operational safety, user experience, and auditability. It focuses on:
 - Input validation utilities that ensure safe operations
 - Formatting functions for dates, sizes, and other data types
 - UI helper components such as breadcrumbs and interactive prompts
 - History logging and change tracking mechanisms
 - Pipeline and generic resource version management
 - Practical usage examples and extensibility points for customization
+- **Enhanced** Advanced template and policy management capabilities including conflict detection, simulation, and comprehensive reporting
 
-These utilities are foundational to the CLI and menu-driven workflows, enabling robust, user-friendly, and auditable operations against Elasticsearch.
+These utilities are foundational to the CLI and menu-driven workflows, enabling robust, user-friendly, and auditable operations against Elasticsearch with advanced analytical capabilities.
 
 ## Project Structure
-The utility layer is organized into cohesive modules:
+The utility layer is organized into cohesive modules with enhanced template and policy management capabilities:
 - Input validation and user prompts
 - Formatting helpers for dates and sizes
 - UI helpers for breadcrumbs
@@ -51,10 +67,12 @@ The utility layer is organized into cohesive modules:
 - Pipeline-specific version control
 - Generic resource version control with dependency tracking
 - CLI output formatting and decorators
+- **Enhanced** Advanced template and policy analysis tools
+- **Enhanced** Lifecycle management and simulation features
 
 ```mermaid
 graph TB
-subgraph "Utilities"
+subgraph "Core Utilities"
 U1["janitor/utils/helpers.py"]
 U2["janitor/utils/formatters.py"]
 U3["janitor/utils/ui.py"]
@@ -65,6 +83,11 @@ end
 subgraph "CLI Utilities"
 C1["janitor/cli/utils/output.py"]
 C2["janitor/cli/utils/decorators.py"]
+end
+subgraph "Advanced Template & Policy Management"
+T1["janitor/operations/template_policy_advanced.py"]
+T2["janitor/operations/lifecycle_enhancements.py"]
+T3["janitor/operations/templates_policies.py"]
 end
 subgraph "Config"
 CFG["janitor/config.py"]
@@ -91,6 +114,9 @@ U5 --> O3
 U6 --> O3
 C1 --> O3
 C2 --> O3
+T1 --> O3
+T2 --> O3
+T3 --> O3
 CFG --> U1
 CFG --> U6
 ```
@@ -104,6 +130,9 @@ CFG --> U6
 - [version_control.py](file://janitor/utils/version_control.py#L1-L974)
 - [output.py](file://janitor/cli/utils/output.py#L1-L153)
 - [decorators.py](file://janitor/cli/utils/decorators.py#L1-L89)
+- [template_policy_advanced.py](file://janitor/operations/template_policy_advanced.py#L1-L1881)
+- [lifecycle_enhancements.py](file://janitor/operations/lifecycle_enhancements.py#L1-L947)
+- [templates_policies.py](file://janitor/operations/templates_policies.py#L1-L180)
 - [config.py](file://janitor/config.py#L1-L78)
 - [index_basic.py](file://janitor/operations/index_basic.py#L1-L200)
 - [data_streams_cleanup.py](file://janitor/operations/data_streams_cleanup.py#L1-L200)
@@ -144,6 +173,14 @@ CFG --> U6
 - CLI output formatting and decorators:
   - Structured output in JSON, YAML, CSV, or Rich tables
   - Error handling and dry-run options
+- **Enhanced** Advanced template and policy management:
+  - Template conflict detection with pattern overlap analysis
+  - ILM policy simulation with phase transition predictions
+  - Policy health checking with configuration validation
+  - Template validation analyzer with issue detection
+  - Lifecycle phase distribution analysis with cost calculations
+  - Template inheritance viewer with component analysis
+  - Unused template detection for cleanup operations
 
 **Section sources**
 - [helpers.py](file://janitor/utils/helpers.py#L1-L258)
@@ -154,13 +191,17 @@ CFG --> U6
 - [version_control.py](file://janitor/utils/version_control.py#L1-L974)
 - [output.py](file://janitor/cli/utils/output.py#L1-L153)
 - [decorators.py](file://janitor/cli/utils/decorators.py#L1-L89)
+- [template_policy_advanced.py](file://janitor/operations/template_policy_advanced.py#L1-L1881)
+- [lifecycle_enhancements.py](file://janitor/operations/lifecycle_enhancements.py#L1-L947)
+- [templates_policies.py](file://janitor/operations/templates_policies.py#L1-L180)
 
 ## Architecture Overview
-The utilities integrate across layers:
+The utilities integrate across layers with enhanced template and policy management capabilities:
 - Operations modules import helpers for safe user interactions and formatting
 - Version control integrates with Elasticsearch clients to discover dependencies
 - CLI utilities provide consistent output and error handling
 - Config centralizes global flags affecting behavior (e.g., system protection, dependency tracking)
+- **Enhanced** Advanced template and policy management modules provide comprehensive analysis and simulation capabilities
 
 ```mermaid
 graph TB
@@ -170,11 +211,17 @@ OP --> UI["ui.py"]
 OP --> HL["history_logger.py"]
 OP --> PV["pipeline_versions.py"]
 OP --> VC["version_control.py"]
+OP --> TPA["template_policy_advanced.py"]
+OP --> LE["lifecycle_enhancements.py"]
+OP --> TP["templates_policies.py"]
 VC --> ES["Elasticsearch Client"]
 H --> CFG["config.py"]
 VC --> CFG
 OUT["CLI Output"] --> OP
 DEC["CLI Decorators"] --> OP
+TPA --> ES
+LE --> ES
+TP --> ES
 ```
 
 **Diagram sources**
@@ -184,6 +231,9 @@ DEC["CLI Decorators"] --> OP
 - [history_logger.py](file://janitor/utils/history_logger.py#L1-L73)
 - [pipeline_versions.py](file://janitor/utils/pipeline_versions.py#L1-L303)
 - [version_control.py](file://janitor/utils/version_control.py#L1-L974)
+- [template_policy_advanced.py](file://janitor/operations/template_policy_advanced.py#L1-L1881)
+- [lifecycle_enhancements.py](file://janitor/operations/lifecycle_enhancements.py#L1-L947)
+- [templates_policies.py](file://janitor/operations/templates_policies.py#L1-L180)
 - [config.py](file://janitor/config.py#L1-L78)
 - [output.py](file://janitor/cli/utils/output.py#L1-L153)
 - [decorators.py](file://janitor/cli/utils/decorators.py#L1-L89)
@@ -452,17 +502,253 @@ G --> H["Rich Console Output"]
 - [decorators.py](file://janitor/cli/utils/decorators.py#L1-L89)
 - [template_management.py](file://janitor/operations/template_management.py#L25-L125)
 
+## Advanced Template and Policy Management
+
+### Template Conflict Detection
+Purpose:
+- Identify overlapping or conflicting index patterns across templates
+- Analyze template priority and precedence rules
+- Provide actionable recommendations for template conflicts
+
+Key capabilities:
+- Pattern overlap analysis with wildcard pattern matching
+- Priority-based precedence determination
+- Conflict reporting with visual indicators
+- Automated conflict resolution suggestions
+
+```mermaid
+flowchart TD
+A["Fetch All Templates"] --> B["Sort by Priority"]
+B --> C["Compare Patterns"]
+C --> D{"Patterns Overlap?"}
+D --> |Yes| E["Record Conflict"]
+D --> |No| F["Continue Comparison"]
+E --> G["Analyze Precedence"]
+G --> H["Generate Report"]
+F --> C
+```
+
+**Diagram sources**
+- [template_policy_advanced.py](file://janitor/operations/template_policy_advanced.py#L20-L107)
+- [template_policy_advanced.py](file://janitor/operations/template_policy_advanced.py#L109-L142)
+
+Practical examples:
+- Detects conflicts between templates with overlapping patterns like `logs-*` and `logs-2024*`
+- Determines precedence based on template priority values
+- Provides recommendations for resolving conflicts
+
+**Section sources**
+- [template_policy_advanced.py](file://janitor/operations/template_policy_advanced.py#L20-L107)
+- [template_policy_advanced.py](file://janitor/operations/template_policy_advanced.py#L109-L142)
+
+### ILM Policy Simulation and Analysis
+Purpose:
+- Test ILM policies against existing indices without affecting production
+- Predict phase transitions and upcoming actions
+- Analyze policy effectiveness across different index groups
+
+Key capabilities:
+- Interactive policy simulation with real index metrics
+- Phase transition timeline prediction
+- Policy effectiveness reporting with usage statistics
+- Rollover prediction for indices with rollover conditions
+- Lifecycle phase distribution analysis with cost calculations
+
+```mermaid
+flowchart TD
+A["Select Index & Policy"] --> B["Fetch Index Metrics"]
+B --> C["Analyze Current Phase"]
+C --> D["Predict Future Actions"]
+D --> E["Display Simulation Results"]
+E --> F{"Show Cost Analysis?"}
+F --> |Yes| G["Calculate Storage Costs"]
+F --> |No| H["Complete Analysis"]
+G --> H
+```
+
+**Diagram sources**
+- [lifecycle_enhancements.py](file://janitor/operations/lifecycle_enhancements.py#L20-L151)
+- [lifecycle_enhancements.py](file://janitor/operations/lifecycle_enhancements.py#L154-L206)
+- [lifecycle_enhancements.py](file://janitor/operations/lifecycle_enhancements.py#L742-L885)
+
+Practical examples:
+- Tests ILM policies against live indices to predict phase transitions
+- Calculates storage costs per phase based on user-defined pricing
+- Predicts rollover timing for indices with rollover aliases
+
+**Section sources**
+- [lifecycle_enhancements.py](file://janitor/operations/lifecycle_enhancements.py#L20-L151)
+- [lifecycle_enhancements.py](file://janitor/operations/lifecycle_enhancements.py#L154-L206)
+- [lifecycle_enhancements.py](file://janitor/operations/lifecycle_enhancements.py#L231-L383)
+- [lifecycle_enhancements.py](file://janitor/operations/lifecycle_enhancements.py#L742-L947)
+
+### Template Validation and Health Checking
+Purpose:
+- Analyze template configurations for potential performance and stability issues
+- Validate policy references and component template dependencies
+- Provide actionable recommendations for template optimization
+
+Key capabilities:
+- Configuration issue detection with severity ratings
+- Policy reference validation and orphaned policy identification
+- Component template analysis and circular dependency detection
+- Shard configuration optimization recommendations
+- Template inheritance chain analysis
+
+```mermaid
+flowchart TD
+A["Fetch Templates"] --> B["Analyze Settings"]
+B --> C{"Issues Found?"}
+C --> |Yes| D["Categorize by Severity"]
+C --> |No| E["Report Clean"]
+D --> F["Generate Recommendations"]
+F --> G["Display Validation Results"]
+```
+
+**Diagram sources**
+- [template_policy_advanced.py](file://janitor/operations/template_policy_advanced.py#L1059-L1265)
+- [template_policy_advanced.py](file://janitor/operations/template_policy_advanced.py#L1266-L1276)
+- [template_policy_advanced.py](file://janitor/operations/template_policy_advanced.py#L1278-L1450)
+
+Practical examples:
+- Detects missing critical settings like number_of_shards and replicas
+- Identifies orphaned policy references in templates
+- Analyzes component template composition for circular dependencies
+
+**Section sources**
+- [template_policy_advanced.py](file://janitor/operations/template_policy_advanced.py#L1059-L1265)
+- [template_policy_advanced.py](file://janitor/operations/template_policy_advanced.py#L1266-L1276)
+- [template_policy_advanced.py](file://janitor/operations/template_policy_advanced.py#L1278-L1450)
+
+### Policy Health Checking
+Purpose:
+- Validate ILM policies for logical consistency and best practices
+- Identify misconfigurations that could cause operational issues
+- Provide remediation recommendations for policy optimization
+
+Key capabilities:
+- Orphaned policy detection and removal recommendations
+- Phase transition logic validation with monotonicity checks
+- Rollover condition validation and missing condition detection
+- Conflicting action placement detection (e.g., readonly in hot phase)
+- Action ordering validation and best practice enforcement
+
+```mermaid
+flowchart TD
+A["Fetch Policies"] --> B["Analyze Phase Logic"]
+B --> C{"Valid Phase Order?"}
+C --> |No| D["Flag Logic Issues"]
+C --> |Yes| E["Check Rollover Conditions"]
+E --> F{"Rollover Without Conditions?"}
+F --> |Yes| G["Flag Missing Conditions"]
+F --> |No| H["Check Action Placement"]
+H --> I{"Conflicting Actions?"}
+I --> |Yes| J["Flag Placement Issues"]
+I --> |No| K["Policy Healthy"]
+D --> L["Generate Recommendations"]
+G --> L
+J --> L
+K --> M["Report Clean"]
+```
+
+**Diagram sources**
+- [template_policy_advanced.py](file://janitor/operations/template_policy_advanced.py#L1278-L1450)
+- [template_policy_advanced.py](file://janitor/operations/template_policy_advanced.py#L1452-L1636)
+
+Practical examples:
+- Validates that phase min_age values increase monotonically
+- Ensures rollover actions include appropriate size/age/doc conditions
+- Prevents conflicting actions like readonly in hot phase
+- Identifies orphaned policies not referenced by templates or indices
+
+**Section sources**
+- [template_policy_advanced.py](file://janitor/operations/template_policy_advanced.py#L1278-L1450)
+- [template_policy_advanced.py](file://janitor/operations/template_policy_advanced.py#L1452-L1636)
+
+### Lifecycle Phase Distribution Analysis
+Purpose:
+- Analyze ILM policy effectiveness across all managed indices
+- Provide insights into phase distribution and storage utilization
+- Enable cost optimization through phase-based storage analysis
+
+Key capabilities:
+- Group indices by policy and current phase
+- Calculate metrics including count, total size, and average age
+- Identify indices with ILM errors and retry counts
+- Optional cost calculation based on tier pricing
+- Visualization of phase distribution trends
+
+```mermaid
+flowchart TD
+A["Fetch ILM Status"] --> B["Group by Policy & Phase"]
+B --> C["Calculate Metrics"]
+C --> D["Identify Error Cases"]
+D --> E["Optional Cost Analysis"]
+E --> F["Generate Reports"]
+```
+
+**Diagram sources**
+- [lifecycle_enhancements.py](file://janitor/operations/lifecycle_enhancements.py#L742-L885)
+- [lifecycle_enhancements.py](file://janitor/operations/lifecycle_enhancements.py#L887-L947)
+
+Practical examples:
+- Groups 1000+ indices by policy and phase for comprehensive analysis
+- Calculates total storage costs per phase with user-defined pricing
+- Identifies indices stuck in problematic phases with error details
+
+**Section sources**
+- [lifecycle_enhancements.py](file://janitor/operations/lifecycle_enhancements.py#L742-L885)
+- [lifecycle_enhancements.py](file://janitor/operations/lifecycle_enhancements.py#L887-L947)
+
+### Template Inheritance and Unused Template Detection
+Purpose:
+- Analyze template composition and inheritance chains
+- Identify templates that are no longer in use for cleanup
+- Provide comprehensive template inventory and analysis
+
+Key capabilities:
+- Template inheritance chain visualization with component analysis
+- Unused template detection across index and component templates
+- Automated cleanup recommendations with safety checks
+- Pattern matching for template usage verification
+
+```mermaid
+flowchart TD
+A["Fetch All Templates"] --> B["Analyze Usage"]
+B --> C{"Template Used?"}
+C --> |No| D["Flag for Cleanup"]
+C --> |Yes| E["Analyze Composition"]
+E --> F["Check Component Templates"]
+F --> G["Generate Reports"]
+D --> G
+```
+
+**Diagram sources**
+- [template_policy_advanced.py](file://janitor/operations/template_policy_advanced.py#L847-L1018)
+- [template_policy_advanced.py](file://janitor/operations/template_policy_advanced.py#L847-L1057)
+
+Practical examples:
+- Detects unused index templates that could be safely removed
+- Identifies unused component templates referenced by other templates
+- Provides safety checks before automated template cleanup operations
+
+**Section sources**
+- [template_policy_advanced.py](file://janitor/operations/template_policy_advanced.py#L847-L1018)
+- [template_policy_advanced.py](file://janitor/operations/template_policy_advanced.py#L1020-L1057)
+
 ## Dependency Analysis
 - Cohesion:
-  - Each module encapsulates a distinct concern (input validation, formatting, UI, logging, versioning)
+  - Each module encapsulates a distinct concern (input validation, formatting, UI, logging, versioning, template analysis)
 - Coupling:
   - Operations modules depend on helpers and formatters for safe UX and consistent data display
   - Version control depends on Elasticsearch for dependency discovery
   - CLI utilities are consumed by operations for standardized output and error handling
+  - **Enhanced** Advanced template and policy modules depend on Elasticsearch for comprehensive analysis
 - External dependencies:
   - SQLite for local persistence of versions and history
   - Rich and Questionary for UI and interactive prompts
   - Elasticsearch client for dependency discovery and resource operations
+  - **Enhanced** Advanced analytical operations require extensive Elasticsearch API calls for comprehensive analysis
 
 ```mermaid
 graph TB
@@ -475,6 +761,9 @@ VC["version_control.py"] --> ES["Elasticsearch"]
 VC --> CFG
 OUT["output.py"] --> OPS
 DEC["decorators.py"] --> OPS
+TPA["template_policy_advanced.py"] --> ES
+LE["lifecycle_enhancements.py"] --> ES
+TP["templates_policies.py"] --> ES
 ```
 
 **Diagram sources**
@@ -484,6 +773,9 @@ DEC["decorators.py"] --> OPS
 - [history_logger.py](file://janitor/utils/history_logger.py#L1-L73)
 - [pipeline_versions.py](file://janitor/utils/pipeline_versions.py#L1-L303)
 - [version_control.py](file://janitor/utils/version_control.py#L1-L974)
+- [template_policy_advanced.py](file://janitor/operations/template_policy_advanced.py#L1-L1881)
+- [lifecycle_enhancements.py](file://janitor/operations/lifecycle_enhancements.py#L1-L947)
+- [templates_policies.py](file://janitor/operations/templates_policies.py#L1-L180)
 - [config.py](file://janitor/config.py#L1-L78)
 - [output.py](file://janitor/cli/utils/output.py#L1-L153)
 - [decorators.py](file://janitor/cli/utils/decorators.py#L1-L89)
@@ -506,8 +798,11 @@ DEC["decorators.py"] --> OPS
   - Dependency discovery queries can be expensive; enable depth limits and disable tracking when unnecessary
 - CLI output:
   - Rich tables and syntax highlighting add overhead; prefer JSON/YAML for machine consumption
-
-[No sources needed since this section provides general guidance]
+- **Enhanced** Advanced template and policy analysis:
+  - Template conflict detection involves pairwise pattern comparisons; complexity grows with template count
+  - ILM policy simulation requires multiple Elasticsearch API calls; consider caching for repeated operations
+  - Lifecycle phase analysis processes thousands of indices; optimize batch processing and pagination
+  - Template validation scans nested configurations; flatten settings to improve performance
 
 ## Troubleshooting Guide
 - Keyboard interrupts:
@@ -520,6 +815,12 @@ DEC["decorators.py"] --> OPS
   - When dependency tracking is off, dependency snapshots are not captured; enable via configuration
 - Dry-run mode:
   - Decorators support dry-run; ensure flags are respected in operations to preview changes
+- **Enhanced** Template analysis timeouts:
+  - Advanced template and policy analysis may timeout on large clusters; adjust timeout settings or process in batches
+  - Elasticsearch API rate limiting may affect analysis performance; implement exponential backoff
+- **Enhanced** Memory usage concerns:
+  - Lifecycle phase distribution analysis processes large datasets; monitor memory usage for large clusters
+  - Template validation may consume significant memory for complex nested configurations
 
 **Section sources**
 - [helpers.py](file://janitor/utils/helpers.py#L13-L15)
@@ -528,11 +829,11 @@ DEC["decorators.py"] --> OPS
 - [history_logger.py](file://janitor/utils/history_logger.py#L33-L35)
 - [version_control.py](file://janitor/utils/version_control.py#L462-L463)
 - [decorators.py](file://janitor/cli/utils/decorators.py#L49-L61)
+- [template_policy_advanced.py](file://janitor/operations/template_policy_advanced.py#L1-L1881)
+- [lifecycle_enhancements.py](file://janitor/operations/lifecycle_enhancements.py#L1-L947)
 
 ## Conclusion
-The utility layer in Elastic Janitor provides a robust foundation for safe, user-friendly, and auditable operations. By centralizing input validation, formatting, UI aids, logging, and version control—both for pipelines and generic resources—the system ensures reliability across diverse workflows. Developers can extend these utilities to customize prompts, add new formats, or integrate additional resource types while maintaining consistent behavior and strong safeguards.
-
-[No sources needed since this section summarizes without analyzing specific files]
+The utility layer in Elastic Janitor provides a robust foundation for safe, user-friendly, and auditable operations. With the enhanced template and policy management capabilities, the system now offers comprehensive analytical tools for template conflict detection, ILM policy simulation, health checking, and lifecycle analysis. By centralizing input validation, formatting, UI aids, logging, and version control—both for pipelines and generic resources—along with advanced analytical operations—the system ensures reliability across diverse workflows. Developers can extend these utilities to customize prompts, add new formats, or integrate additional resource types while maintaining consistent behavior and strong safeguards.
 
 ## Appendices
 
@@ -544,10 +845,15 @@ The utility layer in Elastic Janitor provides a robust foundation for safe, user
   - Validates numeric inputs for retention, computes reclaimed space, and paginates previews
 - Template management:
   - Leverages version control with dependency tracking and structured output
+  - **Enhanced** Uses template conflict detection and validation analyzers
 - Rollback:
   - Logs rollback operations and relies on safe input and confirmation for safety
 - Change history:
   - Loads and filters historical entries for auditing
+- **Enhanced** Template and policy management:
+  - Uses ILM policy simulation to test lifecycle policies safely
+  - Applies policy health checking to validate configurations
+  - Implements lifecycle phase distribution analysis for cost optimization
 
 **Section sources**
 - [index_basic.py](file://janitor/operations/index_basic.py#L14-L71)
@@ -555,6 +861,8 @@ The utility layer in Elastic Janitor provides a robust foundation for safe, user
 - [template_management.py](file://janitor/operations/template_management.py#L25-L125)
 - [rollback.py](file://janitor/operations/rollback.py#L447-L509)
 - [change_history.py](file://janitor/operations/change_history.py#L194-L282)
+- [template_policy_advanced.py](file://janitor/operations/template_policy_advanced.py#L1-L1881)
+- [lifecycle_enhancements.py](file://janitor/operations/lifecycle_enhancements.py#L1-L947)
 
 ### Extensibility Points
 - Adding new input validators:
@@ -569,6 +877,11 @@ The utility layer in Elastic Janitor provides a robust foundation for safe, user
   - Add new resource types to version_control.py and define discovery logic
 - CLI output customization:
   - Extend output.py with new formats or styles, and update decorators for new options
+- **Enhanced** Template and policy analysis:
+  - Add new template validation rules and configuration checks
+  - Implement additional ILM policy analysis capabilities
+  - Extend lifecycle phase distribution with new metrics and visualizations
+  - Integrate new template inheritance analysis features
 
 **Section sources**
 - [helpers.py](file://janitor/utils/helpers.py#L68-L96)
@@ -578,3 +891,5 @@ The utility layer in Elastic Janitor provides a robust foundation for safe, user
 - [version_control.py](file://janitor/utils/version_control.py#L167-L224)
 - [output.py](file://janitor/cli/utils/output.py#L22-L132)
 - [decorators.py](file://janitor/cli/utils/decorators.py#L64-L89)
+- [template_policy_advanced.py](file://janitor/operations/template_policy_advanced.py#L1-L1881)
+- [lifecycle_enhancements.py](file://janitor/operations/lifecycle_enhancements.py#L1-L947)

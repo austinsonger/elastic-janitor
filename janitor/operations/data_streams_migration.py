@@ -8,7 +8,7 @@ from rich.table import Table
 from rich.progress import Progress, SpinnerColumn, TextColumn, BarColumn, TaskProgressColumn
 from rich.panel import Panel
 from rich import box
-from ..config import console, DRY_RUN_MODE, PROTECT_SYSTEM, REINDEX_TIMEOUT
+from ..config import console, GOD_MODE, PROTECT_SYSTEM, REINDEX_TIMEOUT
 from ..utils import (
     show_breadcrumb, select_from_list, confirm_action, 
     get_text_input, is_system
@@ -149,8 +149,8 @@ def option_data_stream_migration(es):
         return
 
     # Step 7: Check dry-run mode
-    if DRY_RUN_MODE:
-        console.print("\n[yellow]🔍 DRY-RUN MODE: Simulating migration...[/yellow]\n")
+    if not GOD_MODE:
+        console.print("\n[yellow]🔍 SAFE MODE: Simulating migration...[/yellow]\n")
         console.print(f"[blue]Would migrate:[/blue] {source_ds_name}")
         console.print(f"[blue]Destination:[/blue] {dest_cluster_url if is_cross_cluster else dest_ds_name}")
         console.print(f"[blue]Backing indices:[/blue] {len(backing_indices)}")

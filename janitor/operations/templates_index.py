@@ -5,7 +5,7 @@ Index templates and component templates.
 from rich.table import Table
 from rich.progress import Progress, SpinnerColumn, TextColumn, BarColumn, TaskProgressColumn
 from rich import box
-from ..config import console, MAX_DELETE_LIMIT, DRY_RUN_MODE
+from ..config import console, MAX_DELETE_LIMIT, GOD_MODE
 from ..utils import is_system, confirm_delete, safe_input, show_breadcrumb, select_from_list
 
 
@@ -74,9 +74,9 @@ def option_delete_templates(es):
         console.print("\n[yellow]⚠️  Cancelled.[/yellow]\n")
         return
 
-    global DRY_RUN_MODE
-    if DRY_RUN_MODE:
-        console.print("\n[yellow]🔍 DRY-RUN MODE: Simulating deletion...[/yellow]\n")
+    global GOD_MODE
+    if not GOD_MODE:
+        console.print("\n[yellow]🔍 SAFE MODE: Simulating deletion...[/yellow]\n")
         console.print(f"[blue]Would delete {len(matches)} index templates:[/blue]\n")
         for name in matches[:10]:
             console.print(f"  [blue]•[/blue] {name}")
@@ -171,9 +171,9 @@ def option_delete_component_templates(es):
         console.print("\n[yellow]⚠️  Cancelled.[/yellow]\n")
         return
 
-    global DRY_RUN_MODE
-    if DRY_RUN_MODE:
-        console.print("\n[yellow]🔍 DRY-RUN MODE: Simulating deletion...[/yellow]\n")
+    global GOD_MODE
+    if not GOD_MODE:
+        console.print("\n[yellow]🔍 SAFE MODE: Simulating deletion...[/yellow]\n")
         console.print(f"[blue]Would delete {len(matches)} component templates:[/blue]\n")
         for name in matches[:10]:
             console.print(f"  [blue]•[/blue] {name}")

@@ -75,7 +75,7 @@ from ..operations import (
     option_node_information,
     option_cluster_stats,
     option_dashboard_stats_view,
-    toggle_dry_run_mode,
+    toggle_god_mode,
     option_storage_forecast,
     option_tier_distribution,
     option_compression_analysis,
@@ -102,7 +102,7 @@ from ..operations import (
     option_disk_io_monitor,
     option_batch_index_operations,
     option_scheduled_cleanup_jobs,
-    option_dry_run_mode,
+    option_god_mode,
     option_operation_history_log,
     option_rollback_capability,
     option_export_import_configurations,
@@ -855,7 +855,7 @@ def submenu_bulk_automation(es):
                 choices=[
                     questionary.Choice("Batch Index Operations", value="1"),
                     questionary.Choice("Scheduled Cleanup Jobs (Coming Soon)", value="2"),
-                    questionary.Choice("Dry-Run Mode Toggle", value="3"),
+                    questionary.Choice("God-Mode Toggle", value="3"),
                     questionary.Choice("Operation History Log", value="4"),
                     questionary.Choice("Rollback Capability (Coming Soon)", value="5"),
                     questionary.Choice("Export/Import Configurations", value="6"),
@@ -876,7 +876,7 @@ def submenu_bulk_automation(es):
         elif choice == "2":
             option_scheduled_cleanup_jobs(es)
         elif choice == "3":
-            option_dry_run_mode(es)
+            option_god_mode(es)
         elif choice == "4":
             option_operation_history_log(es)
         elif choice == "5":

@@ -9,7 +9,7 @@ from rich.table import Table
 from rich.progress import Progress, SpinnerColumn, TextColumn, BarColumn, TaskProgressColumn
 from rich.panel import Panel
 from rich import box
-from ..config import console, DRY_RUN_MODE
+from ..config import console, GOD_MODE
 from ..utils import (
     show_breadcrumb, safe_input, confirm_action, get_number_input,
     get_text_input, is_system, get_index_pattern_selection

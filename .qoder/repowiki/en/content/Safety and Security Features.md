@@ -2,8 +2,9 @@
 
 <cite>
 **Referenced Files in This Document**
-- [dryrun.py](file://janitor/cli/commands/dryrun.py)
 - [config.py](file://janitor/config.py)
+- [connection.py](file://janitor/core/connection.py)
+- [.env](file://.env)
 - [helpers.py](file://janitor/utils/helpers.py)
 - [history_logger.py](file://janitor/utils/history_logger.py)
 - [change_history.py](file://janitor/operations/change_history.py)
@@ -17,25 +18,34 @@
 - [developer_tools.py](file://janitor/operations/developer_tools.py)
 </cite>
 
+## Update Summary
+**Changes Made**
+- Added comprehensive environment variable loading and secret management section
+- Updated configuration security practices with dotenv integration
+- Enhanced credential management documentation for ELASTIC_URL and ELASTIC_API_KEY
+- Added security considerations for environment variable handling
+- Updated best practices for secure configuration management
+
 ## Table of Contents
 1. [Introduction](#introduction)
 2. [Project Structure](#project-structure)
 3. [Core Components](#core-components)
 4. [Architecture Overview](#architecture-overview)
 5. [Detailed Component Analysis](#detailed-component-analysis)
-6. [Dependency Analysis](#dependency-analysis)
-7. [Performance Considerations](#performance-considerations)
-8. [Troubleshooting Guide](#troubleshooting-guide)
-9. [Conclusion](#conclusion)
-10. [Appendices](#appendices)
+6. [Security Configuration Management](#security-configuration-management)
+7. [Dependency Analysis](#dependency-analysis)
+8. [Performance Considerations](#performance-considerations)
+9. [Troubleshooting Guide](#troubleshooting-guide)
+10. [Conclusion](#conclusion)
+11. [Appendices](#appendices)
 
 ## Introduction
-This section documents the safety and security features built into Elastic Janitor. It focuses on protective mechanisms that prevent accidental or unsafe operations, including dry-run mode, system index protection, confirmation prompts, operation limits, audit logging, and governance capabilities. Guidance is provided for secure operation, risk mitigation, and compliance considerations.
+This section documents the safety and security features built into Elastic Janitor. It focuses on protective mechanisms that prevent accidental or unsafe operations, including dry-run mode, system index protection, confirmation prompts, operation limits, audit logging, and governance capabilities. The documentation now includes enhanced security configuration management with environment variable loading capabilities and improved secret management practices for credential handling.
 
 ## Project Structure
 The safety and security features span CLI commands, configuration, utilities, and operation modules:
 - CLI commands expose dry-run management and governance features.
-- Configuration centralizes safety-related flags and limits.
+- Configuration centralizes safety-related flags and limits with secure environment variable loading.
 - Utilities provide system checks, confirmation prompts, and history logging.
 - Operations modules implement safeguards during destructive actions.
 
@@ -47,7 +57,11 @@ GOV["governance.py<br/>Governance commands"]
 DEC["decorators.py<br/>Decorators for CLI"]
 end
 subgraph "Config"
-CFG["config.py<br/>Flags and limits"]
+CFG["config.py<br/>Flags, limits, environment variables"]
+ENV[".env<br/>Secret credentials"]
+end
+subgraph "Core"
+CONN["connection.py<br/>Secure connection handling"]
 end
 subgraph "Utilities"
 HLP["helpers.py<br/>System checks, prompts"]
@@ -65,6 +79,8 @@ end
 DR --> CFG
 GOV --> HLP
 DEC --> CFG
+CFG --> ENV
+CONN --> CFG
 HLP --> CFG
 HISTLOG --> CHIST
 DSP --> CFG
@@ -76,10 +92,11 @@ DEV --> CFG
 ```
 
 **Diagram sources**
-- [dryrun.py](file://janitor/cli/commands/dryrun.py#L9-L87)
+- [config.py](file://janitor/config.py#L1-L85)
+- [connection.py](file://janitor/core/connection.py#L1-L72)
+- [.env](file://.env#L1-L5)
 - [governance.py](file://janitor/cli/commands/governance.py#L17-L153)
 - [decorators.py](file://janitor/cli/utils/decorators.py#L13-L89)
-- [config.py](file://janitor/config.py#L11-L78)
 - [helpers.py](file://janitor/utils/helpers.py#L9-L109)
 - [history_logger.py](file://janitor/utils/history_logger.py#L9-L73)
 - [change_history.py](file://janitor/operations/change_history.py#L190-L379)
@@ -91,8 +108,11 @@ DEV --> CFG
 - [developer_tools.py](file://janitor/operations/developer_tools.py#L1122-L1205)
 
 **Section sources**
-- [dryrun.py](file://janitor/cli/commands/dryrun.py#L9-L87)
-- [config.py](file://janitor/config.py#L11-L78)
+- [config.py](file://janitor/config.py#L1-L85)
+- [connection.py](file://janitor/core/connection.py#L1-L72)
+- [.env](file://.env#L1-L5)
+- [governance.py](file://janitor/cli/commands/governance.py#L17-L153)
+- [decorators.py](file://janitor/cli/utils/decorators.py#L13-L89)
 - [helpers.py](file://janitor/utils/helpers.py#L9-L109)
 - [history_logger.py](file://janitor/utils/history_logger.py#L9-L73)
 - [change_history.py](file://janitor/operations/change_history.py#L190-L379)
@@ -101,8 +121,6 @@ DEV --> CFG
 - [snapshots.py](file://janitor/operations/snapshots.py#L84-L122)
 - [advanced_cleanup.py](file://janitor/operations/advanced_cleanup.py#L21-L150)
 - [rollback.py](file://janitor/operations/rollback.py#L103-L156)
-- [decorators.py](file://janitor/cli/utils/decorators.py#L13-L89)
-- [governance.py](file://janitor/cli/commands/governance.py#L17-L153)
 - [developer_tools.py](file://janitor/operations/developer_tools.py#L1122-L1205)
 
 ## Core Components
@@ -113,10 +131,12 @@ DEV --> CFG
 - Audit logging and change tracking: Persistent logs of operations with filtering and export.
 - Governance features: Schema evolution tracking, data lineage, PII detection, and metadata management.
 - Rollback tracking: Records of operations eligible for rollback and their outcomes.
+- Environment variable loading: Secure credential management through dotenv integration.
+- Secret management: Protected handling of ELASTIC_URL and ELASTIC_API_KEY credentials.
 
 **Section sources**
-- [dryrun.py](file://janitor/cli/commands/dryrun.py#L15-L87)
-- [config.py](file://janitor/config.py#L18-L23)
+- [config.py](file://janitor/config.py#L1-L85)
+- [connection.py](file://janitor/core/connection.py#L1-L72)
 - [helpers.py](file://janitor/utils/helpers.py#L18-L46)
 - [snapshots.py](file://janitor/operations/snapshots.py#L120-L122)
 - [data_streams_standalone.py](file://janitor/operations/data_streams_standalone.py#L132-L136)
@@ -126,15 +146,19 @@ DEV --> CFG
 - [rollback.py](file://janitor/operations/rollback.py#L103-L156)
 
 ## Architecture Overview
-The safety architecture integrates configuration flags, utility functions, and operation modules to enforce protective mechanisms consistently across the application.
+The safety architecture integrates configuration flags, utility functions, and operation modules to enforce protective mechanisms consistently across the application. The enhanced security configuration management ensures credentials are loaded securely from environment variables.
 
 ```mermaid
 graph TB
-CFG["config.py<br/>DRY_RUN_MODE, PROTECT_SYSTEM,<br/>MAX_DELETE_LIMIT, timeouts"]
+CFG["config.py<br/>DRY_RUN_MODE, PROTECT_SYSTEM,<br/>MAX_DELETE_LIMIT, timeouts<br/>Environment variable loading"]
+ENV[".env<br/>ELASTIC_URL, ELASTIC_API_KEY<br/>Secret credentials"]
+CONN["connection.py<br/>Secure connection handling<br/>Credential validation"]
 HLP["helpers.py<br/>is_system(), confirm_delete(),<br/>confirm_action(), select_from_list()"]
 HIST["history_logger.py<br/>log_operation(), get_recent_operations(),<br/>clear_history()"]
 CHIST["change_history.py<br/>parse/filter/display/export,<br/>interactive history"]
 OPS["Operations<br/>data_streams_cleanup.py,<br/>data_streams_standalone.py,<br/>snapshots.py,<br/>advanced_cleanup.py,<br/>rollback.py,<br/>developer_tools.py"]
+CFG --> ENV
+CONN --> CFG
 CFG --> HLP
 CFG --> OPS
 HLP --> OPS
@@ -143,7 +167,9 @@ OPS --> HIST
 ```
 
 **Diagram sources**
-- [config.py](file://janitor/config.py#L18-L23)
+- [config.py](file://janitor/config.py#L1-L85)
+- [.env](file://.env#L1-L5)
+- [connection.py](file://janitor/core/connection.py#L1-L72)
 - [helpers.py](file://janitor/utils/helpers.py#L18-L46)
 - [history_logger.py](file://janitor/utils/history_logger.py#L9-L36)
 - [change_history.py](file://janitor/operations/change_history.py#L190-L379)
@@ -178,12 +204,10 @@ CLI-->>U : "Mode status and guidance"
 ```
 
 **Diagram sources**
-- [dryrun.py](file://janitor/cli/commands/dryrun.py#L15-L87)
-- [config.py](file://janitor/config.py#L22-L23)
+- [config.py](file://janitor/config.py#L27-L31)
 
 **Section sources**
-- [dryrun.py](file://janitor/cli/commands/dryrun.py#L15-L87)
-- [config.py](file://janitor/config.py#L22-L23)
+- [config.py](file://janitor/config.py#L27-L31)
 
 ### System Index Protection
 System resources are automatically protected from destructive operations. The protection mechanism checks resource names and conditionally excludes them based on configuration.
@@ -355,6 +379,70 @@ OP->>LOG : "log_operation('ROLLBACK', resources, description)"
 - [rollback.py](file://janitor/operations/rollback.py#L103-L156)
 - [history_logger.py](file://janitor/utils/history_logger.py#L9-L36)
 
+## Security Configuration Management
+
+### Environment Variable Loading
+Elastic Janitor implements secure configuration management through environment variable loading using python-dotenv. The system loads credentials from a .env file at startup, providing a secure way to manage sensitive information without hardcoding them in the source code.
+
+Key security features:
+- Dotenv integration: Automatically loads environment variables from .env file
+- Secure defaults: Provides fallback values for non-sensitive configuration
+- Credential separation: Keeps secrets separate from codebase
+- Environment isolation: Supports different configurations per deployment environment
+
+```mermaid
+flowchart TD
+Start(["Application Start"]) --> LoadEnv["Load .env file<br/>using python-dotenv"]
+LoadEnv --> CheckEnv["Check for required variables"]
+CheckEnv --> HasVars{"ELASTIC_URL<br/>and ELASTIC_API_KEY<br/>present?"}
+HasVars --> |Yes| UseEnv["Use environment variables"]
+HasVars --> |No| UseDefaults["Use default values"]
+UseEnv --> ConfigReady["Configuration ready<br/>with secure credentials"]
+UseDefaults --> ConfigReady
+ConfigReady --> Connect["Establish secure connection"]
+```
+
+**Diagram sources**
+- [config.py](file://janitor/config.py#L4-L10)
+- [connection.py](file://janitor/core/connection.py#L11-L17)
+
+**Section sources**
+- [config.py](file://janitor/config.py#L4-L10)
+- [connection.py](file://janitor/core/connection.py#L11-L17)
+
+### Enhanced Secret Management
+The configuration system now supports improved secret management practices by replacing hardcoded credentials with environment variable support for ELASTIC_URL and ELASTIC_API_KEY.
+
+Security improvements:
+- Environment variable precedence: ELASTIC_URL and ELASTIC_API_KEY are loaded from environment variables
+- Fallback mechanisms: Provides default values when environment variables are not set
+- Runtime validation: Ensures credentials are present before establishing connections
+- Separation of concerns: Credentials are managed separately from application logic
+
+```mermaid
+sequenceDiagram
+participant APP as "Application"
+participant DOTENV as "python-dotenv"
+participant OS as "Operating System"
+participant CONFIG as "config.py"
+participant CONN as "connection.py"
+APP->>DOTENV : "load_dotenv()"
+DOTENV->>OS : "Read .env file"
+OS-->>DOTENV : "Return environment variables"
+DOTENV->>CONFIG : "Set ELASTIC_URL and ELASTIC_API_KEY"
+CONFIG->>CONN : "Provide credentials"
+CONN->>CONN : "Validate credentials present"
+CONN-->>APP : "Connection established"
+```
+
+**Diagram sources**
+- [config.py](file://janitor/config.py#L16-L17)
+- [connection.py](file://janitor/core/connection.py#L13-L15)
+
+**Section sources**
+- [config.py](file://janitor/config.py#L16-L17)
+- [connection.py](file://janitor/core/connection.py#L13-L15)
+
 ### Best Practices for Secure Operation
 - Always enable dry-run mode before executing destructive operations to preview changes.
 - Use system index protection and review deletion previews to avoid unintended targets.
@@ -363,9 +451,13 @@ OP->>LOG : "log_operation('ROLLBACK', resources, description)"
 - Maintain audit logs and regularly review operation history for anomalies.
 - Leverage governance features to monitor schema changes, data lineage, and sensitive data.
 - Use rollback tracking to recover from unintended changes when applicable.
+- Implement environment variable loading for secure credential management.
+- Store secrets in .env files and exclude them from version control.
+- Use separate environment files for different deployment stages (development, staging, production).
 
 **Section sources**
-- [dryrun.py](file://janitor/cli/commands/dryrun.py#L15-L87)
+- [config.py](file://janitor/config.py#L1-L85)
+- [connection.py](file://janitor/core/connection.py#L1-L72)
 - [helpers.py](file://janitor/utils/helpers.py#L25-L46)
 - [snapshots.py](file://janitor/operations/snapshots.py#L120-L122)
 - [data_streams_standalone.py](file://janitor/operations/data_streams_standalone.py#L132-L136)
@@ -380,10 +472,14 @@ Safety and security features depend on shared configuration and utilities. The f
 ```mermaid
 graph TB
 CFG["config.py"]
+ENV[".env"]
+CONN["connection.py"]
 HLP["helpers.py"]
 HIST["history_logger.py"]
 CHIST["change_history.py"]
 OPS["Operations Modules"]
+CFG --> ENV
+CONN --> CFG
 CFG --> HLP
 CFG --> OPS
 HLP --> OPS
@@ -392,13 +488,16 @@ OPS --> HIST
 ```
 
 **Diagram sources**
-- [config.py](file://janitor/config.py#L18-L23)
+- [config.py](file://janitor/config.py#L1-L85)
+- [.env](file://.env#L1-L5)
+- [connection.py](file://janitor/core/connection.py#L1-L72)
 - [helpers.py](file://janitor/utils/helpers.py#L18-L46)
 - [history_logger.py](file://janitor/utils/history_logger.py#L9-L36)
 - [change_history.py](file://janitor/operations/change_history.py#L190-L379)
 
 **Section sources**
-- [config.py](file://janitor/config.py#L18-L23)
+- [config.py](file://janitor/config.py#L1-L85)
+- [connection.py](file://janitor/core/connection.py#L1-L72)
 - [helpers.py](file://janitor/utils/helpers.py#L18-L46)
 - [history_logger.py](file://janitor/utils/history_logger.py#L9-L36)
 - [change_history.py](file://janitor/operations/change_history.py#L190-L379)
@@ -408,8 +507,7 @@ OPS --> HIST
 - Interactive confirmations and previews provide immediate feedback, minimizing repeated retries.
 - Operation limits reduce the risk of long-running bulk operations overwhelming the system.
 - History logging is append-only and designed to minimize overhead; failures are handled silently to avoid interrupting operations.
-
-[No sources needed since this section provides general guidance]
+- Environment variable loading occurs once at startup, avoiding repeated filesystem access during operations.
 
 ## Troubleshooting Guide
 - Dry-run mode not taking effect: Verify the global flag is set and that operations respect the flag.
@@ -417,18 +515,19 @@ OPS --> HIST
 - Exceeded operation limits: Reduce the scope of the operation or adjust limits thoughtfully.
 - History not recorded: Check file permissions for the history log and ensure logging is invoked by operations.
 - Governance reports missing data: Validate that the underlying operations are permitted and that the cluster is reachable.
+- Connection errors: Verify that ELASTIC_URL and ELASTIC_API_KEY environment variables are properly set in .env file.
+- Environment variable not loading: Check that python-dotenv is installed and .env file is in the correct location.
 
 **Section sources**
-- [dryrun.py](file://janitor/cli/commands/dryrun.py#L15-L87)
+- [config.py](file://janitor/config.py#L1-L85)
+- [connection.py](file://janitor/core/connection.py#L1-L72)
 - [helpers.py](file://janitor/utils/helpers.py#L18-L23)
 - [snapshots.py](file://janitor/operations/snapshots.py#L120-L122)
 - [data_streams_standalone.py](file://janitor/operations/data_streams_standalone.py#L132-L136)
 - [history_logger.py](file://janitor/utils/history_logger.py#L9-L36)
 
 ## Conclusion
-Elastic Janitor incorporates robust safety and security mechanisms across its CLI, configuration, utilities, and operations. These include a global dry-run mode, system index protection, confirmation prompts, operation limits, comprehensive audit logging, governance features, and rollback tracking. Together, these features enable secure, auditable, and reversible operations tailored for production environments.
-
-[No sources needed since this section summarizes without analyzing specific files]
+Elastic Janitor incorporates robust safety and security mechanisms across its CLI, configuration, utilities, and operations. These include a global dry-run mode, system index protection, confirmation prompts, operation limits, comprehensive audit logging, governance features, and rollback tracking. The enhanced security configuration management provides secure credential handling through environment variable loading, improving the overall security posture of the application. Together, these features enable secure, auditable, and reversible operations tailored for production environments.
 
 ## Appendices
 
@@ -439,5 +538,22 @@ Elastic Janitor incorporates robust safety and security mechanisms across its CL
 - Maintain and review operation history for compliance audits.
 - Use governance features to track schema evolution, data lineage, and sensitive data.
 - Implement rollback procedures for critical changes.
+- Configure environment variables for secure credential management.
+- Store secrets in .env files and exclude from version control.
+- Use separate environment files for different deployment environments.
+- Regularly rotate API keys and update environment variables accordingly.
 
-[No sources needed since this section provides general guidance]
+### Security Configuration Template
+```bash
+# .env file template
+ELASTIC_URL=https://your-cluster.example.com:9243
+ELASTIC_API_KEY=your-base64-encoded-api-key-here
+```
+
+### Environment Variable Security Guidelines
+- Never commit .env files to version control
+- Use different .env files for development, staging, and production
+- Rotate API keys regularly and update environment variables
+- Restrict file permissions on .env files to owner-only read/write
+- Use encrypted storage for sensitive environment variables in production
+- Implement secrets management systems for enterprise deployments

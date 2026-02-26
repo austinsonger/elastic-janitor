@@ -12,10 +12,10 @@ from rich.progress import Progress, SpinnerColumn, TextColumn
 from rich.panel import Panel
 from rich.syntax import Syntax
 from rich import box
-from ..config import console, DRY_RUN_MODE
+from ..config import console, GOD_MODE
 from ..utils import (
     show_breadcrumb, confirm_action, select_from_list,
-    get_text_input, safe_input
+    get_text_input, safe_input, paginate_table
 )
 from ..utils.version_control import (
     save_resource_version_with_dependencies, get_pipeline_versions, get_pipeline_version,
@@ -252,7 +252,7 @@ def option_edit_pipeline(es):
                 return
 
             # Deploy pipeline
-            if DRY_RUN_MODE:
+            if not GOD_MODE:
                 console.print("\n[yellow]🔍 DRY-RUN MODE: Would update pipeline[/yellow]")
                 console.print(f"[blue]Pipeline: {selected_pipeline}[/blue]")
                 console.print(f"[blue]Processors: {new_processors}[/blue]\n")
@@ -387,29 +387,32 @@ def option_view_version_history(es):
         # Display version history
         console.print(f"\n[bold cyan]Version History: {selected_pipeline}[/bold cyan]\n")
 
-        table = Table(box=box.ROUNDED, show_header=True)
-        table.add_column("Ver", style="cyan", width=5)
-        table.add_column("Timestamp", style="white", width=20)
-        table.add_column("Status", style="white", width=12)
-        table.add_column("Processors", style="white", width=10)
-        table.add_column("Comment", style="dim")
+        # Define columns for pagination
+        columns = [
+            {"name": "Ver", "style": "cyan", "width": 5},
+            {"name": "Timestamp", "style": "white", "width": 20},
+            {"name": "Status", "style": "white", "width": 12},
+            {"name": "Processors", "style": "white", "width": 10},
+            {"name": "Comment", "style": "dim"}
+        ]
 
+        # Build rows from versions
+        rows = []
         for version in versions:
             timestamp = datetime.fromisoformat(version["timestamp"]).strftime("%Y-%m-%d %H:%M:%S")
             status = "[green]✓ Known Good[/green]" if version["is_known_good"] else "[dim]Backup[/dim]"
             processors = len(version["configuration"].get("processors", []))
             comment = version["comment"] or "-"
 
-            table.add_row(
+            rows.append((
                 str(version["version_number"]),
                 timestamp,
                 status,
                 str(processors),
                 comment[:50] + "..." if len(comment) > 50 else comment
-            )
+            ))
 
-        console.print(table)
-        console.print()
+        paginate_table(rows, columns, page_size=20, title=f"Version History: {selected_pipeline}")
 
         # Ask if user wants to view a specific version
         if confirm_action("View details of a specific version?"):
@@ -482,29 +485,32 @@ def option_rollback_pipeline(es):
         # Display version history
         console.print(f"\n[bold cyan]Available Versions: {selected_pipeline}[/bold cyan]\n")
 
-        table = Table(box=box.ROUNDED, show_header=True)
-        table.add_column("Ver", style="cyan", width=5)
-        table.add_column("Timestamp", style="white", width=20)
-        table.add_column("Status", style="white", width=15)
-        table.add_column("Processors", style="white", width=10)
-        table.add_column("Comment", style="dim")
+        # Define columns for pagination
+        columns = [
+            {"name": "Ver", "style": "cyan", "width": 5},
+            {"name": "Timestamp", "style": "white", "width": 20},
+            {"name": "Status", "style": "white", "width": 15},
+            {"name": "Processors", "style": "white", "width": 10},
+            {"name": "Comment", "style": "dim"}
+        ]
 
+        # Build rows from versions
+        rows = []
         for version in versions:
             timestamp = datetime.fromisoformat(version["timestamp"]).strftime("%Y-%m-%d %H:%M:%S")
             status = "[green]✓ Known Good[/green]" if version["is_known_good"] else "[dim]Backup[/dim]"
             processors = len(version["configuration"].get("processors", []))
             comment = version["comment"] or "-"
 
-            table.add_row(
+            rows.append((
                 str(version["version_number"]),
                 timestamp,
                 status,
                 str(processors),
                 comment[:40] + "..." if len(comment) > 40 else comment
-            )
+            ))
 
-        console.print(table)
-        console.print()
+        paginate_table(rows, columns, page_size=20, title=f"Available Versions: {selected_pipeline}")
 
         # Get current pipeline configuration
         current_config = resp[selected_pipeline]
@@ -564,7 +570,7 @@ def option_rollback_pipeline(es):
         )
 
         # Perform rollback
-        if DRY_RUN_MODE:
+        if not GOD_MODE:
             console.print("\n[yellow]🔍 DRY-RUN MODE: Would rollback pipeline[/yellow]")
             console.print(f"[blue]Pipeline: {selected_pipeline}[/blue]")
             console.print(f"[blue]Target Version: {version_num}[/blue]\n")
@@ -653,7 +659,7 @@ def option_emergency_rollback(es):
         )
 
         # Perform rollback
-        if DRY_RUN_MODE:
+        if not GOD_MODE:
             console.print("\n[yellow]🔍 DRY-RUN MODE: Would perform emergency rollback[/yellow]")
             console.print(f"[blue]Pipeline: {selected_pipeline}[/blue]")
             console.print(f"[blue]Target Version: {last_good['version_number']}[/blue]\n")
@@ -800,7 +806,7 @@ def option_import_pipeline(es):
             return
 
         # Import pipeline
-        if DRY_RUN_MODE:
+        if not GOD_MODE:
             console.print("\n[yellow]🔍 DRY-RUN MODE: Would import pipeline[/yellow]")
             console.print(f"[blue]Pipeline: {pipeline_name}[/blue]")
             console.print(f"[blue]Processors: {len(processors)}[/blue]\n")
@@ -880,7 +886,7 @@ def option_clone_pipeline(es):
             return
 
         # Clone pipeline
-        if DRY_RUN_MODE:
+        if not GOD_MODE:
             console.print("\n[yellow]🔍 DRY-RUN MODE: Would clone pipeline[/yellow]")
             console.print(f"[blue]Source: {source_pipeline}[/blue]")
             console.print(f"[blue]Target: {new_pipeline_name}[/blue]\n")

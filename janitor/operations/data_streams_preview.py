@@ -2,13 +2,13 @@
 Data stream operations for Elastic Janitor - Preview.
 Preview data streams and their backing indices.
 """
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 from rich.table import Table
 from rich.progress import Progress, SpinnerColumn, TextColumn
 from rich import box
-from ..config import console
-from ..utils import show_breadcrumb
-from ..core import get_index_creation
+from ..config import console, PROTECT_SYSTEM, DEFAULT_RETENTION_DAYS
+from ..utils import show_breadcrumb, safe_input, is_system, bytes_to_human, paginate_items
+from ..core import get_index_creation, get_all_indices_info
 
 
 def option_preview_data_streams(es):
@@ -99,54 +99,35 @@ def option_preview_data_streams(es):
     # Show detailed preview with pagination
     streams_with_eligible = [s for s in summaries if s["eligible"]]
 
-    page_size = 3  # Show 3 data streams at a time
-    total_pages = (len(streams_with_eligible) + page_size - 1) // page_size
-    current_page = 0
+    # Render function for each data stream preview
+    def render_stream_preview(s, index):
+        stream_size_bytes = sum(size_bytes for _, _, _, size_bytes, _ in s["eligible"])
 
-    while current_page < total_pages:
-        start_idx = current_page * page_size
-        end_idx = min(start_idx + page_size, len(streams_with_eligible))
-
+        console.print(f"[bold cyan]Data Stream {index}:[/bold cyan] {s['name']}")
+        console.print(f"  Total backing indices: {s['total_backing']}")
+        console.print(f"  Indices eligible for deletion: [red]{len(s['eligible'])}[/red]")
+        console.print(f"  Total size to reclaim: [red bold]{bytes_to_human(stream_size_bytes)}[/red bold]")
         console.print()
-        console.print(Panel(f"[bold cyan]DETAILED VIEW - Page {current_page + 1} of {total_pages}[/bold cyan]", box=box.DOUBLE))
-        console.print()
+        console.print(f"  [green]CURRENT WRITE INDEX (PROTECTED - WILL NOT BE DELETED):[/green]")
 
-        for i in range(start_idx, end_idx):
-            s = streams_with_eligible[i]
-            stream_size_bytes = sum(size_bytes for _, _, _, size_bytes, _ in s["eligible"])
-
-            console.print(f"[bold cyan]Data Stream {i+1}:[/bold cyan] {s['name']}")
-            console.print(f"  Total backing indices: {s['total_backing']}")
-            console.print(f"  Indices eligible for deletion: [red]{len(s['eligible'])}[/red]")
-            console.print(f"  Total size to reclaim: [red bold]{bytes_to_human(stream_size_bytes)}[/red bold]")
-            console.print()
-            console.print(f"  [green]✅ CURRENT WRITE INDEX (PROTECTED - WILL NOT BE DELETED):[/green]")
-
-            # Show write index info
-            write_idx_info = indices_info.get(s['write_index'])
-            if write_idx_info:
-                write_age_days = (now - write_idx_info['created']).days
-                console.print(f"    [green]✅ {s['write_index']}[/green] | age: {write_age_days} days | size: {write_idx_info['size']} | tier: {write_idx_info['tier']} | created: {write_idx_info['created'].strftime('%Y-%m-%d %H:%M:%S')} UTC")
-            else:
-                console.print(f"    [green]✅ {s['write_index']}[/green]")
-
-            console.print()
-            console.print(f"  [red]❌ BACKING INDICES THAT WOULD BE DELETED:[/red]")
-
-            for idx_name, created, size, size_bytes, tier in s["eligible"]:
-                age_days = (now - created).days
-                console.print(f"    [red]❌ {idx_name}[/red] | age: {age_days} days | size: {size} | tier: {tier} | created: {created.strftime('%Y-%m-%d %H:%M:%S')} UTC")
-            console.print()
-
-        # Pagination prompt
-        if current_page < total_pages - 1:
-            console.print("[cyan]" + "─" * 80 + "[/cyan]")
-            choice = safe_input("Press Enter for next page, or 'q' to finish viewing: ").strip().lower()
-            if choice in ('q', 'quit', 'exit'):
-                break
-            current_page += 1
+        # Show write index info
+        write_idx_info = indices_info.get(s['write_index'])
+        if write_idx_info:
+            write_age_days = (now - write_idx_info['created']).days
+            console.print(f"    [green]{s['write_index']}[/green] | age: {write_age_days} days | size: {write_idx_info['size']} | tier: {write_idx_info['tier']} | created: {write_idx_info['created'].strftime('%Y-%m-%d %H:%M:%S')} UTC")
         else:
-            current_page += 1
+            console.print(f"    [green]{s['write_index']}[/green]")
+
+        console.print()
+        console.print(f"  [red]BACKING INDICES THAT WOULD BE DELETED:[/red]")
+
+        for idx_name, created, size, size_bytes, tier in s["eligible"]:
+            age_days = (now - created).days
+            console.print(f"    [red]{idx_name}[/red] | age: {age_days} days | size: {size} | tier: {tier} | created: {created.strftime('%Y-%m-%d %H:%M:%S')} UTC")
+        console.print()
+
+    # Display with pagination
+    paginate_items(streams_with_eligible, render_stream_preview, page_size=10, title="DETAILED VIEW")
 
     console.print()
     final_preview_summary = Table(title="SUMMARY", box=box.DOUBLE_EDGE, title_style="bold yellow")

@@ -90,7 +90,7 @@ from .cluster import (
     option_node_information,
     option_cluster_stats,
     option_dashboard_stats_view,
-    toggle_dry_run_mode,
+    toggle_god_mode,
 )
 from .storage_optimization import (
     option_storage_forecast,
@@ -124,7 +124,7 @@ from .performance_aggregations import option_aggregation_optimizer
 from .bulk_automation import (
     option_batch_index_operations,
     option_scheduled_cleanup_jobs,
-    option_dry_run_mode,
+    option_god_mode,
     option_operation_history_log,
     option_rollback_capability,
     option_export_import_configurations,
@@ -264,7 +264,7 @@ __all__ = [
     'option_node_information',
     'option_cluster_stats',
     'option_dashboard_stats_view',
-    'toggle_dry_run_mode',
+    'toggle_god_mode',
     # Storage & Cost Optimization
     'option_storage_forecast',
     'option_tier_distribution',
@@ -295,7 +295,7 @@ __all__ = [
     # Bulk Operations & Automation
     'option_batch_index_operations',
     'option_scheduled_cleanup_jobs',
-    'option_dry_run_mode',
+    'option_god_mode',
     'option_operation_history_log',
     'option_rollback_capability',
     'option_export_import_configurations',

@@ -10,7 +10,7 @@ from rich.table import Table
 from rich.progress import Progress, SpinnerColumn, TextColumn, BarColumn, TaskProgressColumn
 from rich.panel import Panel
 from rich import box
-from ..config import console, DRY_RUN_MODE, PROTECT_SYSTEM
+from ..config import console, GOD_MODE, PROTECT_SYSTEM
 from ..utils import (
     safe_input, is_system, confirm_action, show_breadcrumb,
     select_from_list, get_number_input, get_text_input, bytes_to_human
@@ -752,7 +752,7 @@ def _add_metadata(es):
             updated = 0
             for idx_name in matching_indices:
                 try:
-                    if not DRY_RUN_MODE:
+                    if GOD_MODE:
                         es.indices.put_settings(
                             index=idx_name,
                             body={"index": {"metadata": {
@@ -764,7 +764,7 @@ def _add_metadata(es):
                 except Exception as e:
                     console.print(f"[red]Error updating {idx_name}: {e}[/red]")
 
-            if DRY_RUN_MODE:
+            if not GOD_MODE:
                 console.print(f"[yellow]DRY RUN: Would update metadata for {updated} indices[/yellow]\n")
             else:
                 console.print(f"[green]✅ Updated metadata for {updated} indices[/green]\n")
@@ -914,7 +914,7 @@ def _remove_metadata(es):
         removed = 0
         for idx_name in matching_indices:
             try:
-                if not DRY_RUN_MODE:
+                if GOD_MODE:
                     # Remove metadata by setting to null
                     es.indices.put_settings(
                         index=idx_name,
@@ -924,7 +924,7 @@ def _remove_metadata(es):
             except Exception as e:
                 console.print(f"[red]Error removing metadata from {idx_name}: {e}[/red]")
 
-        if DRY_RUN_MODE:
+        if not GOD_MODE:
             console.print(f"[yellow]DRY RUN: Would remove metadata from {removed} indices[/yellow]\n")
         else:
             console.print(f"[green]✅ Removed metadata from {removed} indices[/green]\n")
@@ -962,7 +962,7 @@ def option_data_dictionary(es):
     # Ensure dictionary index exists
     try:
         if not es.indices.exists(index=dictionary_index):
-            if not DRY_RUN_MODE:
+            if GOD_MODE:
                 es.indices.create(
                     index=dictionary_index,
                     body={
@@ -1087,7 +1087,7 @@ def _add_field_definition(es, dictionary_index):
         except:
             doc["created_at"] = datetime.now(timezone.utc).isoformat()
 
-        if not DRY_RUN_MODE:
+        if GOD_MODE:
             es.index(
                 index=dictionary_index,
                 id=doc_id,
@@ -1095,7 +1095,7 @@ def _add_field_definition(es, dictionary_index):
             )
 
         action_word = "Updated" if exists else "Added"
-        if DRY_RUN_MODE:
+        if not GOD_MODE:
             console.print(f"[yellow]DRY RUN: Would {action_word.lower()} field definition[/yellow]\n")
         else:
             console.print(f"[green]✅ {action_word} field definition for {field_name}[/green]\n")

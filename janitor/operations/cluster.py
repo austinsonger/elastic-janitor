@@ -1,6 +1,6 @@
 """
 Cluster health and diagnostics operations for Elastic Janitor.
-Cluster health, node information, statistics, and dry-run mode.
+Cluster health, node information, statistics, and god-mode toggle.
 """
 import time
 from datetime import datetime
@@ -12,24 +12,43 @@ from rich.layout import Layout
 from rich.live import Live
 from rich.text import Text
 from rich import box
-from ..config import console, DRY_RUN_MODE
+from ..config import console, GOD_MODE, GOD_MODE_CONFIRMATION_PHRASE
 from ..utils import show_breadcrumb, bytes_to_human
 from ..core import get_all_indices_info
 from .. import config
 
 
-def toggle_dry_run_mode():
-    """Toggle global dry-run mode."""
-    global DRY_RUN_MODE
-    DRY_RUN_MODE = not DRY_RUN_MODE
-
-    status = "[green]ENABLED[/green]" if DRY_RUN_MODE else "[red]DISABLED[/red]"
-    console.print(f"\n[cyan]🔍 Dry-Run Mode: {status}[/cyan]")
-
-    if DRY_RUN_MODE:
-        console.print("[yellow]All delete operations will be simulated without executing.[/yellow]\n")
+def toggle_god_mode():
+    """Toggle global God-Mode with confirmation phrase."""
+    if not config.GOD_MODE:
+        # Enabling God-Mode - require confirmation
+        console.print()
+        console.print("[bold red]WARNING: You are about to enable God-Mode[/bold red]")
+        console.print("[yellow]All destructive operations will execute PERMANENTLY.[/yellow]")
+        console.print()
+        console.print(f"[cyan]Type '{GOD_MODE_CONFIRMATION_PHRASE}' to confirm:[/cyan]")
+        
+        try:
+            confirmation = input("> ").strip()
+        except KeyboardInterrupt:
+            console.print("\n[yellow]Cancelled.[/yellow]\n")
+            return
+        
+        if confirmation == GOD_MODE_CONFIRMATION_PHRASE:
+            config.GOD_MODE = True
+            console.print()
+            console.print("[bold red]GOD-MODE ENABLED[/bold red]")
+            console.print("[yellow]All destructive operations will now execute permanently.[/yellow]\n")
+        else:
+            console.print()
+            console.print("[green]God-Mode NOT enabled - Safe mode remains active[/green]")
+            console.print("[dim]All operations will continue to simulate without making changes.[/dim]\n")
     else:
-        console.print("[yellow]Delete operations will be executed normally.[/yellow]\n")
+        # Disabling God-Mode - no confirmation needed
+        config.GOD_MODE = False
+        console.print()
+        console.print("[green]GOD-MODE DISABLED - Safe mode active[/green]")
+        console.print("[dim]All operations will now simulate without making changes.[/dim]\n")
 
 
 

@@ -9,7 +9,7 @@ from rich.table import Table
 from rich.progress import Progress, SpinnerColumn, TextColumn, BarColumn, TaskProgressColumn
 from rich.panel import Panel
 from rich import box
-from ..config import console, DRY_RUN_MODE, PROTECT_SYSTEM
+from ..config import console, GOD_MODE, PROTECT_SYSTEM
 from ..utils import (
     show_breadcrumb, safe_input, confirm_action, get_number_input,
     get_text_input, is_system, get_index_pattern_selection, select_from_list
@@ -711,8 +711,8 @@ def execute_reindex_strategy(es, conflict):
     console.print()
 
     # Dry-run mode check
-    if DRY_RUN_MODE:
-        console.print("[yellow]🔍 DRY-RUN MODE: Would reindex indices but no action taken.[/yellow]\n")
+    if not GOD_MODE:
+        console.print("[yellow]🔍 SAFE MODE: Would reindex indices but no action taken.[/yellow]\n")
         console.print(Panel(
             f"[bold]Dry-Run Summary:[/bold]\n\n"
             f"• Would reindex {len(indices_to_reindex)} indices\n"
@@ -847,8 +847,8 @@ def execute_alias_strategy(es, conflict):
     console.print()
 
     # Dry-run mode check
-    if DRY_RUN_MODE:
-        console.print("[yellow]🔍 DRY-RUN MODE: Would create aliases but no action taken.[/yellow]\n")
+    if not GOD_MODE:
+        console.print("[yellow]🔍 SAFE MODE: Would create aliases but no action taken.[/yellow]\n")
         return
 
     # Confirm action

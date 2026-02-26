@@ -9,7 +9,7 @@ from rich.table import Table
 from rich.progress import Progress, SpinnerColumn, TextColumn, BarColumn, TaskProgressColumn
 from rich.panel import Panel
 from rich import box
-from ..config import console, MAX_DELETE_LIMIT, DRY_RUN_MODE, PROTECT_SYSTEM
+from ..config import console, MAX_DELETE_LIMIT, GOD_MODE, PROTECT_SYSTEM
 from ..utils import (
     safe_input, is_system, confirm_delete, confirm_action, 
     show_breadcrumb, select_from_list, get_number_input, bytes_to_human
@@ -502,8 +502,8 @@ def mount_searchable_snapshot(es):
         console.print("\n[yellow]⚠️  Cancelled.[/yellow]\n")
         return
 
-    if DRY_RUN_MODE:
-        console.print("\n[yellow]🔍 DRY-RUN MODE: Would mount searchable snapshot[/yellow]")
+    if not GOD_MODE:
+        console.print("\n[yellow]🔍 SAFE MODE: Would mount searchable snapshot[/yellow]")
         console.print(f"  Repository: {repository}")
         console.print(f"  Snapshot: {snapshot}")
         console.print(f"  Index: {index_name}")
@@ -544,8 +544,8 @@ def unmount_searchable_snapshot(es, searchable_snapshots):
         console.print("\n[yellow]⚠️  Cancelled.[/yellow]\n")
         return
 
-    if DRY_RUN_MODE:
-        console.print(f"\n[yellow]🔍 DRY-RUN MODE: Would unmount searchable snapshot '{selected}'[/yellow]")
+    if not GOD_MODE:
+        console.print(f"\n[yellow]🔍 SAFE MODE: Would unmount searchable snapshot '{selected}'[/yellow]")
         console.print("\n[green]✅ Dry-run complete. No actual changes made.[/green]\n")
         return
 

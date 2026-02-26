@@ -13,7 +13,7 @@ from rich.live import Live
 from rich import box
 from rich.text import Text
 from ..config import console
-from ..utils import show_breadcrumb, safe_input, get_number_input
+from ..utils import show_breadcrumb, safe_input, get_number_input, paginate_table
 from ..utils.formatters import bytes_to_human
 
 
@@ -56,26 +56,27 @@ def option_slow_query_analyzer(es):
         slow_queries.sort(key=lambda x: x["avg_time_ms"], reverse=True)
         
         if not slow_queries:
-            console.print("[yellow]🟡 No query statistics available.[/yellow]\n")
+            console.print("[yellow]No query statistics available.[/yellow]\n")
             return
         
-        # Display top 20 slowest
-        table = Table(title="Slowest Queries by Index", box=box.ROUNDED, title_style="bold cyan")
-        table.add_column("Index", style="cyan")
-        table.add_column("Total Queries", justify="right", style="white")
-        table.add_column("Total Time", justify="right", style="yellow")
-        table.add_column("Avg Time (ms)", justify="right", style="red")
+        # Display slowest queries with pagination
+        columns = [
+            {"name": "Index", "style": "cyan"},
+            {"name": "Total Queries", "justify": "right", "style": "white"},
+            {"name": "Total Time", "justify": "right", "style": "yellow"},
+            {"name": "Avg Time (ms)", "justify": "right", "style": "red"}
+        ]
         
-        for item in slow_queries[:20]:
-            table.add_row(
+        rows = []
+        for item in slow_queries:
+            rows.append((
                 item["index"],
                 f"{item['total_queries']:,}",
                 f"{item['total_time_ms']:,} ms",
                 f"{item['avg_time_ms']:.2f}"
-            )
+            ))
         
-        console.print(table)
-        console.print()
+        paginate_table(rows, columns, page_size=20, title="Slowest Queries by Index")
         
         # Recommendations
         recommendations = Panel(
@@ -378,23 +379,24 @@ def option_indexing_performance_monitor(es):
 
         indexing_data.sort(key=lambda x: x["docs_per_sec"], reverse=True)
 
-        # Display indexing rates
-        table = Table(title="Indexing Performance by Index", box=box.ROUNDED, title_style="bold cyan")
-        table.add_column("Index", style="cyan")
-        table.add_column("Docs Indexed", justify="right", style="white")
-        table.add_column("Time (ms)", justify="right", style="yellow")
-        table.add_column("Docs/Sec", justify="right", style="green")
+        # Display indexing rates with pagination
+        columns = [
+            {"name": "Index", "style": "cyan"},
+            {"name": "Docs Indexed", "justify": "right", "style": "white"},
+            {"name": "Time (ms)", "justify": "right", "style": "yellow"},
+            {"name": "Docs/Sec", "justify": "right", "style": "green"}
+        ]
 
-        for item in indexing_data[:20]:
-            table.add_row(
+        rows = []
+        for item in indexing_data:
+            rows.append((
                 item["index"],
                 f"{item['docs_indexed']:,}",
                 f"{item['time_ms']:,}",
                 f"{item['docs_per_sec']:.2f}"
-            )
+            ))
 
-        console.print(table)
-        console.print()
+        paginate_table(rows, columns, page_size=20, title="Indexing Performance by Index")
 
         # Check for bottlenecks in thread pools
         console.print("[bold cyan]Thread Pool Status:[/bold cyan]\n")
@@ -649,18 +651,20 @@ def option_node_resource_usage(es):
         nodes = nodes_stats.get("nodes", {})
 
         if not nodes:
-            console.print("[yellow]🟡 No node data available.[/yellow]\n")
+            console.print("[yellow]No node data available.[/yellow]\n")
             return
 
-        # Display resource usage per node
-        table = Table(title="Node Resource Usage", box=box.ROUNDED, title_style="bold cyan")
-        table.add_column("Node", style="cyan")
-        table.add_column("CPU %", justify="right", style="yellow")
-        table.add_column("Heap Used", justify="right", style="white")
-        table.add_column("Heap %", justify="right", style="yellow")
-        table.add_column("Disk Used", justify="right", style="white")
-        table.add_column("Disk %", justify="right", style="red")
+        # Display resource usage per node with pagination
+        columns = [
+            {"name": "Node", "style": "cyan"},
+            {"name": "CPU %", "justify": "right", "style": "yellow"},
+            {"name": "Heap Used", "justify": "right", "style": "white"},
+            {"name": "Heap %", "justify": "right", "style": "yellow"},
+            {"name": "Disk Used", "justify": "right", "style": "white"},
+            {"name": "Disk %", "justify": "right", "style": "red"}
+        ]
 
+        rows = []
         for node_id, node_data in nodes.items():
             node_name = node_data.get("name", node_id)
 
@@ -681,20 +685,16 @@ def option_node_resource_usage(es):
             used_bytes = total_bytes - available_bytes
             disk_percent = (used_bytes / total_bytes * 100) if total_bytes > 0 else 0
 
-            # Format sizes
-            from ..utils.formatters import bytes_to_human
-
-            table.add_row(
+            rows.append((
                 node_name,
                 f"{cpu_percent}%",
                 bytes_to_human(heap_used_bytes),
                 f"{heap_percent:.1f}%",
                 bytes_to_human(used_bytes),
                 f"{disk_percent:.1f}%"
-            )
+            ))
 
-        console.print(table)
-        console.print()
+        paginate_table(rows, columns, page_size=20, title="Node Resource Usage")
 
         # JVM details table
         jvm_table = Table(title="JVM Statistics", box=box.ROUNDED, title_style="bold cyan")

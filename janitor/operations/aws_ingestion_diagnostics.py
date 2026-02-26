@@ -12,12 +12,13 @@ from rich.panel import Panel
 from rich.syntax import Syntax
 from rich import box
 from ..config import (
-    console, DRY_RUN_MODE, DEFAULT_QUERY_TIMEOUT,
+    console, GOD_MODE, DEFAULT_QUERY_TIMEOUT,
     SLOW_QUERY_TIMEOUT, REQUEST_TIMEOUT, REINDEX_TIMEOUT
 )
 from ..utils import (
     show_breadcrumb, safe_input, confirm_action, get_number_input,
-    get_text_input, is_system, get_index_pattern_selection, select_from_list
+    get_text_input, is_system, get_index_pattern_selection, select_from_list,
+    paginate_table, paginate_renderables
 )
 from ..utils.formatters import bytes_to_human
 
@@ -1350,20 +1351,18 @@ def option_field_structure_analysis(es):
                 })
             progress.advance(task)
 
-        # Display results
+        # Display results with pagination
         console.print("\n[cyan]Field Structure Validation Results:[/cyan]\n")
 
-        validation_table = Table(
-            title="AWS Field Structure Validation",
-            box=box.ROUNDED,
-            title_style="bold cyan"
-        )
+        # Build rows and count failures/warnings
+        columns = [
+            {"name": "Check", "style": "cyan", "no_wrap": False},
+            {"name": "Status", "style": "bold"},
+            {"name": "Details", "style": "white", "no_wrap": False},
+            {"name": "Recommendation", "style": "dim", "no_wrap": False}
+        ]
 
-        validation_table.add_column("Check", style="cyan", no_wrap=False)
-        validation_table.add_column("Status", style="bold")
-        validation_table.add_column("Details", style="white", no_wrap=False)
-        validation_table.add_column("Recommendation", style="dim", no_wrap=False)
-
+        rows = []
         fail_count = 0
         warn_count = 0
 
@@ -1382,15 +1381,14 @@ def option_field_structure_analysis(es):
             else:
                 status_display = "[dim]⚠️  Error[/dim]"
 
-            validation_table.add_row(
+            rows.append((
                 result["check"],
                 status_display,
                 result["details"],
                 result["recommendation"]
-            )
+            ))
 
-        console.print(validation_table)
-        console.print()
+        paginate_table(rows, columns, page_size=20, title="AWS Field Structure Validation")
 
         # Determine which specific validation failures were detected
         has_timestamp_failure = any(r["check"] == "Timestamp Parsing" and r["status"] == "Fail" for r in validation_results)
@@ -1765,20 +1763,19 @@ def option_pipeline_troubleshooting(es):
 
                 progress.advance(task)
 
-        # Display pipeline summary
+        # Display pipeline summary with pagination
         console.print("\n[cyan]Pipeline Configuration Summary:[/cyan]\n")
 
-        pipeline_table = Table(
-            title="Data Stream Pipeline Configuration",
-            box=box.ROUNDED,
-            title_style="bold cyan"
-        )
+        # Define columns for pagination
+        columns = [
+            {"name": "Data Stream", "style": "cyan", "no_wrap": False},
+            {"name": "Pipeline", "style": "yellow"},
+            {"name": "Processors", "style": "white", "justify": "right"},
+            {"name": "Status", "style": "bold"}
+        ]
 
-        pipeline_table.add_column("Data Stream", style="cyan", no_wrap=False)
-        pipeline_table.add_column("Pipeline", style="yellow")
-        pipeline_table.add_column("Processors", style="white", justify="right")
-        pipeline_table.add_column("Status", style="bold")
-
+        # Build rows from pipeline_info
+        rows = []
         for info in pipeline_info:
             status_display = info["status"]
             if "Error" in status_display:
@@ -1788,15 +1785,14 @@ def option_pipeline_troubleshooting(es):
             else:
                 status_display = f"[yellow]⚠️  {status_display}[/yellow]"
 
-            pipeline_table.add_row(
+            rows.append((
                 info["data_stream"],
                 info["pipeline"],
                 str(info["processor_count"]),
                 status_display
-            )
+            ))
 
-        console.print(pipeline_table)
-        console.print()
+        paginate_table(rows, columns, page_size=20, title="Data Stream Pipeline Configuration")
 
         # Offer to view pipeline details
         if any(p["processor_count"] > 0 for p in pipeline_info):
@@ -1821,16 +1817,18 @@ def option_pipeline_troubleshooting(es):
                     if selected:
                         console.print(f"\n[bold cyan]Pipeline: {selected['pipeline']}[/bold cyan]\n")
 
-                        # Display processors
+                        # Build processor panels for pagination
+                        processor_panels = []
                         for idx, processor in enumerate(selected["processors"], 1):
                             processor_json = json.dumps(processor, indent=2)
                             syntax = Syntax(processor_json, "json", theme="monokai", line_numbers=True)
-                            console.print(Panel(
+                            processor_panels.append(Panel(
                                 syntax,
                                 title=f"[bold]Processor {idx}[/bold]",
                                 box=box.ROUNDED
                             ))
-                            console.print()
+
+                        paginate_renderables(processor_panels, page_size=5, title=f"Processors: {selected['pipeline']}")
 
     except Exception as e:
         console.print(f"\n[red]❌ ERROR: Could not troubleshoot pipelines: {e}[/red]\n")
@@ -2316,8 +2314,8 @@ def option_quick_fixes_actions(es):
             console.print("\n[cyan]Tag Problematic Documents[/cyan]\n")
             console.print("[yellow]⚠️  This feature requires update_by_query API access.[/yellow]\n")
 
-            if DRY_RUN_MODE:
-                console.print("[yellow]🔒 DRY-RUN MODE: No changes will be made.[/yellow]\n")
+            if not GOD_MODE:
+                console.print("[yellow]🔒 SAFE MODE: No changes will be made.[/yellow]\n")
 
             index_pattern = get_index_pattern_selection(es)
             if not index_pattern:
@@ -2339,7 +2337,7 @@ def option_quick_fixes_actions(es):
                     }
                 }
 
-                if DRY_RUN_MODE:
+                if not GOD_MODE:
                     # Just count
                     count_query = {"query": {"term": {"tags": "ingest_pipeline_failed"}}, "size": 0}
                     result = es.search(index=index_pattern, body=count_query)
@@ -2460,8 +2458,8 @@ def _bulk_reindex_failed_documents(es):
         border_style="yellow"
     ))
 
-    if DRY_RUN_MODE:
-        console.print("\n[yellow]🔒 DRY-RUN MODE: No changes will be made.[/yellow]\n")
+    if not GOD_MODE:
+        console.print("\n[yellow]🔒 SAFE MODE: No changes will be made.[/yellow]\n")
 
     if not confirm_action(f"Proceed with reindexing {total_failed:,} documents?"):
         console.print("\n[yellow]⚠️  Cancelled.[/yellow]\n")
@@ -2497,7 +2495,7 @@ def _bulk_reindex_failed_documents(es):
     }
 
     try:
-        if DRY_RUN_MODE:
+        if not GOD_MODE:
             console.print(f"[yellow]🔍 DRY-RUN: Would reindex {total_failed:,} documents[/yellow]")
             console.print(f"[blue]Source: {index_pattern}[/blue]")
             console.print(f"[blue]Target: {target_index}[/blue]")

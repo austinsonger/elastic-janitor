@@ -848,7 +848,7 @@ def rollback_resource_with_dependencies(es, resource_type, resource_name, versio
             - warnings: list of warning messages
             - errors: list of error messages
     """
-    from ..config import DRY_RUN_MODE
+    from ..config import GOD_MODE
 
     result = {
         "success": False,
@@ -858,8 +858,8 @@ def rollback_resource_with_dependencies(es, resource_type, resource_name, versio
         "errors": []
     }
 
-    # Check if dry run mode is enabled globally or locally
-    is_dry_run = DRY_RUN_MODE or dry_run
+    # Check if safe mode is enabled globally or locally
+    is_safe_mode = not GOD_MODE or dry_run
 
     try:
         # Get the version to restore
@@ -892,7 +892,7 @@ def rollback_resource_with_dependencies(es, resource_type, resource_name, versio
         # Restore main resource
         main_config = json.loads(version["configuration"])
 
-        if not is_dry_run:
+        if not is_safe_mode:
             if resource_type == RESOURCE_TYPE_PIPELINE:
                 es.ingest.put_pipeline(id=resource_name, body=main_config)
             elif resource_type == RESOURCE_TYPE_INDEX_TEMPLATE:
@@ -911,7 +911,7 @@ def rollback_resource_with_dependencies(es, resource_type, resource_name, versio
             dep_config = dep["dependency_configuration"]
 
             try:
-                if not is_dry_run:
+                if not is_safe_mode:
                     if dep_type == RESOURCE_TYPE_PIPELINE:
                         es.ingest.put_pipeline(id=dep_name, body=dep_config)
                     elif dep_type == RESOURCE_TYPE_INDEX_TEMPLATE:

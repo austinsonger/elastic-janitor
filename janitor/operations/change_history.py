@@ -10,7 +10,7 @@ from rich.table import Table
 from rich.progress import Progress, SpinnerColumn, TextColumn
 from rich import box
 from ..config import console
-from ..utils import safe_input, confirm_action, select_from_list
+from ..utils import safe_input, confirm_action, select_from_list, paginate_table
 
 
 def parse_log_entry(line):
@@ -116,17 +116,21 @@ def filter_log_entries(entries, operation_type=None, date_from=None, date_to=Non
 
 
 def display_filtered_history(entries, title="Operation History"):
-    """Display filtered history in a Rich table."""
+    """Display filtered history in a Rich table with pagination."""
     if not entries:
-        console.print("\n[yellow]🟡 No entries found matching the criteria.[/yellow]\n")
+        console.print("\n[yellow]No entries found matching the criteria.[/yellow]\n")
         return
     
-    table = Table(title=title, box=box.ROUNDED, title_style="bold cyan")
-    table.add_column("Timestamp", style="cyan", width=20)
-    table.add_column("Operation", style="yellow", width=25)
-    table.add_column("Description", style="white", width=40)
-    table.add_column("Status", style="white", width=15)
+    # Define columns for the table
+    columns = [
+        {"name": "Timestamp", "style": "cyan", "width": 20},
+        {"name": "Operation", "style": "yellow", "width": 25},
+        {"name": "Description", "style": "white", "width": 40},
+        {"name": "Status", "style": "white", "width": 15}
+    ]
     
+    # Build rows from entries
+    rows = []
     for entry in entries:
         timestamp = entry["timestamp"]
         operation = entry["operation_type"]
@@ -142,12 +146,10 @@ def display_filtered_history(entries, title="Operation History"):
             status_parts.append("[red]✗[/red]")
         
         status = " ".join(status_parts)
-        
-        table.add_row(timestamp, operation, description, status)
+        rows.append((timestamp, operation, description, status))
     
-    console.print()
-    console.print(table)
-    console.print(f"\n[dim]Total entries: {len(entries)}[/dim]\n")
+    # Display with pagination
+    paginate_table(rows, columns, page_size=20, title=title)
 
 
 def export_history_to_json(entries, filename):

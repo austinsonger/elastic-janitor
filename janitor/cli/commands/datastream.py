@@ -3,11 +3,11 @@ Data stream management commands.
 """
 import click
 from datetime import datetime, timezone, timedelta
-from ..utils.decorators import pass_es_client, handle_errors, common_options, dry_run_option
+from ..utils.decorators import pass_es_client, handle_errors, common_options
 from ..utils.output import format_output, OutputFormat, success, error, info, warning
 from ...utils.formatters import bytes_to_human
 from ...core.connection import get_all_indices_info
-from ...config import PROTECT_SYSTEM, MAX_DELETE_LIMIT
+from ...config import PROTECT_SYSTEM, MAX_DELETE_LIMIT, GOD_MODE
 from ...utils.helpers import is_system
 
 
@@ -21,39 +21,41 @@ def datastream():
 @click.option('--retention', '-r', required=True, help='Retention period (e.g., 90d, 6M, 1y)')
 @click.option('--pattern', '-p', default='*', help='Data stream pattern to filter')
 @click.option('--batch-size', '-b', default=100, help='Batch size for deletions', type=int)
-@dry_run_option
 @common_options
 @handle_errors
 @pass_es_client
-def clean(es, retention, pattern, batch_size, dry_run, output, verbose, quiet):
+def clean(es, retention, pattern, batch_size, output, verbose, quiet):
     """
     Clean old backing indices from data streams.
     
     This command identifies and deletes backing indices older than the
     specified retention period, while preserving the current write index.
     
+    Operations are simulated by default (safe mode). Enable God-Mode to execute:
+    
+        elastic-janitor god-mode enable
+    
     Examples:
     
-        # Preview cleanup (dry-run)
-        elastic-janitor datastream clean --retention 90d --dry-run
-        
-        # Clean indices older than 90 days
+        # Preview cleanup (default - safe mode)
         elastic-janitor datastream clean --retention 90d
         
         # Clean specific pattern
         elastic-janitor datastream clean --retention 6M --pattern "logs-*"
         
         # JSON output
-        elastic-janitor datastream clean --retention 90d --output json --dry-run
+        elastic-janitor datastream clean --retention 90d --output json
     """
+    from ... import config
+    
     try:
         # Parse retention period
         cutoff = _parse_retention(retention)
         
         if not quiet:
             info(f"Retention cutoff: {cutoff.strftime('%Y-%m-%d %H:%M:%S UTC')}")
-            if dry_run:
-                warning("DRY-RUN MODE: No changes will be made")
+            if not config.GOD_MODE:
+                warning("SAFE MODE: No changes will be made (enable God-Mode to execute)")
         
         # Get all indices info
         indices_info = get_all_indices_info(es)
@@ -126,7 +128,7 @@ def clean(es, retention, pattern, batch_size, dry_run, output, verbose, quiet):
             "data_streams_with_eligible": len(streams_with_eligible),
             "total_eligible_indices": total_eligible,
             "total_size_to_reclaim": bytes_to_human(total_size_bytes),
-            "dry_run": dry_run,
+            "god_mode": config.GOD_MODE,
         }
         
         if output == 'json':
@@ -161,14 +163,14 @@ def clean(es, retention, pattern, batch_size, dry_run, output, verbose, quiet):
                         for idx in stream['eligible_indices'][:5]:  # Show first 5
                             console.print(f"    - {idx['index']} ({idx['size']}, {idx['created']})")
         
-        # Perform deletion if not dry-run
-        if not dry_run and total_eligible > 0:
+        # Perform deletion only if God-Mode is enabled
+        if config.GOD_MODE and total_eligible > 0:
             if total_eligible > MAX_DELETE_LIMIT:
                 error(f"Too many indices to delete ({total_eligible} > {MAX_DELETE_LIMIT}). Use --batch-size to limit.")
                 exit(6)
             
             if not quiet:
-                warning(f"Deleting {total_eligible} indices...")
+                warning(f"GOD-MODE: Deleting {total_eligible} indices...")
             
             deleted_count = 0
             for stream in streams_with_eligible:
@@ -182,8 +184,8 @@ def clean(es, retention, pattern, batch_size, dry_run, output, verbose, quiet):
                         error(f"Failed to delete {idx['index']}: {e}")
             
             success(f"Deleted {deleted_count} indices, reclaimed {bytes_to_human(total_size_bytes)}")
-        elif dry_run and not quiet:
-            warning("DRY-RUN: No indices were deleted")
+        elif not config.GOD_MODE and not quiet:
+            warning("SAFE MODE: No indices were deleted. Enable God-Mode to execute.")
         
     except Exception as e:
         error(f"Failed to clean data streams: {e}")
@@ -227,11 +229,10 @@ def _parse_retention(retention_str):
 @click.option('--source', '-s', required=True, help='Source data stream name')
 @click.option('--dest', '-d', required=True, help='Destination cluster URL or data stream name')
 @click.option('--mode', '-m', type=click.Choice(['cross-cluster', 'same-cluster']), default='same-cluster', help='Migration mode')
-@dry_run_option
 @common_options
 @handle_errors
 @pass_es_client
-def migrate(es, source, dest, mode, dry_run, output, verbose, quiet):
+def migrate(es, source, dest, mode, output, verbose, quiet):
     """
     Migrate data streams between clusters or within the same cluster.
 
@@ -239,24 +240,30 @@ def migrate(es, source, dest, mode, dry_run, output, verbose, quiet):
     metadata, and index templates. Supports both cross-cluster and same-cluster
     migrations.
 
+    Operations are simulated by default (safe mode). Enable God-Mode to execute:
+    
+        elastic-janitor god-mode enable
+
     Examples:
 
-        # Migrate within same cluster (clone)
+        # Migrate within same cluster (preview - safe mode)
         elastic-janitor datastream migrate --source logs-app --dest logs-app-backup
 
-        # Cross-cluster migration (dry-run)
-        elastic-janitor datastream migrate --source logs-app --dest https://dest-cluster:9200 --mode cross-cluster --dry-run
+        # Cross-cluster migration
+        elastic-janitor datastream migrate --source logs-app --dest https://dest-cluster:9200 --mode cross-cluster
 
         # JSON output
         elastic-janitor datastream migrate --source logs-app --dest logs-app-v2 --output json
     """
+    from ... import config
+    
     try:
         if not quiet:
             info(f"Migration mode: {mode}")
             info(f"Source data stream: {source}")
             info(f"Destination: {dest}")
-            if dry_run:
-                warning("DRY-RUN MODE: No changes will be made")
+            if not config.GOD_MODE:
+                warning("SAFE MODE: No changes will be made (enable God-Mode to execute)")
 
         # Get source data stream info
         try:
@@ -295,8 +302,8 @@ def migrate(es, source, dest, mode, dry_run, output, verbose, quiet):
             "backing_indices": len(backing_indices),
             "total_size": bytes_to_human(total_size_bytes),
             "total_size_bytes": total_size_bytes,
-            "dry_run": dry_run,
-            "status": "preview" if dry_run else "would_execute"
+            "god_mode": config.GOD_MODE,
+            "status": "would_execute" if config.GOD_MODE else "preview"
         }
 
         if mode == "cross-cluster":
@@ -314,8 +321,8 @@ def migrate(es, source, dest, mode, dry_run, output, verbose, quiet):
                 info(f"  Backing indices: {len(backing_indices)}")
                 info(f"  Total size: {bytes_to_human(total_size_bytes)}")
                 info(f"  Destination: {dest}")
-                if dry_run:
-                    warning("  This is a dry-run. Use without --dry-run to execute.")
+                if not config.GOD_MODE:
+                    warning("  SAFE MODE: Enable God-Mode to execute migration.")
                 else:
                     warning("  Note: Actual migration not implemented in CLI. Use interactive mode.")
 

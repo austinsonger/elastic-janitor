@@ -5,6 +5,7 @@ from .helpers import safe_input, is_system, confirm_delete, confirm_action, sele
 from .formatters import parse_epoch_millis, size_to_bytes, bytes_to_human
 from .ui import show_breadcrumb
 from .history_logger import log_operation, get_recent_operations, clear_history
+from .pagination import paginate_items, paginate_table, paginate_renderables
 
 __all__ = [
     'safe_input',
@@ -22,5 +23,8 @@ __all__ = [
     'log_operation',
     'get_recent_operations',
     'clear_history',
+    'paginate_items',
+    'paginate_table',
+    'paginate_renderables',
 ]
 

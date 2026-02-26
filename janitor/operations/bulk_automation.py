@@ -1,6 +1,6 @@
 """
 Bulk Operations & Automation for Elastic Janitor.
-Batch operations, scheduled cleanup, dry-run mode, operation history, and configuration management.
+Batch operations, scheduled cleanup, god-mode toggle, operation history, and configuration management.
 """
 import os
 import yaml
@@ -10,7 +10,7 @@ from rich.table import Table
 from rich.progress import Progress, SpinnerColumn, TextColumn, BarColumn, TaskProgressColumn
 from rich.panel import Panel
 from rich import box
-from ..config import console, PROTECT_SYSTEM, MAX_DELETE_LIMIT, DRY_RUN_MODE
+from ..config import console, PROTECT_SYSTEM, MAX_DELETE_LIMIT, GOD_MODE
 from ..utils import (
     safe_input, is_system, confirm_delete, confirm_action,
     show_breadcrumb, select_from_list, get_number_input
@@ -117,19 +117,19 @@ def option_batch_index_operations(es):
 
                 for idx in selected_indices:
                     try:
-                        if not DRY_RUN_MODE:
+                        if GOD_MODE:
                             es.indices.close(index=idx)
                         progress.update(task, advance=1)
                     except Exception as e:
                         console.print(f"[red]❌ Failed to close {idx}: {e}[/red]")
 
-            console.print(f"\n[green]✅ {'Would close' if DRY_RUN_MODE else 'Closed'} {len(selected_indices)} indices.[/green]\n")
+            console.print(f"\n[green]✅ {'Would close' if not GOD_MODE else 'Closed'} {len(selected_indices)} indices.[/green]\n")
 
             # Log operation and track for rollback
             from ..utils.history_logger import log_operation
             log_operation("CLOSE_INDICES", selected_indices, f"Closed {len(selected_indices)} indices")
 
-            if not DRY_RUN_MODE:
+            if GOD_MODE:
                 from .rollback import track_destructive_operation
                 track_destructive_operation(
                     "CLOSE_INDICES",
@@ -155,19 +155,19 @@ def option_batch_index_operations(es):
 
                 for idx in selected_indices:
                     try:
-                        if not DRY_RUN_MODE:
+                        if GOD_MODE:
                             es.indices.open(index=idx)
                         progress.update(task, advance=1)
                     except Exception as e:
                         console.print(f"[red]❌ Failed to open {idx}: {e}[/red]")
 
-            console.print(f"\n[green]✅ {'Would open' if DRY_RUN_MODE else 'Opened'} {len(selected_indices)} indices.[/green]\n")
+            console.print(f"\n[green]✅ {'Would open' if not GOD_MODE else 'Opened'} {len(selected_indices)} indices.[/green]\n")
 
             # Log operation and track for rollback
             from ..utils.history_logger import log_operation
             log_operation("OPEN_INDICES", selected_indices, f"Opened {len(selected_indices)} indices")
 
-            if not DRY_RUN_MODE:
+            if GOD_MODE:
                 from .rollback import track_destructive_operation
                 track_destructive_operation(
                     "OPEN_INDICES",
@@ -187,7 +187,7 @@ def option_batch_index_operations(es):
 
         # Get current settings for rollback tracking
         previous_settings = {}
-        if not DRY_RUN_MODE:
+        if GOD_MODE:
             try:
                 for idx in selected_indices[:1]:  # Sample one index for settings
                     idx_settings = es.indices.get_settings(index=idx)
@@ -209,19 +209,19 @@ def option_batch_index_operations(es):
 
             for idx in selected_indices:
                 try:
-                    if not DRY_RUN_MODE:
+                    if GOD_MODE:
                         es.indices.put_settings(index=idx, body=settings)
                     progress.update(task, advance=1)
                 except Exception as e:
                     console.print(f"[red]❌ Failed to update {idx}: {e}[/red]")
 
-        console.print(f"\n[green]✅ {'Would update' if DRY_RUN_MODE else 'Updated'} {len(selected_indices)} indices.[/green]\n")
+        console.print(f"\n[green]✅ {'Would update' if not GOD_MODE else 'Updated'} {len(selected_indices)} indices.[/green]\n")
 
         # Log operation and track for rollback
         from ..utils.history_logger import log_operation
         log_operation("BATCH_SETTINGS_UPDATE", selected_indices, operation_name)
 
-        if not DRY_RUN_MODE:
+        if GOD_MODE:
             from .rollback import track_destructive_operation
             track_destructive_operation(
                 "BULK_SETTINGS_CHANGE",
@@ -256,12 +256,12 @@ def option_scheduled_cleanup_jobs(es):
     console.print()
 
 
-def option_dry_run_mode(es):
-    """Toggle dry-run mode globally."""
-    show_breadcrumb(["Main Menu", "Bulk Operations & Automation", "Dry-Run Mode"])
+def option_god_mode(es):
+    """Toggle God-Mode globally."""
+    show_breadcrumb(["Main Menu", "Bulk Operations & Automation", "God-Mode"])
 
-    from ..operations.cluster import toggle_dry_run_mode
-    toggle_dry_run_mode()
+    from ..operations.cluster import toggle_god_mode
+    toggle_god_mode()
 
 
 def option_operation_history_log(es):

@@ -6,10 +6,10 @@ import questionary
 from questionary import Choice, Separator
 from rich.panel import Panel
 from rich import box
-from ..config import console, custom_style, DRY_RUN_MODE
+from ..config import console, custom_style, GOD_MODE
 from ..core import connect
 from ..utils import show_breadcrumb
-from ..operations import option_dashboard_stats_view, toggle_dry_run_mode
+from ..operations import option_dashboard_stats_view, toggle_god_mode
 from .submenus import (
     submenu_index_management,
     submenu_data_streams,
@@ -28,22 +28,32 @@ from .submenus import (
 )
 
 
+def show_god_mode_banner():
+    """Display warning banner when God-Mode is active."""
+    from .. import config
+    if config.GOD_MODE:
+        console.print(Panel(
+            "[bold white]GOD-MODE ACTIVE[/bold white]\n"
+            "[white]Destructive operations WILL execute permanently[/white]",
+            title="[bold]WARNING[/bold]",
+            border_style="bold red",
+            box=box.DOUBLE_EDGE,
+            style="red on yellow"
+        ))
+        console.print()
+
+
 def menu():
     """Display the new hierarchical main menu."""
     show_breadcrumb(["Main Menu"])
-
-    # Display dry-run mode status
-    global DRY_RUN_MODE
-    dry_run_status = "[green]ENABLED[/green]" if DRY_RUN_MODE else "[red]DISABLED[/red]"
-    console.print(f"[dim]Dry-Run Mode: {dry_run_status}[/dim]")
-    console.print()
+    show_god_mode_banner()
 
 
 
 
 def main():
     console.print()
-    console.print(Panel("[bold cyan]🧹 Elastic Janitor - Enhanced Edition[/bold cyan]", box=box.DOUBLE, style="cyan"))
+    console.print(Panel("[bold cyan]🧹 Elastic Janitor[/bold cyan]", box=box.DOUBLE, style="cyan"))
     console.print()
     es = connect()
 
@@ -70,7 +80,7 @@ def main():
                     questionary.Choice("🏛️  Data Quality & Governance", value="13"),
                     questionary.Choice("⚙️  Performance Tuning", value="14"),
                     questionary.Choice("📈 Dashboard & Stats View", value="15"),
-                    questionary.Choice("🔄 Toggle Dry-Run Mode", value="16"),
+                    questionary.Choice("Toggle God-Mode", value="16"),
                     questionary.Separator(),
                     questionary.Choice("Quit", value="q"),
                 ],
@@ -115,7 +125,7 @@ def main():
         elif choice == "15":
             option_dashboard_stats_view(es)
         elif choice == "16":
-            toggle_dry_run_mode()
+            toggle_god_mode()
 
 
 if __name__ == "__main__":

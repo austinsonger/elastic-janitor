@@ -7,7 +7,7 @@ from collections import defaultdict
 from rich.table import Table
 from rich.progress import Progress, SpinnerColumn, TextColumn
 from rich import box
-from ..config import console, PROTECT_SYSTEM, MAX_DELETE_LIMIT, DRY_RUN_MODE
+from ..config import console, PROTECT_SYSTEM, MAX_DELETE_LIMIT, GOD_MODE
 from ..utils import (
     safe_input, is_system, confirm_delete, show_breadcrumb,
     size_to_bytes, bytes_to_human, get_number_input
@@ -363,7 +363,7 @@ def option_empty_index_cleanup(es):
     console.print()
     for idx_name in indices_to_delete:
         try:
-            if DRY_RUN_MODE:
+            if not GOD_MODE:
                 console.print(f"[dim][DRY-RUN] Would delete: {idx_name}[/dim]")
             else:
                 es.indices.delete(index=idx_name)
@@ -374,7 +374,7 @@ def option_empty_index_cleanup(es):
             failed += 1
 
     console.print()
-    if DRY_RUN_MODE:
+    if not GOD_MODE:
         console.print(f"[cyan][DRY-RUN] Would delete {deleted} empty indices.[/cyan]\n")
     else:
         console.print(f"[green]✅ Deleted {deleted} empty indices.[/green]")

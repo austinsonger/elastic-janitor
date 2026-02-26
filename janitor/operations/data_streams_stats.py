@@ -8,7 +8,7 @@ from rich.progress import Progress, SpinnerColumn, TextColumn
 from rich.panel import Panel
 from rich import box
 from ..config import console, PROTECT_SYSTEM
-from ..utils import show_breadcrumb, is_system, safe_input, bytes_to_human
+from ..utils import show_breadcrumb, is_system, bytes_to_human, paginate_items
 from ..core import get_all_indices_info
 
 
@@ -88,45 +88,22 @@ def option_data_stream_statistics(es):
     # Sort by total size
     stats_list.sort(key=lambda x: x["total_size_bytes"], reverse=True)
 
+    # Render function for each data stream statistic
+    def render_stat(stat, index):
+        console.print(f"[bold cyan]Data Stream {index}:[/bold cyan] {stat['name']}")
+        console.print(f"  Backing indices: {stat['backing_count']}")
+        console.print(f"  Total size: [yellow]{bytes_to_human(stat['total_size_bytes'])}[/yellow]")
+        console.print(f"  Age: {stat['age_days']} days")
+        if stat['ingestion_rate'] > 0:
+            console.print(f"  Avg ingestion rate: [green]{bytes_to_human(stat['ingestion_rate'])}/day[/green]")
+        if stat['oldest_date']:
+            console.print(f"  Oldest index: {stat['oldest_date'].strftime('%Y-%m-%d %H:%M:%S')} UTC")
+        if stat['newest_date']:
+            console.print(f"  Newest index: {stat['newest_date'].strftime('%Y-%m-%d %H:%M:%S')} UTC")
+        console.print()
+
     # Display statistics with pagination
-    page_size = 3
-    total_pages = (len(stats_list) + page_size - 1) // page_size
-    current_page = 0
-
-    while current_page < total_pages:
-        start_idx = current_page * page_size
-        end_idx = min(start_idx + page_size, len(stats_list))
-
-        console.print()
-        console.print(Panel(f"[bold cyan]DATA STREAM STATISTICS - Page {current_page + 1} of {total_pages}[/bold cyan]", box=box.DOUBLE))
-        console.print()
-
-        for i in range(start_idx, end_idx):
-            stat = stats_list[i]
-
-            console.print(f"[bold cyan]Data Stream {i+1}:[/bold cyan] {stat['name']}")
-            console.print(f"  Backing indices: {stat['backing_count']}")
-            console.print(f"  Total size: [yellow]{bytes_to_human(stat['total_size_bytes'])}[/yellow]")
-            console.print(f"  Age: {stat['age_days']} days")
-            if stat['ingestion_rate'] > 0:
-                console.print(f"  Avg ingestion rate: [green]{bytes_to_human(stat['ingestion_rate'])}/day[/green]")
-            if stat['oldest_date']:
-                console.print(f"  Oldest index: {stat['oldest_date'].strftime('%Y-%m-%d %H:%M:%S')} UTC")
-            if stat['newest_date']:
-                console.print(f"  Newest index: {stat['newest_date'].strftime('%Y-%m-%d %H:%M:%S')} UTC")
-            console.print()
-
-        # Pagination prompt
-        if current_page < total_pages - 1:
-            console.print("[cyan]" + "─" * 80 + "[/cyan]")
-            choice = safe_input("Press Enter for next page, or 'q' to finish viewing: ").strip().lower()
-            if choice in ('q', 'quit', 'exit'):
-                break
-            current_page += 1
-        else:
-            current_page += 1
-
-    console.print()
+    paginate_items(stats_list, render_stat, page_size=10, title="DATA STREAM STATISTICS")
 
 
 
@@ -179,61 +156,38 @@ def option_data_stream_lifecycle_viewer(es):
             "ilm_explain": ilm_explain.get("indices", {})
         })
 
-    # Display with pagination
-    page_size = 3
-    total_pages = (len(lifecycle_data) + page_size - 1) // page_size
-    current_page = 0
-
-    while current_page < total_pages:
-        start_idx = current_page * page_size
-        end_idx = min(start_idx + page_size, len(lifecycle_data))
-
-        console.print()
-        console.print(Panel(f"[bold cyan]DATA STREAM LIFECYCLE - Page {current_page + 1} of {total_pages}[/bold cyan]", box=box.DOUBLE))
+    # Render function for each data stream lifecycle entry
+    def render_lifecycle(ds_data, index):
+        console.print(f"[bold cyan]Data Stream {index}:[/bold cyan] {ds_data['name']}")
+        console.print(f"  Backing indices: {len(ds_data['backing_indices'])}")
         console.print()
 
-        for i in range(start_idx, end_idx):
-            ds_data = lifecycle_data[i]
+        # Display lifecycle info for each backing index
+        for idx_name in ds_data['backing_indices'][:5]:  # Show first 5
+            ilm_info = ds_data['ilm_explain'].get(idx_name, {})
+            idx_info = indices_info.get(idx_name)
 
-            console.print(f"[bold cyan]Data Stream {i+1}:[/bold cyan] {ds_data['name']}")
-            console.print(f"  Backing indices: {len(ds_data['backing_indices'])}")
+            age_days = (now - idx_info["created"]).days if idx_info else 0
+
+            policy = ilm_info.get("policy", "N/A")
+            phase = ilm_info.get("phase", "N/A")
+            action = ilm_info.get("action", "N/A")
+            managed = ilm_info.get("managed", False)
+
+            console.print(f"    [cyan]{idx_name}[/cyan]")
+            console.print(f"      Age: {age_days} days")
+            console.print(f"      Managed: {'Yes' if managed else 'No'}")
+            if managed:
+                console.print(f"      Policy: {policy}")
+                console.print(f"      Phase: {phase}")
+                console.print(f"      Action: {action}")
             console.print()
 
-            # Display lifecycle info for each backing index
-            for idx_name in ds_data['backing_indices'][:5]:  # Show first 5
-                ilm_info = ds_data['ilm_explain'].get(idx_name, {})
-                idx_info = indices_info.get(idx_name)
+        if len(ds_data['backing_indices']) > 5:
+            console.print(f"    [dim]... and {len(ds_data['backing_indices']) - 5} more backing indices[/dim]\n")
 
-                age_days = (now - idx_info["created"]).days if idx_info else 0
-
-                policy = ilm_info.get("policy", "N/A")
-                phase = ilm_info.get("phase", "N/A")
-                action = ilm_info.get("action", "N/A")
-                managed = ilm_info.get("managed", False)
-
-                console.print(f"    [cyan]{idx_name}[/cyan]")
-                console.print(f"      Age: {age_days} days")
-                console.print(f"      Managed: {'Yes' if managed else 'No'}")
-                if managed:
-                    console.print(f"      Policy: {policy}")
-                    console.print(f"      Phase: {phase}")
-                    console.print(f"      Action: {action}")
-                console.print()
-
-            if len(ds_data['backing_indices']) > 5:
-                console.print(f"    [dim]... and {len(ds_data['backing_indices']) - 5} more backing indices[/dim]\n")
-
-        # Pagination prompt
-        if current_page < total_pages - 1:
-            console.print("[cyan]" + "─" * 80 + "[/cyan]")
-            choice = safe_input("Press Enter for next page, or 'q' to finish viewing: ").strip().lower()
-            if choice in ('q', 'quit', 'exit'):
-                break
-            current_page += 1
-        else:
-            current_page += 1
-
-    console.print()
+    # Display with pagination
+    paginate_items(lifecycle_data, render_lifecycle, page_size=10, title="DATA STREAM LIFECYCLE")
 
 
 

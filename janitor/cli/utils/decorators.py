@@ -46,21 +46,6 @@ def handle_errors(f):
     return wrapper
 
 
-def dry_run_option(f):
-    """
-    Decorator to add --dry-run option to a command.
-    """
-    @click.option(
-        '--dry-run', '-d',
-        is_flag=True,
-        help='Preview changes without executing'
-    )
-    @functools.wraps(f)
-    def wrapper(*args, **kwargs):
-        return f(*args, **kwargs)
-    return wrapper
-
-
 def common_options(f):
     """
     Decorator to add common options to all commands.

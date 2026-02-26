@@ -4,7 +4,7 @@ Reindexing, cloning, and write index rotation for data streams.
 """
 from rich.progress import Progress, SpinnerColumn, TextColumn
 from rich import box
-from ..config import console, DRY_RUN_MODE
+from ..config import console, GOD_MODE
 from ..utils import show_breadcrumb, select_from_list, confirm_action, get_text_input
 
 
@@ -178,9 +178,9 @@ def option_write_index_rotation(es):
         console.print("\n[yellow]⚠️  Cancelled.[/yellow]\n")
         return
 
-    global DRY_RUN_MODE
-    if DRY_RUN_MODE:
-        console.print("\n[yellow]🔍 DRY-RUN MODE: Simulating rollover operations...[/yellow]\n")
+    global GOD_MODE
+    if not GOD_MODE:
+        console.print("\n[yellow]🔍 SAFE MODE: Simulating rollover operations...[/yellow]\n")
         for ds in selected_streams:
             console.print(f"  [blue]Would rollover:[/blue] {ds}")
         console.print("\n[green]✅ Dry-run complete. No actual changes made.[/green]\n")

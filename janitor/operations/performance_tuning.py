@@ -9,7 +9,7 @@ from rich.table import Table
 from rich.progress import Progress, SpinnerColumn, TextColumn, BarColumn, TaskProgressColumn
 from rich.panel import Panel
 from rich import box
-from ..config import console, DRY_RUN_MODE, PROTECT_SYSTEM
+from ..config import console, GOD_MODE, PROTECT_SYSTEM
 from ..utils import (
     safe_input, is_system, confirm_action, show_breadcrumb,
     select_from_list, get_number_input, get_text_input, bytes_to_human
@@ -146,7 +146,7 @@ def option_auto_tuning_engine(es):
         applied = 0
         for rec in recommendations:
             try:
-                if not DRY_RUN_MODE:
+                if GOD_MODE:
                     # This would require parsing the action and executing it
                     # For safety, we'll just show what would be done
                     console.print(f"[dim]Would execute: {rec['action']}[/dim]")
@@ -154,8 +154,8 @@ def option_auto_tuning_engine(es):
             except Exception as e:
                 console.print(f"[red]Error applying recommendation: {e}[/red]")
         
-        if DRY_RUN_MODE:
-            console.print(f"\n[yellow]DRY RUN: Would apply {applied} recommendations[/yellow]\n")
+        if not GOD_MODE:
+            console.print(f"\n[yellow]SAFE MODE: Would apply {applied} recommendations[/yellow]\n")
         else:
             console.print(f"\n[green]✅ Applied {applied} recommendations[/green]\n")
             console.print("[yellow]Note: Some changes may require node restart to take effect.[/yellow]\n")
@@ -391,7 +391,7 @@ def option_refresh_interval_tuner(es):
             updated = 0
             for item in suboptimal:
                 try:
-                    if not DRY_RUN_MODE:
+                    if GOD_MODE:
                         es.indices.put_settings(
                             index=item['index'],
                             body={"index": {"refresh_interval": item['recommended']}}
@@ -400,8 +400,8 @@ def option_refresh_interval_tuner(es):
                 except Exception as e:
                     console.print(f"[red]Error updating {item['index']}: {e}[/red]")
 
-            if DRY_RUN_MODE:
-                console.print(f"[yellow]DRY RUN: Would update {updated} indices[/yellow]\n")
+            if not GOD_MODE:
+                console.print(f"[yellow]SAFE MODE: Would update {updated} indices[/yellow]\n")
             else:
                 console.print(f"[green]✅ Updated {updated} indices[/green]\n")
 
@@ -528,7 +528,7 @@ def option_merge_policy_optimizer(es):
             merged = 0
             for item in issues:
                 try:
-                    if not DRY_RUN_MODE:
+                    if GOD_MODE:
                         console.print(f"[cyan]Force merging {item['index']}...[/cyan]")
                         es.indices.forcemerge(
                             index=item['index'],
@@ -538,8 +538,8 @@ def option_merge_policy_optimizer(es):
                 except Exception as e:
                     console.print(f"[red]Error merging {item['index']}: {e}[/red]")
 
-            if DRY_RUN_MODE:
-                console.print(f"\n[yellow]DRY RUN: Would force merge {merged} indices[/yellow]\n")
+            if not GOD_MODE:
+                console.print(f"\n[yellow]SAFE MODE: Would force merge {merged} indices[/yellow]\n")
             else:
                 console.print(f"\n[green]✅ Force merged {merged} indices[/green]\n")
 

@@ -10,7 +10,7 @@ from rich.table import Table
 from rich.progress import Progress, SpinnerColumn, TextColumn, BarColumn, TaskProgressColumn
 from rich.panel import Panel
 from rich import box
-from ..config import console, PROTECT_SYSTEM, MAX_DELETE_LIMIT, DRY_RUN_MODE
+from ..config import console, PROTECT_SYSTEM, MAX_DELETE_LIMIT, GOD_MODE
 from ..utils import (
     safe_input, is_system, confirm_delete, confirm_action, show_breadcrumb,
     size_to_bytes, bytes_to_human, get_number_input, get_text_input, select_from_list,
@@ -117,8 +117,8 @@ def option_orphaned_document_cleanup(es):
             console.print("[yellow]⚠️  Cancelled.[/yellow]\n")
             return
 
-        if DRY_RUN_MODE:
-            console.print("[yellow]🔍 DRY-RUN MODE: Would delete documents but no action taken.[/yellow]\n")
+        if not GOD_MODE:
+            console.print("[yellow]🔍 SAFE MODE: Would delete documents but no action taken.[/yellow]\n")
             return
 
         # Perform deletion
@@ -243,8 +243,8 @@ def option_field_level_cleanup(es):
             console.print("[yellow]⚠️  Cancelled.[/yellow]\n")
             return
 
-        if DRY_RUN_MODE:
-            console.print("[yellow]🔍 DRY-RUN MODE: Would remove fields but no action taken.[/yellow]\n")
+        if not GOD_MODE:
+            console.print("[yellow]🔍 SAFE MODE: Would remove fields but no action taken.[/yellow]\n")
             return
 
         # Build update script
@@ -562,8 +562,8 @@ def option_wildcard_index_deletion(es):
             console.print("[yellow]⚠️  Cancelled.[/yellow]\n")
             return
 
-        if DRY_RUN_MODE:
-            console.print("[yellow]🔍 DRY-RUN MODE: Would delete indices but no action taken.[/yellow]\n")
+        if not GOD_MODE:
+            console.print("[yellow]🔍 SAFE MODE: Would delete indices but no action taken.[/yellow]\n")
             return
 
         # Perform deletion
@@ -893,8 +893,8 @@ def option_duplicate_document_detector(es):
 
         keep_newest = (keep_choice == "1")
 
-        if DRY_RUN_MODE:
-            console.print("[yellow]🔍 DRY-RUN MODE: Would remove duplicates but no action taken.[/yellow]\n")
+        if not GOD_MODE:
+            console.print("[yellow]🔍 SAFE MODE: Would remove duplicates but no action taken.[/yellow]\n")
             return
 
         # Remove duplicates

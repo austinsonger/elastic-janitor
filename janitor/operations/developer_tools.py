@@ -11,10 +11,10 @@ from rich.progress import Progress, SpinnerColumn, TextColumn, BarColumn, TaskPr
 from rich.panel import Panel
 from rich.syntax import Syntax
 from rich import box
-from ..config import console, DRY_RUN_MODE, custom_style
+from ..config import console, GOD_MODE, custom_style
 from ..utils import (
     show_breadcrumb, safe_input, confirm_action, get_number_input,
-    get_text_input, select_from_list
+    get_text_input, select_from_list, paginate_renderables
 )
 
 
@@ -200,8 +200,8 @@ def option_index_template_generator(es):
             console.print("\n[yellow]⚠️  Cancelled.[/yellow]\n")
             return
 
-        if DRY_RUN_MODE:
-            console.print("[yellow]🔍 DRY-RUN MODE: Would create template but no action taken.[/yellow]\n")
+        if not GOD_MODE:
+            console.print("[yellow]🔍 SAFE MODE: Would create template but no action taken.[/yellow]\n")
             return
 
         # Create template
@@ -463,8 +463,8 @@ def option_mapping_generator_from_json(es):
             if not template_name:
                 return
 
-            if DRY_RUN_MODE:
-                console.print("[yellow]🔍 DRY-RUN MODE: Would create component template but no action taken.[/yellow]\n")
+            if not GOD_MODE:
+                console.print("[yellow]🔍 SAFE MODE: Would create component template but no action taken.[/yellow]\n")
                 return
 
             try:
@@ -775,18 +775,20 @@ def option_query_builder_ui(es):
                             console.print(f"[green]✅ Query executed successfully[/green]")
                             console.print(f"[cyan]Total matches: {total}[/cyan]\n")
 
-                            # Display sample results
+                            # Display sample results with pagination
                             if hits.get("hits"):
-                                console.print("[bold cyan]Sample Results:[/bold cyan]\n")
-                                for i, hit in enumerate(hits["hits"][:3], 1):
+                                # Build renderable panels for each document
+                                doc_panels = []
+                                for i, hit in enumerate(hits["hits"], 1):
                                     source_json = json.dumps(hit.get("_source", {}), indent=2)
                                     syntax = Syntax(source_json, "json", theme="monokai", line_numbers=False)
-                                    console.print(Panel(
+                                    doc_panels.append(Panel(
                                         syntax,
                                         title=f"[bold]Document {i} (ID: {hit.get('_id', 'N/A')})[/bold]",
                                         box=box.ROUNDED
                                     ))
-                                console.print()
+                                
+                                paginate_renderables(doc_panels, page_size=5, title="Query Results")
 
                             # Display aggregation results
                             if "aggregations" in result:
@@ -1093,8 +1095,8 @@ def option_bulk_api_helper(es):
                         console.print("\n[yellow]⚠️  Cancelled.[/yellow]\n")
                         return
 
-                    if DRY_RUN_MODE:
-                        console.print("[yellow]🔍 DRY-RUN MODE: Would execute delete_by_query but no action taken.[/yellow]\n")
+                    if not GOD_MODE:
+                        console.print("[yellow]🔍 SAFE MODE: Would execute delete_by_query but no action taken.[/yellow]\n")
                         console.print(f"[dim]Query: {json.dumps(query, indent=2)}[/dim]\n")
                         return
 
@@ -1138,8 +1140,8 @@ def option_bulk_api_helper(es):
             console.print("\n[yellow]⚠️  Cancelled.[/yellow]\n")
             return
 
-        if DRY_RUN_MODE:
-            console.print("[yellow]🔍 DRY-RUN MODE: Would execute bulk operations but no action taken.[/yellow]\n")
+        if not GOD_MODE:
+            console.print("[yellow]🔍 SAFE MODE: Would execute bulk operations but no action taken.[/yellow]\n")
             console.print(f"[dim]First operation preview:[/dim]")
             preview = bulk_operations[:4] if len(bulk_operations) >= 4 else bulk_operations
             console.print(f"[dim]{json.dumps(preview, indent=2)}[/dim]\n")

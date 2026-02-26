@@ -13,7 +13,7 @@ from rich.progress import Progress, SpinnerColumn, TextColumn
 from rich.panel import Panel
 from rich.syntax import Syntax
 
-from ..config import console, DRY_RUN_MODE
+from ..config import console, GOD_MODE
 from ..utils import show_breadcrumb, confirm_action, select_from_list, get_text_input
 from ..utils.version_control import (
     save_resource_version_with_dependencies, get_resource_versions, get_resource_version,
@@ -329,7 +329,7 @@ def option_edit_index_template(es):
                 return
 
             # Deploy template
-            if DRY_RUN_MODE:
+            if not GOD_MODE:
                 console.print("\n[yellow]🔍 DRY-RUN MODE: Would update template[/yellow]")
                 console.print(f"[blue]Template: {selected_template}[/blue]\n")
             else:
@@ -433,7 +433,7 @@ def option_rollback_index_template(es):
                             comment=f"Auto-backup before rollback to v{version_num}", is_known_good=False)
 
         # Perform rollback
-        if DRY_RUN_MODE:
+        if not GOD_MODE:
             console.print("\n[yellow]🔍 DRY-RUN MODE: Would rollback template[/yellow]\n")
         else:
             with Progress(SpinnerColumn(), TextColumn("[cyan]Rolling back template..."), transient=True) as progress:
@@ -537,7 +537,7 @@ def option_import_index_template(es):
             console.print("\n[yellow]⚠️  Cancelled.[/yellow]\n")
             return
 
-        if DRY_RUN_MODE:
+        if not GOD_MODE:
             console.print("\n[yellow]🔍 DRY-RUN MODE: Would import template[/yellow]\n")
         else:
             with Progress(SpinnerColumn(), TextColumn("[cyan]Importing template..."), transient=True) as progress:
@@ -618,7 +618,7 @@ def option_edit_component_template(es):
                 return
 
             # Deploy template
-            if DRY_RUN_MODE:
+            if not GOD_MODE:
                 console.print("\n[yellow]🔍 DRY-RUN MODE: Would update template[/yellow]\n")
             else:
                 with Progress(SpinnerColumn(), TextColumn("[cyan]Updating template..."), transient=True) as progress:
@@ -703,7 +703,7 @@ def option_rollback_component_template(es):
                             comment=f"Auto-backup before rollback to v{version_num}", is_known_good=False)
 
         # Perform rollback
-        if DRY_RUN_MODE:
+        if not GOD_MODE:
             console.print("\n[yellow]🔍 DRY-RUN MODE: Would rollback template[/yellow]\n")
         else:
             with Progress(SpinnerColumn(), TextColumn("[cyan]Rolling back template..."), transient=True) as progress:
@@ -807,7 +807,7 @@ def option_import_component_template(es):
             console.print("\n[yellow]⚠️  Cancelled.[/yellow]\n")
             return
 
-        if DRY_RUN_MODE:
+        if not GOD_MODE:
             console.print("\n[yellow]🔍 DRY-RUN MODE: Would import template[/yellow]\n")
         else:
             with Progress(SpinnerColumn(), TextColumn("[cyan]Importing template..."), transient=True) as progress:

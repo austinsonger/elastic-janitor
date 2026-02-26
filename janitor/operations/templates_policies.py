@@ -5,7 +5,7 @@ ILM policies and ingest pipelines.
 from rich.table import Table
 from rich.progress import Progress, SpinnerColumn, TextColumn, BarColumn, TaskProgressColumn
 from rich import box
-from ..config import console, MAX_DELETE_LIMIT, DRY_RUN_MODE
+from ..config import console, MAX_DELETE_LIMIT, GOD_MODE
 from ..utils import confirm_delete, safe_input, show_breadcrumb, select_from_list
 
 
@@ -66,9 +66,9 @@ def option_delete_ilm(es):
         console.print("\n[yellow]⚠️  Cancelled.[/yellow]\n")
         return
 
-    global DRY_RUN_MODE
-    if DRY_RUN_MODE:
-        console.print("\n[yellow]🔍 DRY-RUN MODE: Simulating deletion...[/yellow]\n")
+    global GOD_MODE
+    if not GOD_MODE:
+        console.print("\n[yellow]🔍 SAFE MODE: Simulating deletion...[/yellow]\n")
         console.print(f"[blue]Would delete {len(matches)} ILM policies:[/blue]\n")
         for p in matches[:10]:
             console.print(f"  [blue]•[/blue] {p}")
@@ -150,9 +150,9 @@ def option_delete_pipelines(es):
         console.print("\n[yellow]⚠️  Cancelled.[/yellow]\n")
         return
 
-    global DRY_RUN_MODE
-    if DRY_RUN_MODE:
-        console.print("\n[yellow]🔍 DRY-RUN MODE: Simulating deletion...[/yellow]\n")
+    global GOD_MODE
+    if not GOD_MODE:
+        console.print("\n[yellow]🔍 SAFE MODE: Simulating deletion...[/yellow]\n")
         console.print(f"[blue]Would delete {len(matches)} ingest pipelines:[/blue]\n")
         for p in matches[:10]:
             console.print(f"  [blue]•[/blue] {p}")
