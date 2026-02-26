@@ -10,6 +10,7 @@ from ..config import console, custom_style, GOD_MODE
 from ..core import connect
 from ..utils import show_breadcrumb
 from ..operations import option_dashboard_stats_view, toggle_god_mode
+from ..operations.web_dashboard import option_launch_web_dashboard
 from .submenus import (
     submenu_index_management,
     submenu_data_streams,
@@ -25,6 +26,11 @@ from .submenus import (
     submenu_developer_tools,
     submenu_data_governance,
     submenu_performance_tuning,
+    submenu_auto_remediation,
+    submenu_policy_actions,
+    submenu_query_analyzer,
+    submenu_shard_advisor,
+    submenu_template_optimizer,
 )
 
 
@@ -79,8 +85,14 @@ def main():
                     questionary.Choice("🛠️  Developer Tools", value="12"),
                     questionary.Choice("🏛️  Data Quality & Governance", value="13"),
                     questionary.Choice("⚙️  Performance Tuning", value="14"),
-                    questionary.Choice("📈 Dashboard & Stats View", value="15"),
-                    questionary.Choice("Toggle God-Mode", value="16"),
+                    questionary.Choice("🩺 Auto-Remediation Engine", value="15"),
+                    questionary.Choice("📜 Policy-Based Actions", value="16"),
+                    questionary.Choice("🔎 Query Performance Analyzer", value="17"),
+                    questionary.Choice("⚖️  Shard Rebalancing Advisor", value="18"),
+                    questionary.Choice("📐 Index Template Optimizer", value="19"),
+                    questionary.Choice("📈 Dashboard & Stats View", value="20"),
+                    questionary.Choice("🌐 Launch Web Dashboard", value="21"),
+                    questionary.Choice("Toggle God-Mode", value="22"),
                     questionary.Separator(),
                     questionary.Choice("Quit", value="q"),
                 ],
@@ -123,8 +135,20 @@ def main():
         elif choice == "14":
             submenu_performance_tuning(es)
         elif choice == "15":
-            option_dashboard_stats_view(es)
+            submenu_auto_remediation(es)
         elif choice == "16":
+            submenu_policy_actions(es)
+        elif choice == "17":
+            submenu_query_analyzer(es)
+        elif choice == "18":
+            submenu_shard_advisor(es)
+        elif choice == "19":
+            submenu_template_optimizer(es)
+        elif choice == "20":
+            option_dashboard_stats_view(es)
+        elif choice == "21":
+            option_launch_web_dashboard(es)
+        elif choice == "22":
             toggle_god_mode()
 
 

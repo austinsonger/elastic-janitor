@@ -156,6 +156,38 @@ from ..operations.performance_tuning import (
     option_cache_tuning,
     option_jvm_tuning_assistant,
 )
+from ..operations.auto_remediation import (
+    option_auto_remediation_scan,
+    option_auto_remediation_execute,
+    option_auto_remediation_configure,
+    option_auto_remediation_history,
+)
+from ..operations.policy_actions import (
+    option_policy_list,
+    option_policy_create,
+    option_policy_evaluate,
+    option_policy_delete,
+    option_policy_toggle,
+)
+from ..operations.query_analyzer import (
+    option_query_performance_overview,
+    option_query_slow_index_analysis,
+    option_query_anti_pattern_detector,
+    option_query_optimization_suggestions,
+    option_query_known_patterns,
+)
+from ..operations.shard_advisor import (
+    option_shard_distribution_analysis,
+    option_shard_count_recommendations,
+    option_shard_rebalance_plan,
+    option_shard_allocation_strategy,
+)
+from ..operations.template_optimizer import (
+    option_template_mapping_analyzer,
+    option_template_settings_analyzer,
+    option_template_live_index_analysis,
+    option_template_optimization_report,
+)
 
 
 def submenu_index_management(es):
@@ -1146,3 +1178,189 @@ def submenu_performance_tuning(es):
             option_cache_tuning(es)
         elif choice == "6":
             option_jvm_tuning_assistant(es)
+
+
+def submenu_auto_remediation(es):
+    """Auto-Remediation Engine sub-menu."""
+    while True:
+        show_breadcrumb(["Main Menu", "Auto-Remediation Engine"])
+        console.print()
+
+        try:
+            choice = questionary.select(
+                "Select option:",
+                choices=[
+                    questionary.Choice("Scan & Diagnose", value="1"),
+                    questionary.Choice("Execute Remediation", value="2"),
+                    questionary.Choice("Configure Thresholds", value="3"),
+                    questionary.Choice("Remediation History", value="4"),
+                    questionary.Separator(),
+                    questionary.Choice("← Back to Main Menu", value="b"),
+                ],
+                style=custom_style
+            ).ask()
+        except KeyboardInterrupt:
+            console.print("\n[yellow]Cancelled.[/yellow]\n")
+            return
+
+        if choice is None or choice in ("b", "back"):
+            return
+
+        if choice == "1":
+            option_auto_remediation_scan(es)
+        elif choice == "2":
+            option_auto_remediation_execute(es)
+        elif choice == "3":
+            option_auto_remediation_configure(es)
+        elif choice == "4":
+            option_auto_remediation_history(es)
+
+
+def submenu_policy_actions(es):
+    """Policy-Based Actions sub-menu."""
+    while True:
+        show_breadcrumb(["Main Menu", "Policy-Based Actions"])
+        console.print()
+
+        try:
+            choice = questionary.select(
+                "Select option:",
+                choices=[
+                    questionary.Choice("List Policies", value="1"),
+                    questionary.Choice("Create Policy", value="2"),
+                    questionary.Choice("Evaluate Policies", value="3"),
+                    questionary.Choice("Toggle Policies (Enable/Disable)", value="4"),
+                    questionary.Choice("Delete Policies", value="5"),
+                    questionary.Separator(),
+                    questionary.Choice("← Back to Main Menu", value="b"),
+                ],
+                style=custom_style
+            ).ask()
+        except KeyboardInterrupt:
+            console.print("\n[yellow]Cancelled.[/yellow]\n")
+            return
+
+        if choice is None or choice in ("b", "back"):
+            return
+
+        if choice == "1":
+            option_policy_list(es)
+        elif choice == "2":
+            option_policy_create(es)
+        elif choice == "3":
+            option_policy_evaluate(es)
+        elif choice == "4":
+            option_policy_toggle(es)
+        elif choice == "5":
+            option_policy_delete(es)
+
+
+def submenu_query_analyzer(es):
+    """Query Performance Analyzer sub-menu."""
+    while True:
+        show_breadcrumb(["Main Menu", "Query Performance Analyzer"])
+        console.print()
+
+        try:
+            choice = questionary.select(
+                "Select option:",
+                choices=[
+                    questionary.Choice("Performance Overview", value="1"),
+                    questionary.Choice("Slow Index Analysis", value="2"),
+                    questionary.Choice("Anti-Pattern Detector", value="3"),
+                    questionary.Choice("Optimization Suggestions", value="4"),
+                    questionary.Choice("Known Anti-Patterns Reference", value="5"),
+                    questionary.Separator(),
+                    questionary.Choice("← Back to Main Menu", value="b"),
+                ],
+                style=custom_style
+            ).ask()
+        except KeyboardInterrupt:
+            console.print("\n[yellow]Cancelled.[/yellow]\n")
+            return
+
+        if choice is None or choice in ("b", "back"):
+            return
+
+        if choice == "1":
+            option_query_performance_overview(es)
+        elif choice == "2":
+            option_query_slow_index_analysis(es)
+        elif choice == "3":
+            option_query_anti_pattern_detector(es)
+        elif choice == "4":
+            option_query_optimization_suggestions(es)
+        elif choice == "5":
+            option_query_known_patterns(es)
+
+
+def submenu_shard_advisor(es):
+    """Shard Rebalancing Advisor sub-menu."""
+    while True:
+        show_breadcrumb(["Main Menu", "Shard Rebalancing Advisor"])
+        console.print()
+
+        try:
+            choice = questionary.select(
+                "Select option:",
+                choices=[
+                    questionary.Choice("Distribution Analysis", value="1"),
+                    questionary.Choice("Shard Count Recommendations", value="2"),
+                    questionary.Choice("Rebalance Plan", value="3"),
+                    questionary.Choice("Allocation Strategy", value="4"),
+                    questionary.Separator(),
+                    questionary.Choice("← Back to Main Menu", value="b"),
+                ],
+                style=custom_style
+            ).ask()
+        except KeyboardInterrupt:
+            console.print("\n[yellow]Cancelled.[/yellow]\n")
+            return
+
+        if choice is None or choice in ("b", "back"):
+            return
+
+        if choice == "1":
+            option_shard_distribution_analysis(es)
+        elif choice == "2":
+            option_shard_count_recommendations(es)
+        elif choice == "3":
+            option_shard_rebalance_plan(es)
+        elif choice == "4":
+            option_shard_allocation_strategy(es)
+
+
+def submenu_template_optimizer(es):
+    """Index Template Optimizer sub-menu."""
+    while True:
+        show_breadcrumb(["Main Menu", "Index Template Optimizer"])
+        console.print()
+
+        try:
+            choice = questionary.select(
+                "Select option:",
+                choices=[
+                    questionary.Choice("Mapping Analyzer", value="1"),
+                    questionary.Choice("Settings Analyzer", value="2"),
+                    questionary.Choice("Live Index Analysis", value="3"),
+                    questionary.Choice("Optimization Report", value="4"),
+                    questionary.Separator(),
+                    questionary.Choice("← Back to Main Menu", value="b"),
+                ],
+                style=custom_style
+            ).ask()
+        except KeyboardInterrupt:
+            console.print("\n[yellow]Cancelled.[/yellow]\n")
+            return
+
+        if choice is None or choice in ("b", "back"):
+            return
+
+        if choice == "1":
+            option_template_mapping_analyzer(es)
+        elif choice == "2":
+            option_template_settings_analyzer(es)
+        elif choice == "3":
+            option_template_live_index_analysis(es)
+        elif choice == "4":
+            option_template_optimization_report(es)

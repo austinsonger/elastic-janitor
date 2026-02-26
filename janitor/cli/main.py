@@ -38,6 +38,7 @@ def cli():
 
 # Import command groups
 from .commands import cluster, index, datastream, godmode, performance, governance, tuning, template, policy
+from .commands import remediation, policyactions, queryanalyzer, shardadvisor, templateoptimizer
 
 # Register command groups
 cli.add_command(cluster.cluster)
@@ -49,6 +50,11 @@ cli.add_command(governance.governance)
 cli.add_command(tuning.tuning)
 cli.add_command(template.template)
 cli.add_command(policy.policy)
+cli.add_command(remediation.remediation)
+cli.add_command(policyactions.policy_actions)
+cli.add_command(queryanalyzer.query_analyzer)
+cli.add_command(shardadvisor.shard_advisor)
+cli.add_command(templateoptimizer.template_optimizer)
 
 
 if __name__ == '__main__':

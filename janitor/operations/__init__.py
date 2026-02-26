@@ -186,6 +186,39 @@ from .performance_tuning import (
     option_cache_tuning,
     option_jvm_tuning_assistant,
 )
+from .auto_remediation import (
+    option_auto_remediation_scan,
+    option_auto_remediation_execute,
+    option_auto_remediation_configure,
+    option_auto_remediation_history,
+)
+from .policy_actions import (
+    option_policy_list,
+    option_policy_create,
+    option_policy_evaluate,
+    option_policy_delete,
+    option_policy_toggle,
+)
+from .query_analyzer import (
+    option_query_performance_overview,
+    option_query_slow_index_analysis,
+    option_query_anti_pattern_detector,
+    option_query_optimization_suggestions,
+    option_query_known_patterns,
+)
+from .shard_advisor import (
+    option_shard_distribution_analysis,
+    option_shard_count_recommendations,
+    option_shard_rebalance_plan,
+    option_shard_allocation_strategy,
+)
+from .web_dashboard import option_launch_web_dashboard
+from .template_optimizer import (
+    option_template_mapping_analyzer,
+    option_template_settings_analyzer,
+    option_template_live_index_analysis,
+    option_template_optimization_report,
+)
 
 __all__ = [
     # Index management - basic
@@ -347,4 +380,33 @@ __all__ = [
     'option_merge_policy_optimizer',
     'option_cache_tuning',
     'option_jvm_tuning_assistant',
+    # Auto-Remediation
+    'option_auto_remediation_scan',
+    'option_auto_remediation_execute',
+    'option_auto_remediation_configure',
+    'option_auto_remediation_history',
+    # Policy-Based Actions
+    'option_policy_list',
+    'option_policy_create',
+    'option_policy_evaluate',
+    'option_policy_delete',
+    'option_policy_toggle',
+    # Query Performance Analyzer
+    'option_query_performance_overview',
+    'option_query_slow_index_analysis',
+    'option_query_anti_pattern_detector',
+    'option_query_optimization_suggestions',
+    'option_query_known_patterns',
+    # Shard Rebalancing Advisor
+    'option_shard_distribution_analysis',
+    'option_shard_count_recommendations',
+    'option_shard_rebalance_plan',
+    'option_shard_allocation_strategy',
+    # Index Template Optimizer
+    'option_template_mapping_analyzer',
+    'option_template_settings_analyzer',
+    'option_template_live_index_analysis',
+    'option_template_optimization_report',
+    # Web Dashboard
+    'option_launch_web_dashboard',
 ]

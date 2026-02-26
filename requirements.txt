@@ -5,3 +5,5 @@ rich
 questionary
 pyyaml
 click>=8.0.0
+fastapi>=0.100.0
+uvicorn[standard]>=0.23.0
