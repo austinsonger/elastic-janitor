@@ -2,6 +2,7 @@
 Template & Policy Management operations for Elastic Janitor - Advanced Features.
 Advanced template and policy analysis, simulation, and management.
 """
+import re
 from datetime import datetime, timezone, timedelta
 from collections import defaultdict
 from rich.table import Table
@@ -1053,4 +1054,827 @@ def matches_pattern(index_name, pattern):
         current_pos = pos + len(part)
 
     return True
+
+
+def option_template_validation_analyzer(es):
+    """Analyze index templates and component templates for configuration issues."""
+    show_breadcrumb(["Main Menu", "Template & Policy Management", "Template Validation Analyzer"])
+
+    console.print()
+
+    # Fetch all templates
+    with Progress(
+        SpinnerColumn(),
+        TextColumn("[cyan]Fetching index templates and component templates..."),
+        transient=True,
+    ) as progress:
+        progress.add_task("fetch", total=None)
+        try:
+            idx_templates_resp = es.indices.get_index_template()
+            comp_templates_resp = es.cluster.get_component_template()
+            ilm_policies_resp = es.ilm.get_lifecycle()
+        except Exception as e:
+            console.print(f"\n[red]❌ Error fetching templates: {e}[/red]\n")
+            return
+
+    index_templates = idx_templates_resp.get("index_templates", [])
+    component_templates = comp_templates_resp.get("component_templates", [])
+    ilm_policies = list(ilm_policies_resp.keys())
+
+    if not index_templates and not component_templates:
+        console.print("\n[yellow]🟡 No templates found.[/yellow]\n")
+        return
+
+    # Analyze templates for issues
+    issues = []
+
+    # Analyze index templates
+    for template in index_templates:
+        template_name = template["name"]
+
+        # Skip system templates if protected
+        if PROTECT_SYSTEM and is_system(template_name):
+            continue
+
+        template_def = template["index_template"]
+        template_settings = template_def.get("template", {}).get("settings", {})
+        composed_of = template_def.get("composed_of", [])
+
+        # Flatten settings (handle nested structure)
+        flat_settings = flatten_settings(template_settings)
+
+        # Check for missing critical settings
+        if "index.number_of_replicas" not in flat_settings:
+            issues.append({
+                "template": template_name,
+                "type": "index_template",
+                "issue": "Missing Setting",
+                "severity": "MEDIUM",
+                "current": "Not set",
+                "recommended": "Set number_of_replicas (e.g., 1)"
+            })
+
+        if "index.refresh_interval" not in flat_settings:
+            issues.append({
+                "template": template_name,
+                "type": "index_template",
+                "issue": "Missing Setting",
+                "severity": "LOW",
+                "current": "Not set (default: 1s)",
+                "recommended": "Explicitly set refresh_interval"
+            })
+
+        if "index.number_of_shards" not in flat_settings:
+            issues.append({
+                "template": template_name,
+                "type": "index_template",
+                "issue": "Missing Setting",
+                "severity": "MEDIUM",
+                "current": "Not set (default: 1)",
+                "recommended": "Explicitly set number_of_shards"
+            })
+
+        # Check for lifecycle policy
+        if "index.lifecycle.name" not in flat_settings:
+            issues.append({
+                "template": template_name,
+                "type": "index_template",
+                "issue": "Lifecycle Policy Gap",
+                "severity": "MEDIUM",
+                "current": "No ILM policy",
+                "recommended": "Configure index.lifecycle.name"
+            })
+
+        # Check shard configuration
+        num_shards = flat_settings.get("index.number_of_shards")
+        if num_shards:
+            try:
+                shards_int = int(num_shards)
+                # Check if pattern suggests small indices
+                patterns = template_def.get("index_patterns", [])
+                is_daily = any("-daily-" in p or "*-*-*" in p for p in patterns)
+
+                if shards_int > 5 and is_daily:
+                    issues.append({
+                        "template": template_name,
+                        "type": "index_template",
+                        "issue": "Shard Configuration",
+                        "severity": "HIGH",
+                        "current": f"{shards_int} shards (daily pattern)",
+                        "recommended": "Reduce to 1-3 shards for daily indices"
+                    })
+            except (ValueError, TypeError):
+                pass
+
+        # Check component template composition
+        if composed_of:
+            # Check for circular dependencies (simplified check)
+            seen = set()
+            for comp_name in composed_of:
+                if comp_name in seen:
+                    issues.append({
+                        "template": template_name,
+                        "type": "index_template",
+                        "issue": "Component Template",
+                        "severity": "HIGH",
+                        "current": f"Duplicate reference: {comp_name}",
+                        "recommended": "Remove duplicate component template"
+                    })
+                seen.add(comp_name)
+
+                # Check if component template exists
+                comp_exists = any(ct["name"] == comp_name for ct in component_templates)
+                if not comp_exists:
+                    issues.append({
+                        "template": template_name,
+                        "type": "index_template",
+                        "issue": "Component Template",
+                        "severity": "HIGH",
+                        "current": f"Broken reference: {comp_name}",
+                        "recommended": "Remove reference or create component template"
+                    })
+
+    # Analyze component templates
+    for comp_template in component_templates:
+        comp_name = comp_template["name"]
+
+        # Skip system templates if protected
+        if PROTECT_SYSTEM and is_system(comp_name):
+            continue
+
+        comp_def = comp_template["component_template"]["template"]
+        comp_settings = comp_def.get("settings", {})
+
+        # Flatten settings
+        flat_settings = flatten_settings(comp_settings)
+
+        # Similar checks for component templates
+        if "index.number_of_shards" in flat_settings:
+            num_shards = flat_settings.get("index.number_of_shards")
+            try:
+                shards_int = int(num_shards)
+                if shards_int > 5:
+                    issues.append({
+                        "template": comp_name,
+                        "type": "component_template",
+                        "issue": "Shard Configuration",
+                        "severity": "MEDIUM",
+                        "current": f"{shards_int} shards",
+                        "recommended": "Consider reducing shard count"
+                    })
+            except (ValueError, TypeError):
+                pass
+
+    # Display results
+    console.print()
+    console.print(Panel(f"[bold cyan]Template Validation Analysis[/bold cyan]", box=box.DOUBLE))
+    console.print()
+
+    if not issues:
+        console.print("[green]✅ No configuration issues detected![/green]\n")
+        return
+
+    # Count by severity
+    high_count = sum(1 for i in issues if i["severity"] == "HIGH")
+    medium_count = sum(1 for i in issues if i["severity"] == "MEDIUM")
+    low_count = sum(1 for i in issues if i["severity"] == "LOW")
+
+    console.print(f"[bold]Found {len(issues)} issues: [red]{high_count} HIGH[/red], [yellow]{medium_count} MEDIUM[/yellow], [cyan]{low_count} LOW[/cyan][/bold]\n")
+
+    # Create table
+    table = Table(title="Template Configuration Issues", box=box.ROUNDED, title_style="bold cyan")
+    table.add_column("Template Name", style="cyan", no_wrap=False)
+    table.add_column("Issue Type", style="yellow")
+    table.add_column("Severity", style="white")
+    table.add_column("Current Value", style="dim")
+    table.add_column("Recommended Value", style="green")
+
+    for issue in issues:
+        severity_color = "red" if issue["severity"] == "HIGH" else "yellow" if issue["severity"] == "MEDIUM" else "cyan"
+        table.add_row(
+            issue["template"],
+            issue["issue"],
+            f"[{severity_color}]{issue['severity']}[/{severity_color}]",
+            issue["current"],
+            issue["recommended"]
+        )
+
+    console.print(table)
+    console.print()
+
+
+def flatten_settings(settings, prefix=""):
+    """Flatten nested settings dictionary."""
+    flat = {}
+    for key, value in settings.items():
+        full_key = f"{prefix}.{key}" if prefix else key
+        if isinstance(value, dict):
+            flat.update(flatten_settings(value, full_key))
+        else:
+            flat[full_key] = value
+    return flat
+
+
+def option_policy_health_checker(es):
+    """Analyze ILM policies for misconfigurations and best practice violations."""
+    show_breadcrumb(["Main Menu", "Template & Policy Management", "Policy Health Checker"])
+
+    console.print()
+
+    # Fetch ILM policies
+    with Progress(
+        SpinnerColumn(),
+        TextColumn("[cyan]Fetching ILM policies..."),
+        transient=True,
+    ) as progress:
+        progress.add_task("fetch", total=None)
+        try:
+            policies_resp = es.ilm.get_lifecycle()
+            idx_templates_resp = es.indices.get_index_template()
+            ilm_explain = es.ilm.explain_lifecycle(index="*")
+        except Exception as e:
+            console.print(f"\n[red]❌ Error fetching policies: {e}[/red]\n")
+            return
+
+    policies = policies_resp
+    index_templates = idx_templates_resp.get("index_templates", [])
+    indices_ilm = ilm_explain.get("indices", {})
+
+    if not policies:
+        console.print("\n[yellow]🟡 No ILM policies found.[/yellow]\n")
+        return
+
+    # Analyze policies for issues
+    issues = []
+
+    # Build set of policies referenced by templates
+    policies_in_templates = set()
+    for template in index_templates:
+        template_settings = template["index_template"].get("template", {}).get("settings", {})
+        flat_settings = flatten_settings(template_settings)
+        policy_name = flat_settings.get("index.lifecycle.name")
+        if policy_name:
+            policies_in_templates.add(policy_name)
+
+    # Build set of policies used by indices
+    policies_in_use = set()
+    for idx_name, ilm_info in indices_ilm.items():
+        policy = ilm_info.get("policy")
+        if policy:
+            policies_in_use.add(policy)
+
+    # Analyze each policy
+    for policy_name, policy_data in policies.items():
+        policy_def = policy_data.get("policy", {})
+        phases = policy_def.get("phases", {})
+
+        # Check for orphaned policies
+        if policy_name not in policies_in_templates and policy_name not in policies_in_use:
+            issues.append({
+                "policy": policy_name,
+                "issue": "Orphaned Policy",
+                "severity": "MEDIUM",
+                "details": "Not referenced by any templates or indices",
+                "fix": "Remove policy or assign to templates/indices"
+            })
+
+        # Check phase transition logic
+        phase_order = ["hot", "warm", "cold", "frozen", "delete"]
+        present_phases = [p for p in phase_order if p in phases]
+
+        # Check for illogical phase progressions
+        if "delete" in phases and len(present_phases) == 2 and "hot" in present_phases:
+            issues.append({
+                "policy": policy_name,
+                "issue": "Phase Transition Logic",
+                "severity": "MEDIUM",
+                "details": "Hot → Delete without intermediate phases",
+                "fix": "Consider adding warm or cold phase"
+            })
+
+        # Check min_age monotonicity
+        prev_age_days = 0
+        for phase_name in present_phases:
+            phase = phases[phase_name]
+            min_age = phase.get("min_age", "0d")
+            age_days = parse_time_value(min_age)
+
+            if age_days < prev_age_days:
+                issues.append({
+                    "policy": policy_name,
+                    "issue": "Phase Transition Logic",
+                    "severity": "HIGH",
+                    "details": f"{phase_name} phase min_age ({min_age}) < previous phase",
+                    "fix": "Ensure min_age values increase monotonically"
+                })
+            prev_age_days = age_days
+
+        # Check hot phase for rollover conditions
+        if "hot" in phases:
+            hot_phase = phases["hot"]
+            actions = hot_phase.get("actions", {})
+
+            if "rollover" in actions:
+                rollover = actions["rollover"]
+                has_condition = any(k in rollover for k in ["max_size", "max_age", "max_docs", "max_primary_shard_size"])
+
+                if not has_condition:
+                    issues.append({
+                        "policy": policy_name,
+                        "issue": "Missing Rollover Conditions",
+                        "severity": "HIGH",
+                        "details": "Rollover action without max_size, max_age, or max_docs",
+                        "fix": "Add at least one rollover condition"
+                    })
+
+            # Check for conflicting settings in hot phase
+            if "readonly" in actions:
+                issues.append({
+                    "policy": policy_name,
+                    "issue": "Conflicting Settings",
+                    "severity": "HIGH",
+                    "details": "readonly action in hot phase",
+                    "fix": "Move readonly to warm/cold phase"
+                })
+
+        # Check for forcemerge without readonly
+        for phase_name in present_phases:
+            phase = phases[phase_name]
+            actions = phase.get("actions", {})
+
+            if "forcemerge" in actions and "readonly" not in actions:
+                issues.append({
+                    "policy": policy_name,
+                    "issue": "Conflicting Settings",
+                    "severity": "MEDIUM",
+                    "details": f"forcemerge in {phase_name} phase without readonly",
+                    "fix": "Add readonly action before forcemerge"
+                })
+
+    # Display results
+    console.print()
+    console.print(Panel(f"[bold cyan]ILM Policy Health Check[/bold cyan]", box=box.DOUBLE))
+    console.print()
+
+    if not issues:
+        console.print("[green]✅ No policy issues detected![/green]\n")
+        return
+
+    # Count by severity
+    high_count = sum(1 for i in issues if i["severity"] == "HIGH")
+    medium_count = sum(1 for i in issues if i["severity"] == "MEDIUM")
+    low_count = sum(1 for i in issues if i["severity"] == "LOW")
+
+    console.print(f"[bold]Found {len(issues)} issues: [red]{high_count} HIGH[/red], [yellow]{medium_count} MEDIUM[/yellow], [cyan]{low_count} LOW[/cyan][/bold]\n")
+
+    # Create table
+    table = Table(title="Policy Health Issues", box=box.ROUNDED, title_style="bold cyan")
+    table.add_column("Policy Name", style="cyan", no_wrap=False)
+    table.add_column("Issue Type", style="yellow")
+    table.add_column("Severity", style="white")
+    table.add_column("Details", style="dim", no_wrap=False)
+    table.add_column("Recommended Fix", style="green", no_wrap=False)
+
+    for issue in issues:
+        severity_color = "red" if issue["severity"] == "HIGH" else "yellow" if issue["severity"] == "MEDIUM" else "cyan"
+        table.add_row(
+            issue["policy"],
+            issue["issue"],
+            f"[{severity_color}]{issue['severity']}[/{severity_color}]",
+            issue["details"],
+            issue["fix"]
+        )
+
+    console.print(table)
+    console.print()
+
+
+def option_template_policy_alignment_detector(es):
+    """Cross-reference templates, policies, and indices to find misalignments."""
+    show_breadcrumb(["Main Menu", "Template & Policy Management", "Template-Policy Alignment Detector"])
+
+    console.print()
+
+    # Fetch all necessary data
+    with Progress(
+        SpinnerColumn(),
+        TextColumn("[cyan]Fetching templates, policies, and indices..."),
+        transient=True,
+    ) as progress:
+        progress.add_task("fetch", total=None)
+        try:
+            idx_templates_resp = es.indices.get_index_template()
+            policies_resp = es.ilm.get_lifecycle()
+            ilm_explain = es.ilm.explain_lifecycle(index="*")
+            indices_info = get_all_indices_info(es)
+        except Exception as e:
+            console.print(f"\n[red]❌ Error fetching data: {e}[/red]\n")
+            return
+
+    index_templates = idx_templates_resp.get("index_templates", [])
+    policies = list(policies_resp.keys())
+    indices_ilm = ilm_explain.get("indices", {})
+
+    # Analyze for misalignments
+    issues = []
+
+    # Build template-to-policy mapping
+    template_policies = {}
+    for template in index_templates:
+        template_name = template["name"]
+        template_def = template["index_template"]
+        template_settings = template_def.get("template", {}).get("settings", {})
+        flat_settings = flatten_settings(template_settings)
+        policy_name = flat_settings.get("index.lifecycle.name")
+        patterns = template_def.get("index_patterns", [])
+        priority = template_def.get("priority", 0)
+
+        template_policies[template_name] = {
+            "policy": policy_name,
+            "patterns": patterns,
+            "priority": priority
+        }
+
+    # Check for unmanaged indices (created from templates without ILM policy)
+    for idx_name, info in indices_info.items():
+        # Skip system indices if protected
+        if PROTECT_SYSTEM and is_system(idx_name):
+            continue
+
+        ilm_info = indices_ilm.get(idx_name, {})
+        current_policy = ilm_info.get("policy")
+        managed = ilm_info.get("managed", False)
+
+        # Find matching templates
+        matching_templates = []
+        for template_name, template_info in template_policies.items():
+            for pattern in template_info["patterns"]:
+                if matches_pattern(idx_name, pattern):
+                    matching_templates.append({
+                        "name": template_name,
+                        "policy": template_info["policy"],
+                        "priority": template_info["priority"]
+                    })
+
+        # Sort by priority (highest first)
+        matching_templates.sort(key=lambda x: x["priority"], reverse=True)
+
+        if matching_templates:
+            winning_template = matching_templates[0]
+            expected_policy = winning_template["policy"]
+
+            # Check if index has no policy but template specifies one
+            if not managed and expected_policy:
+                issues.append({
+                    "name": idx_name,
+                    "type": "Unmanaged Index",
+                    "expected": expected_policy or "None",
+                    "actual": "None",
+                    "recommendation": f"Assign policy '{expected_policy}' from template '{winning_template['name']}'"
+                })
+
+            # Check for policy mismatch
+            elif managed and current_policy != expected_policy:
+                issues.append({
+                    "name": idx_name,
+                    "type": "Policy Mismatch",
+                    "expected": expected_policy or "None",
+                    "actual": current_policy or "None",
+                    "recommendation": f"Policy differs from template '{winning_template['name']}'"
+                })
+
+    # Check for orphaned policy references in templates
+    for template_name, template_info in template_policies.items():
+        policy_name = template_info["policy"]
+        if policy_name and policy_name not in policies:
+            issues.append({
+                "name": template_name,
+                "type": "Orphaned Policy Reference",
+                "expected": policy_name,
+                "actual": "Policy does not exist",
+                "recommendation": f"Create policy '{policy_name}' or update template"
+            })
+
+    # Check for priority-policy mismatches (multiple templates matching same pattern)
+    checked_patterns = set()
+    for i, (template1_name, template1_info) in enumerate(template_policies.items()):
+        for pattern1 in template1_info["patterns"]:
+            if pattern1 in checked_patterns:
+                continue
+
+            # Find other templates with overlapping patterns
+            conflicts = []
+            for template2_name, template2_info in template_policies.items():
+                if template1_name == template2_name:
+                    continue
+
+                for pattern2 in template2_info["patterns"]:
+                    if patterns_overlap(pattern1, pattern2):
+                        conflicts.append({
+                            "name": template2_name,
+                            "policy": template2_info["policy"],
+                            "priority": template2_info["priority"],
+                            "pattern": pattern2
+                        })
+
+            # Check if policies differ among conflicting templates
+            if conflicts:
+                template1_policy = template1_info["policy"]
+                for conflict in conflicts:
+                    if conflict["policy"] != template1_policy:
+                        # Determine which template wins
+                        if template1_info["priority"] > conflict["priority"]:
+                            winner = template1_name
+                            winner_policy = template1_policy
+                        elif conflict["priority"] > template1_info["priority"]:
+                            winner = conflict["name"]
+                            winner_policy = conflict["policy"]
+                        else:
+                            winner = "Undefined (same priority)"
+                            winner_policy = "Undefined"
+
+                        issues.append({
+                            "name": f"{template1_name} vs {conflict['name']}",
+                            "type": "Priority-Policy Mismatch",
+                            "expected": f"Winner: {winner}",
+                            "actual": f"Policies: {template1_policy} vs {conflict['policy']}",
+                            "recommendation": f"Winning policy: {winner_policy}"
+                        })
+
+            checked_patterns.add(pattern1)
+
+    # Display results
+    console.print()
+    console.print(Panel(f"[bold cyan]Template-Policy Alignment Analysis[/bold cyan]", box=box.DOUBLE))
+    console.print()
+
+    if not issues:
+        console.print("[green]✅ No alignment issues detected![/green]\n")
+        return
+
+    console.print(f"[bold]Found {len(issues)} alignment issues[/bold]\n")
+
+    # Create table
+    table = Table(title="Template-Policy Alignment Issues", box=box.ROUNDED, title_style="bold cyan")
+    table.add_column("Index/Template Name", style="cyan", no_wrap=False)
+    table.add_column("Issue Type", style="yellow")
+    table.add_column("Expected Policy", style="dim")
+    table.add_column("Actual Policy", style="dim")
+    table.add_column("Recommendation", style="green", no_wrap=False)
+
+    for issue in issues:
+        table.add_row(
+            issue["name"],
+            issue["type"],
+            issue["expected"],
+            issue["actual"],
+            issue["recommendation"]
+        )
+
+    console.print(table)
+    console.print()
+
+
+def option_performance_impact_analyzer(es):
+    """Analyze template settings for potential performance problems."""
+    show_breadcrumb(["Main Menu", "Template & Policy Management", "Performance Impact Analyzer"])
+
+    console.print()
+
+    # Fetch templates and cluster info
+    with Progress(
+        SpinnerColumn(),
+        TextColumn("[cyan]Fetching templates and cluster information..."),
+        transient=True,
+    ) as progress:
+        progress.add_task("fetch", total=None)
+        try:
+            idx_templates_resp = es.indices.get_index_template()
+            comp_templates_resp = es.cluster.get_component_template()
+            cluster_stats = es.cluster.stats()
+        except Exception as e:
+            console.print(f"\n[red]❌ Error fetching data: {e}[/red]\n")
+            return
+
+    index_templates = idx_templates_resp.get("index_templates", [])
+    component_templates = comp_templates_resp.get("component_templates", [])
+
+    # Get cluster node count
+    nodes_count = cluster_stats.get("nodes", {}).get("count", {}).get("data", 5)
+
+    if not index_templates and not component_templates:
+        console.print("\n[yellow]🟡 No templates found.[/yellow]\n")
+        return
+
+    # Analyze templates for performance issues
+    issues = []
+
+    # Analyze index templates
+    for template in index_templates:
+        template_name = template["name"]
+
+        # Skip system templates if protected
+        if PROTECT_SYSTEM and is_system(template_name):
+            continue
+
+        template_def = template["index_template"]
+        template_settings = template_def.get("template", {}).get("settings", {})
+        template_mappings = template_def.get("template", {}).get("mappings", {})
+        patterns = template_def.get("index_patterns", [])
+
+        # Flatten settings
+        flat_settings = flatten_settings(template_settings)
+
+        # Check for excessive replicas
+        num_replicas = flat_settings.get("index.number_of_replicas")
+        if num_replicas:
+            try:
+                replicas_int = int(num_replicas)
+
+                # Flag if > 2 replicas
+                if replicas_int > 2:
+                    issues.append({
+                        "template": template_name,
+                        "issue": "Excessive Replicas",
+                        "impact": "HIGH",
+                        "current": f"{replicas_int} replicas",
+                        "optimization": "Reduce to 1-2 replicas for most use cases"
+                    })
+
+                # Flag if > 1 replica on small clusters
+                elif replicas_int > 1 and nodes_count < 5:
+                    issues.append({
+                        "template": template_name,
+                        "issue": "Excessive Replicas",
+                        "impact": "MEDIUM",
+                        "current": f"{replicas_int} replicas on {nodes_count}-node cluster",
+                        "optimization": "Reduce to 1 replica for small clusters"
+                    })
+            except (ValueError, TypeError):
+                pass
+
+        # Check for shard over-allocation
+        num_shards = flat_settings.get("index.number_of_shards")
+        if num_shards:
+            try:
+                shards_int = int(num_shards)
+
+                # Check pattern type
+                is_daily = any("-daily-" in p or re.match(r".*-\d{4}\.\d{2}\.\d{2}", p) for p in patterns)
+                is_monthly = any("-monthly-" in p or re.match(r".*-\d{4}\.\d{2}", p) for p in patterns)
+
+                if is_daily and shards_int > 3:
+                    issues.append({
+                        "template": template_name,
+                        "issue": "Shard Over-Allocation",
+                        "impact": "HIGH",
+                        "current": f"{shards_int} shards for daily pattern",
+                        "optimization": "Reduce to 1-3 shards for daily indices"
+                    })
+                elif is_monthly and shards_int > 10:
+                    issues.append({
+                        "template": template_name,
+                        "issue": "Shard Over-Allocation",
+                        "impact": "MEDIUM",
+                        "current": f"{shards_int} shards for monthly pattern",
+                        "optimization": "Reduce to 5-10 shards for monthly indices"
+                    })
+            except (ValueError, TypeError):
+                pass
+
+        # Check for disabled refresh
+        refresh_interval = flat_settings.get("index.refresh_interval")
+        if refresh_interval == "-1":
+            issues.append({
+                "template": template_name,
+                "issue": "Disabled Refresh",
+                "impact": "MEDIUM",
+                "current": "refresh_interval: -1",
+                "optimization": "Review if still needed; acceptable for bulk loading only"
+            })
+
+        # Check for missing timestamp field mappings
+        properties = template_mappings.get("properties", {})
+        timestamp_fields = ["@timestamp", "timestamp", "event.created", "event.ingested"]
+        has_timestamp = any(field in properties for field in timestamp_fields)
+
+        # Check if this looks like a time-series index
+        is_timeseries = any(keyword in str(patterns).lower() for keyword in ["logs", "metrics", "events", "traces"])
+
+        if is_timeseries and not has_timestamp:
+            issues.append({
+                "template": template_name,
+                "issue": "Missing Field Mappings",
+                "impact": "MEDIUM",
+                "current": "No timestamp field mapping",
+                "optimization": "Add explicit mapping for @timestamp or timestamp field"
+            })
+
+        # Check for timestamp field without date type
+        for field in timestamp_fields:
+            if field in properties:
+                field_type = properties[field].get("type")
+                if field_type and field_type != "date":
+                    issues.append({
+                        "template": template_name,
+                        "issue": "Missing Field Mappings",
+                        "impact": "HIGH",
+                        "current": f"{field} is type '{field_type}', not 'date'",
+                        "optimization": f"Change {field} to type 'date'"
+                    })
+
+        # Check for suboptimal codec settings
+        codec = flat_settings.get("index.codec")
+        if codec == "default":
+            # Check if template is for cold/frozen data
+            is_cold_data = any(keyword in template_name.lower() for keyword in ["cold", "frozen", "archive"])
+            if is_cold_data:
+                issues.append({
+                    "template": template_name,
+                    "issue": "Suboptimal Settings",
+                    "impact": "MEDIUM",
+                    "current": "codec: default",
+                    "optimization": "Use 'best_compression' for cold/frozen data"
+                })
+
+        # Check for missing tier allocation
+        tier_setting = flat_settings.get("index.routing.allocation.require._tier")
+        if not tier_setting:
+            # Check if this is a tiered storage use case
+            has_ilm = flat_settings.get("index.lifecycle.name")
+            if has_ilm:
+                issues.append({
+                    "template": template_name,
+                    "issue": "Suboptimal Settings",
+                    "impact": "LOW",
+                    "current": "No tier allocation setting",
+                    "optimization": "Consider setting index.routing.allocation.require._tier for tiered storage"
+                })
+
+    # Analyze component templates (similar checks)
+    for comp_template in component_templates:
+        comp_name = comp_template["name"]
+
+        # Skip system templates if protected
+        if PROTECT_SYSTEM and is_system(comp_name):
+            continue
+
+        comp_def = comp_template["component_template"]["template"]
+        comp_settings = comp_def.get("settings", {})
+
+        # Flatten settings
+        flat_settings = flatten_settings(comp_settings)
+
+        # Check for excessive replicas in component templates
+        num_replicas = flat_settings.get("index.number_of_replicas")
+        if num_replicas:
+            try:
+                replicas_int = int(num_replicas)
+                if replicas_int > 2:
+                    issues.append({
+                        "template": comp_name,
+                        "issue": "Excessive Replicas",
+                        "impact": "MEDIUM",
+                        "current": f"{replicas_int} replicas",
+                        "optimization": "Reduce to 1-2 replicas"
+                    })
+            except (ValueError, TypeError):
+                pass
+
+    # Display results
+    console.print()
+    console.print(Panel(f"[bold cyan]Performance Impact Analysis[/bold cyan]", box=box.DOUBLE))
+    console.print()
+
+    if not issues:
+        console.print("[green]✅ No performance issues detected![/green]\n")
+        return
+
+    # Count by impact
+    high_count = sum(1 for i in issues if i["impact"] == "HIGH")
+    medium_count = sum(1 for i in issues if i["impact"] == "MEDIUM")
+    low_count = sum(1 for i in issues if i["impact"] == "LOW")
+
+    console.print(f"[bold]Found {len(issues)} performance issues: [red]{high_count} HIGH[/red], [yellow]{medium_count} MEDIUM[/yellow], [cyan]{low_count} LOW[/cyan][/bold]\n")
+
+    # Create table
+    table = Table(title="Performance Impact Issues", box=box.ROUNDED, title_style="bold cyan")
+    table.add_column("Template Name", style="cyan", no_wrap=False)
+    table.add_column("Performance Issue", style="yellow")
+    table.add_column("Impact Level", style="white")
+    table.add_column("Current Setting", style="dim", no_wrap=False)
+    table.add_column("Optimization Recommendation", style="green", no_wrap=False)
+
+    for issue in issues:
+        impact_color = "red" if issue["impact"] == "HIGH" else "yellow" if issue["impact"] == "MEDIUM" else "cyan"
+        table.add_row(
+            issue["template"],
+            issue["issue"],
+            f"[{impact_color}]{issue['impact']}[/{impact_color}]",
+            issue["current"],
+            issue["optimization"]
+        )
+
+    console.print(table)
+    console.print()
 

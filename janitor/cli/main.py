@@ -37,7 +37,7 @@ def cli():
 
 
 # Import command groups
-from .commands import cluster, index, datastream, dryrun, performance, governance, tuning
+from .commands import cluster, index, datastream, dryrun, performance, governance, tuning, template, policy
 
 # Register command groups
 cli.add_command(cluster.cluster)
@@ -47,6 +47,8 @@ cli.add_command(dryrun.dryrun)
 cli.add_command(performance.perf)
 cli.add_command(governance.governance)
 cli.add_command(tuning.tuning)
+cli.add_command(template.template)
+cli.add_command(policy.policy)
 
 
 if __name__ == '__main__':
