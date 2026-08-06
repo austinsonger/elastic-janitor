@@ -4,6 +4,7 @@ A comprehensive Elasticsearch cluster management tool for managing indices, data
 
 **Now with CLI support!** Use Elastic Janitor from the command line or interactive menu mode.
 
+
 ## Features
 
 ### Index Management
