@@ -1,5 +1,7 @@
 # Elastic Janitor
 
+<img width="1280" height="640" alt="elastic-janitor-repo-image" src="https://github.com/user-attachments/assets/bf04eb38-94c5-4322-84e7-a89fddc90a9a" />
+
 A comprehensive Elasticsearch cluster management tool for managing indices, data streams, templates, policies, snapshots, and cluster health.
 
 **Now with CLI support!** Use Elastic Janitor from the command line or interactive menu mode.
